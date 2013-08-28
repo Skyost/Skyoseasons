@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.plugin.Plugin;
 
@@ -133,20 +134,33 @@ public class Skyoseasons implements Listener {
 			}
 		}
 		Chunk[] chunks = e.getPlayer().getWorld().getLoadedChunks();
-		for(int i = 0; i != chunks.length; i++)  {
-			switch(currentSeason) {
-			case SPRING:
-				setChunkBiome(chunks[i], Biome.PLAINS, true);
-				break;
-			case SUMMER:
-				setChunkBiome(chunks[i], Biome.PLAINS, true);
-				break;
-			case AUTUMN:
-				setChunkBiome(chunks[i], Biome.DESERT, true);
-				break;
-			case WINTER:
-				setChunkBiome(chunks[i], Biome.ICE_PLAINS, false);
-				break;
+		if(worlds.toUpperCase().contains(e.getPlayer().getWorld().getName().toUpperCase())) {
+			for(int i = 0; i != chunks.length; i++)  {
+				switch(currentSeason) {
+				case SPRING:
+					setChunkBiome(chunks[i], Biome.PLAINS, true);
+					break;
+				case SUMMER:
+					setChunkBiome(chunks[i], Biome.PLAINS, true);
+					break;
+				case AUTUMN:
+					setChunkBiome(chunks[i], Biome.DESERT, true);
+					break;
+				case WINTER:
+					setChunkBiome(chunks[i], Biome.ICE_PLAINS, false);
+					break;
+				}
+			}
+		}
+	}
+	
+	@EventHandler
+	public void onWeatherChange(WeatherChangeEvent e) {
+		if(worlds.toUpperCase().contains(e.getWorld().getName().toUpperCase())) {
+			if(currentSeason.equals(Season.SUMMER)) {
+				if(e.toWeatherState() == true) {
+					e.setCancelled(true);
+				}
 			}
 		}
 	}
@@ -225,7 +239,6 @@ public class Skyoseasons implements Listener {
 					}
 				}
 				world.setStorm(false);
-			    world.setWeatherDuration(summer.SeasonLength);
 				currentSeason = season.SUMMER;
 				Bukkit.broadcastMessage(summer.Message);
 				String s2 = summer.SeasonLength + "000";
