@@ -92,9 +92,11 @@ public class Skyoseasons implements Listener {
 		}
 		if(spring.SeasonLength <= 0 || summer.SeasonLength <= 0 || autumn.SeasonLength <= 0 || winter.SeasonLength <= 0) {
 			System.out.println("The seasons length must be greater than zero !");
+			return false;
 		}
 		if(spring.DayLength <= 0 || spring.NightLength <= 0 || summer.DayLength <= 0 || summer.NightLength <= 0 || autumn.DayLength <= 0 || autumn.NightLength <= 0 || winter.DayLength <= 0 || winter.NightLength <= 0) {
 			System.out.println("The days / nights length must be greater than zero !");
+			return false;
 		}
 		return true;
 	}
