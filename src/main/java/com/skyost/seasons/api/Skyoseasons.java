@@ -271,6 +271,8 @@ public class Skyoseasons implements Listener {
 				seasonsTime.schedule(new SeasonManager(world), Integer.parseInt(s4));
 				break;
 			}
+            SeasonChangeEvent seasonChangeEvent = new SeasonChangeEvent(currentSeason);
+            Bukkit.getPluginManager().callEvent(seasonChangeEvent);
         	refreshCurrentTime(world);
 		}
 	}
