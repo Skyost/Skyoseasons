@@ -4,7 +4,7 @@ import java.io.File;
 
 import org.bukkit.plugin.Plugin;
 
-import com.skyost.seasons.api.Skyoseasons.Season;
+import com.skyost.seasons.api.Season;
 
 public class PluginConfig extends Config {
 	public PluginConfig(Plugin plugin) {

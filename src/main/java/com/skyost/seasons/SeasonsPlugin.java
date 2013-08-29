@@ -12,8 +12,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.Metrics;
 import org.mcstats.Metrics.Graph;
 
+import com.skyost.seasons.api.Season;
 import com.skyost.seasons.api.Skyoseasons;
-import com.skyost.seasons.api.Skyoseasons.Season;
 import com.skyost.seasons.util.PluginConfig;
 
 public class SeasonsPlugin extends JavaPlugin implements Listener {
@@ -109,17 +109,17 @@ public class SeasonsPlugin extends JavaPlugin implements Listener {
 					if(args[0].equalsIgnoreCase("set")) {
 						if(player.hasPermission("skyoseasons.set")) {
 							if(api.isWorldEnabled(player.getWorld().getName())) {
-								switch(args[1].toUpperCase()) {
-									case "SPRING":
+								switch(Season.fromName(args[1])) {
+									case SPRING:
 										api.setCurrentSeason(player.getWorld(), Season.SPRING);
 										break;
-									case "SUMMER":
+									case SUMMER:
 										api.setCurrentSeason(player.getWorld(), Season.SUMMER);
 										break;
-									case "AUTUMN":
+									case AUTUMN:
 										api.setCurrentSeason(player.getWorld(), Season.AUTUMN);
 										break;
-									case "WINTER":
+									case WINTER:
 										api.setCurrentSeason(player.getWorld(), Season.WINTER);
 										break;
 									default:

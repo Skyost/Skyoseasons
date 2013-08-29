@@ -50,10 +50,6 @@ public class Skyoseasons implements Listener {
 	private Season currentSeason;
 	private PluginConfig config;
 	
-	public static enum Season {
-		SPRING, SUMMER, AUTUMN, WINTER
-	}
-	
 	public Skyoseasons(PluginConfig config, Plugin plugin) {
 		try {
 			this.config = config;
