@@ -16,7 +16,7 @@
 name: Skyoseasons
 main: com.skyost.seasons.SeasonsPlugin
 description: Seasons in Minecraft !
-version: 1.1
+version: 1.2
 author: Skyost
 website: http://dev.bukkit.org/bukkit-plugins/skyoseasons/
 commands:
