@@ -205,6 +205,13 @@ public class Skyoseasons implements Listener {
 			Chunk[] chunks = world.getLoadedChunks();
 			switch(season) {
 			case SPRING:
+				//Event call 
+	            SeasonChangeEvent springEvent = new SeasonChangeEvent(season.SPRING);
+	            if(springEvent.isCancelled())
+	            	return;
+	            Bukkit.getPluginManager().callEvent(springEvent);
+	            //Event call end
+	            
 				if(currentSeason.equals(season.WINTER)) {
 					for(int i = 0; i < chunks.length; i++) {
 					    setChunkBiome(chunks[i], Biome.PLAINS, true);
@@ -224,6 +231,13 @@ public class Skyoseasons implements Listener {
 				seasonsTime.schedule(new SeasonManager(world), Integer.parseInt(s1));
 				break;
 			case SUMMER:
+				//Event call 
+	            SeasonChangeEvent summerEvent = new SeasonChangeEvent(season.SUMMER);
+	            if(summerEvent.isCancelled())
+	            	return;
+	            Bukkit.getPluginManager().callEvent(summerEvent);
+	            //Event call end
+				
 				if(currentSeason.equals(season.WINTER)) {
 					for(int i = 0; i < chunks.length; i++) {
 					    setChunkBiome(chunks[i], Biome.PLAINS, true);
@@ -243,6 +257,12 @@ public class Skyoseasons implements Listener {
 				seasonsTime.schedule(new SeasonManager(world), Integer.parseInt(s2));
 				break;
 			case AUTUMN:
+				//Event call 
+	            SeasonChangeEvent autumnEvent = new SeasonChangeEvent(season.AUTUMN);
+	            if(autumnEvent.isCancelled())
+	            	return;
+	            Bukkit.getPluginManager().callEvent(autumnEvent);
+	            //Event call end
 				if(currentSeason.equals(season.WINTER)) {
 					for(int i = 0; i < chunks.length; i++) {
 					    setChunkBiome(chunks[i], Biome.DESERT, true);
@@ -262,6 +282,13 @@ public class Skyoseasons implements Listener {
 				seasonsTime.schedule(new SeasonManager(world), Integer.parseInt(s3));
 				break;
 			case WINTER:
+				//Event call 
+	            SeasonChangeEvent winterEvent = new SeasonChangeEvent(season.WINTER);
+	            if(winterEvent.isCancelled())
+	            	return;
+	            Bukkit.getPluginManager().callEvent(winterEvent);
+	            //Event call end
+				
 				for(int i = 0; i < chunks.length; i++) {
 					setChunkBiome(chunks[i], Biome.ICE_PLAINS, false);
 					world.refreshChunk(chunks[i].getX(), chunks[i].getZ());
