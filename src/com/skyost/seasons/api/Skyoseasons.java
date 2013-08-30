@@ -155,7 +155,7 @@ public class Skyoseasons implements Listener {
 	@EventHandler
 	public void onWeatherChange(WeatherChangeEvent e) {
 		if(worlds.toUpperCase().contains(e.getWorld().getName().toUpperCase())) {
-			if(currentSeason.equals(Season.SUMMER)) {
+			if(currentSeason == Season.SUMMER) {
 				if(e.toWeatherState() == true) {
 					e.setCancelled(true);
 				}
@@ -206,13 +206,13 @@ public class Skyoseasons implements Listener {
 			switch(season) {
 			case SPRING:
 				//Event call 
-	            SeasonChangeEvent springEvent = new SeasonChangeEvent(season.SPRING);
+	            SeasonChangeEvent springEvent = new SeasonChangeEvent(Season.SPRING);
 	            if(springEvent.isCancelled())
 	            	return;
 	            Bukkit.getPluginManager().callEvent(springEvent);
 	            //Event call end
 	            
-				if(currentSeason.equals(season.WINTER)) {
+				if(currentSeason == Season.WINTER) {
 					for(int i = 0; i < chunks.length; i++) {
 					    setChunkBiome(chunks[i], Biome.PLAINS, true);
 					    world.refreshChunk(chunks[i].getX(), chunks[i].getZ());
@@ -225,7 +225,7 @@ public class Skyoseasons implements Listener {
 					}
 				}
 				world.setStorm(false);
-				currentSeason = season.SPRING;
+				currentSeason = Season.SPRING;
 				Bukkit.broadcastMessage(spring.Message);
 				String s1 = spring.SeasonLength + "000";
 				seasonsTime.schedule(new SeasonManager(world), Integer.parseInt(s1));
@@ -238,7 +238,7 @@ public class Skyoseasons implements Listener {
 	            Bukkit.getPluginManager().callEvent(summerEvent);
 	            //Event call end
 				
-				if(currentSeason.equals(season.WINTER)) {
+				if(currentSeason == Season.WINTER) {
 					for(int i = 0; i < chunks.length; i++) {
 					    setChunkBiome(chunks[i], Biome.PLAINS, true);
 					    world.refreshChunk(chunks[i].getX(), chunks[i].getZ());
@@ -251,19 +251,19 @@ public class Skyoseasons implements Listener {
 					}
 				}
 				world.setStorm(false);
-				currentSeason = season.SUMMER;
+				currentSeason = Season.SUMMER;
 				Bukkit.broadcastMessage(summer.Message);
 				String s2 = summer.SeasonLength + "000";
 				seasonsTime.schedule(new SeasonManager(world), Integer.parseInt(s2));
 				break;
 			case AUTUMN:
 				//Event call 
-	            SeasonChangeEvent autumnEvent = new SeasonChangeEvent(season.AUTUMN);
+	            SeasonChangeEvent autumnEvent = new SeasonChangeEvent(Season.AUTUMN);
 	            if(autumnEvent.isCancelled())
 	            	return;
 	            Bukkit.getPluginManager().callEvent(autumnEvent);
 	            //Event call end
-				if(currentSeason.equals(season.WINTER)) {
+				if(currentSeason == Season.WINTER) {
 					for(int i = 0; i < chunks.length; i++) {
 					    setChunkBiome(chunks[i], Biome.DESERT, true);
 					    world.refreshChunk(chunks[i].getX(), chunks[i].getZ());
@@ -276,14 +276,14 @@ public class Skyoseasons implements Listener {
 					}
 				}
 				world.setStorm(true);
-				currentSeason = season.AUTUMN;
+				currentSeason = Season.AUTUMN;
 				Bukkit.broadcastMessage(autumn.Message);
 				String s3 = autumn.SeasonLength + "000";
 				seasonsTime.schedule(new SeasonManager(world), Integer.parseInt(s3));
 				break;
 			case WINTER:
 				//Event call 
-	            SeasonChangeEvent winterEvent = new SeasonChangeEvent(season.WINTER);
+	            SeasonChangeEvent winterEvent = new SeasonChangeEvent(Season.WINTER);
 	            if(winterEvent.isCancelled())
 	            	return;
 	            Bukkit.getPluginManager().callEvent(winterEvent);
@@ -294,7 +294,7 @@ public class Skyoseasons implements Listener {
 					world.refreshChunk(chunks[i].getX(), chunks[i].getZ());
 				}
 				world.setStorm(true);
-				currentSeason = season.WINTER;
+				currentSeason = Season.WINTER;
 				Bukkit.broadcastMessage(winter.Message);
 				String s4 = winter.SeasonLength + "000";
 				seasonsTime.schedule(new SeasonManager(world), Integer.parseInt(s4));
@@ -410,27 +410,6 @@ public class Skyoseasons implements Listener {
 	}
 	
 	/**
-	 * Get the previous season of the specified season.
-	 * 
-	 * @return SPRING If the previous season is spring, SUMMER If the previous season is summer, AUTUMN If the previous season is autumn or WINTER If the previous season is winter.
-	 */
-	
-	public Season getPreviousSeason(Season season) {
-		switch(season) {
-		case SPRING:
-			return season.WINTER;
-		case SUMMER:
-			return season.SPRING;
-		case AUTUMN:
-			return season.SUMMER;
-		case WINTER:
-			return season.AUTUMN;
-		default:
-			return null;
-		}
-	}
-	
-	/**
 	 * Get the previous season of the current season.
 	 * 
 	 * @return SPRING If the previous season is spring, SUMMER If the previous season is summer, AUTUMN If the previous season is autumn or WINTER If the previous season is winter.
@@ -446,27 +425,6 @@ public class Skyoseasons implements Listener {
 			return Season.SUMMER;
 		case WINTER:
 			return Season.AUTUMN;
-		default:
-			return null;
-		}
-	}
-	
-	/**
-	 * Get the next season of the specified season.
-	 * 
-	 * @return SPRING If the next season is spring, SUMMER If the next season is summer, AUTUMN If the next season is autumn or WINTER If the next season is winter.
-	 */
-	
-	public Season getNextSeason(Season season) {
-		switch(season) {
-		case SPRING:
-			return season.SUMMER;
-		case SUMMER:
-			return season.AUTUMN;
-		case AUTUMN:
-			return season.WINTER;
-		case WINTER:
-			return season.SPRING;
 		default:
 			return null;
 		}
