@@ -26,6 +26,36 @@ public enum Season {
         return BY_NAME.get(name.toLowerCase());
     }
 
+    public Season getPrevious() {
+        switch(this) {
+        case SPRING:
+            return WINTER;
+        case SUMMER:
+            return SPRING;
+        case AUTUMN:
+            return SUMMER;
+        case WINTER:
+            return AUTUMN;
+        default:
+            return null;
+        }
+    }
+
+    public Season getNext() {
+        switch(this) {
+        case SPRING:
+            return SUMMER;
+        case SUMMER:
+            return AUTUMN;
+        case AUTUMN:
+            return WINTER;
+        case WINTER:
+            return SPRING;
+        default:
+            return null;
+        }
+    }
+
     static {
         for (Season season : values()) {
             BY_NAME.put(season.name, season);

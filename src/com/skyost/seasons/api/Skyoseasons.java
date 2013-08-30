@@ -410,27 +410,6 @@ public class Skyoseasons implements Listener {
 	}
 	
 	/**
-	 * Get the previous season of the specified season.
-	 * 
-	 * @return SPRING If the previous season is spring, SUMMER If the previous season is summer, AUTUMN If the previous season is autumn or WINTER If the previous season is winter.
-	 */
-	
-	public Season getPreviousSeason(Season season) {
-		switch(season) {
-		case SPRING:
-			return season.WINTER;
-		case SUMMER:
-			return season.SPRING;
-		case AUTUMN:
-			return season.SUMMER;
-		case WINTER:
-			return season.AUTUMN;
-		default:
-			return null;
-		}
-	}
-	
-	/**
 	 * Get the previous season of the current season.
 	 * 
 	 * @return SPRING If the previous season is spring, SUMMER If the previous season is summer, AUTUMN If the previous season is autumn or WINTER If the previous season is winter.
@@ -446,27 +425,6 @@ public class Skyoseasons implements Listener {
 			return Season.SUMMER;
 		case WINTER:
 			return Season.AUTUMN;
-		default:
-			return null;
-		}
-	}
-	
-	/**
-	 * Get the next season of the specified season.
-	 * 
-	 * @return SPRING If the next season is spring, SUMMER If the next season is summer, AUTUMN If the next season is autumn or WINTER If the next season is winter.
-	 */
-	
-	public Season getNextSeason(Season season) {
-		switch(season) {
-		case SPRING:
-			return season.SUMMER;
-		case SUMMER:
-			return season.AUTUMN;
-		case AUTUMN:
-			return season.WINTER;
-		case WINTER:
-			return season.SPRING;
 		default:
 			return null;
 		}
