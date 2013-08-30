@@ -155,7 +155,7 @@ public class Skyoseasons implements Listener {
 	@EventHandler
 	public void onWeatherChange(WeatherChangeEvent e) {
 		if(worlds.toUpperCase().contains(e.getWorld().getName().toUpperCase())) {
-			if(currentSeason.equals(Season.SUMMER)) {
+			if(currentSeason == Season.SUMMER) {
 				if(e.toWeatherState() == true) {
 					e.setCancelled(true);
 				}
@@ -206,13 +206,13 @@ public class Skyoseasons implements Listener {
 			switch(season) {
 			case SPRING:
 				//Event call 
-	            SeasonChangeEvent springEvent = new SeasonChangeEvent(season.SPRING);
+	            SeasonChangeEvent springEvent = new SeasonChangeEvent(Season.SPRING);
 	            if(springEvent.isCancelled())
 	            	return;
 	            Bukkit.getPluginManager().callEvent(springEvent);
 	            //Event call end
 	            
-				if(currentSeason.equals(season.WINTER)) {
+				if(currentSeason == Season.WINTER) {
 					for(int i = 0; i < chunks.length; i++) {
 					    setChunkBiome(chunks[i], Biome.PLAINS, true);
 					    world.refreshChunk(chunks[i].getX(), chunks[i].getZ());
@@ -225,7 +225,7 @@ public class Skyoseasons implements Listener {
 					}
 				}
 				world.setStorm(false);
-				currentSeason = season.SPRING;
+				currentSeason = Season.SPRING;
 				Bukkit.broadcastMessage(spring.Message);
 				String s1 = spring.SeasonLength + "000";
 				seasonsTime.schedule(new SeasonManager(world), Integer.parseInt(s1));
@@ -238,7 +238,7 @@ public class Skyoseasons implements Listener {
 	            Bukkit.getPluginManager().callEvent(summerEvent);
 	            //Event call end
 				
-				if(currentSeason.equals(season.WINTER)) {
+				if(currentSeason == Season.WINTER) {
 					for(int i = 0; i < chunks.length; i++) {
 					    setChunkBiome(chunks[i], Biome.PLAINS, true);
 					    world.refreshChunk(chunks[i].getX(), chunks[i].getZ());
@@ -251,19 +251,19 @@ public class Skyoseasons implements Listener {
 					}
 				}
 				world.setStorm(false);
-				currentSeason = season.SUMMER;
+				currentSeason = Season.SUMMER;
 				Bukkit.broadcastMessage(summer.Message);
 				String s2 = summer.SeasonLength + "000";
 				seasonsTime.schedule(new SeasonManager(world), Integer.parseInt(s2));
 				break;
 			case AUTUMN:
 				//Event call 
-	            SeasonChangeEvent autumnEvent = new SeasonChangeEvent(season.AUTUMN);
+	            SeasonChangeEvent autumnEvent = new SeasonChangeEvent(Season.AUTUMN);
 	            if(autumnEvent.isCancelled())
 	            	return;
 	            Bukkit.getPluginManager().callEvent(autumnEvent);
 	            //Event call end
-				if(currentSeason.equals(season.WINTER)) {
+				if(currentSeason == Season.WINTER) {
 					for(int i = 0; i < chunks.length; i++) {
 					    setChunkBiome(chunks[i], Biome.DESERT, true);
 					    world.refreshChunk(chunks[i].getX(), chunks[i].getZ());
@@ -276,14 +276,14 @@ public class Skyoseasons implements Listener {
 					}
 				}
 				world.setStorm(true);
-				currentSeason = season.AUTUMN;
+				currentSeason = Season.AUTUMN;
 				Bukkit.broadcastMessage(autumn.Message);
 				String s3 = autumn.SeasonLength + "000";
 				seasonsTime.schedule(new SeasonManager(world), Integer.parseInt(s3));
 				break;
 			case WINTER:
 				//Event call 
-	            SeasonChangeEvent winterEvent = new SeasonChangeEvent(season.WINTER);
+	            SeasonChangeEvent winterEvent = new SeasonChangeEvent(Season.WINTER);
 	            if(winterEvent.isCancelled())
 	            	return;
 	            Bukkit.getPluginManager().callEvent(winterEvent);
@@ -294,7 +294,7 @@ public class Skyoseasons implements Listener {
 					world.refreshChunk(chunks[i].getX(), chunks[i].getZ());
 				}
 				world.setStorm(true);
-				currentSeason = season.WINTER;
+				currentSeason = Season.WINTER;
 				Bukkit.broadcastMessage(winter.Message);
 				String s4 = winter.SeasonLength + "000";
 				seasonsTime.schedule(new SeasonManager(world), Integer.parseInt(s4));
