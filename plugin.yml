@@ -1,0 +1,53 @@
+# ########################## # 
+#                            #
+#  Skyoseasons Plugin YAML   #
+#                            #
+#   No configuration here !  #
+#                            #
+# ########################## #
+#                            #
+#  You can change 'default'  #
+#      in 'permissions'      #
+#    if you don't have a     #
+#     permission plugin.     #
+#                            #
+# ########################## #
+#                            #
+#        .:By Skyost:.       #
+#                            #
+# ########################## #
+
+name: Skyoseasons
+main: fr.skyost.seasons.Skyoseasons
+description: Add seasons to your Bukkit server !
+version: 3.0
+softdepend: [Spout, ProtocolLib]
+author: Skyost
+website: http://dev.bukkit.org/bukkit-plugins/skyoseasons/
+commands:
+ skyoseasons:
+  aliases: [season, seasons]
+  description: Main command of Skyoseasons.
+ calendar:
+  aliases: [cal]
+  description: Open the calendar.
+  permission: skyoseasons.calendar
+permissions:
+  skyoseasons.calendar:
+   default: true
+   description: Allows you to open the calendar or display the current day / month / season / year.
+  skyoseasons.calendar.setday:
+   default: op
+   description: Allows you to set the current day.
+  skyoseasons.calendar.setmonth:
+   default: op
+   description: Allows you to set the current month.
+  skyoseasons.calendar.setseason:
+   default: op
+   description: Allows you to set the current season.
+  skyoseasons.calendar.setseasonmonth:
+   default: op
+   description: Allows you to set the month of the current season.
+  skyoseasons.calendar.setyear:
+   default: op
+   description: Allows you to set the current year.
