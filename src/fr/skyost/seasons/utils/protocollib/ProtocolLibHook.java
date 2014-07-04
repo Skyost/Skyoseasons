@@ -1,8 +1,5 @@
 package fr.skyost.seasons.utils.protocollib;
 
-import static com.comphenix.protocol.PacketType.Play.Server.MAP_CHUNK;
-import static com.comphenix.protocol.PacketType.Play.Server.MAP_CHUNK_BULK;
-
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -40,7 +37,7 @@ public class ProtocolLibHook {
 			for(final Biome biome : Biome.values()) {
 				final String biomeName = biome.name();
 				final String fieldName = field.getName();
-				if(biomeName.equals(fieldName) || biomeName.replaceAll("FOREST", "F").equals(fieldName)) {
+				if(biomeName.equals(fieldName) || biomeName.replace("FOREST", "F").equals(fieldName)) {
 					final Object biomeObject = field.get(biomeBase);
 					biomes.put(biome, Byte.valueOf(String.valueOf(biomeObject.getClass().getField("id").get(field.get(biomeBase)))));
 				}
@@ -54,7 +51,7 @@ public class ProtocolLibHook {
 		// Modify chunk packets asynchronously
 		final ProtocolManager manager = ProtocolLibrary.getProtocolManager();
 		if(manager != null) {
-			manager.getAsynchronousManager().registerAsyncHandler(new PacketAdapter(Skyoseasons.instance, ListenerPriority.HIGHEST, MAP_CHUNK, MAP_CHUNK_BULK) {
+			manager.getAsynchronousManager().registerAsyncHandler(new PacketAdapter(Skyoseasons.instance, ListenerPriority.HIGHEST, PacketType.Play.Server.MAP_CHUNK, PacketType.Play.Server.MAP_CHUNK_BULK, PacketType.Play.Server.UPDATE_SIGN, PacketType.Play.Server.TILE_ENTITY_DATA) {
 				
 				@Override
 				public void onPacketSending(final PacketEvent event) {
@@ -62,10 +59,10 @@ public class ProtocolLibHook {
 					final SeasonWorld world = Skyoseasons.worlds.get(player.getWorld().getName());
 					if(world != null) {
 						final PacketType type = event.getPacketType();
-						if(type == MAP_CHUNK) {
+						if(type == PacketType.Play.Server.MAP_CHUNK) {
 							translateMapChunk(event.getPacket(), player, world);
 						}
-						else if(type == MAP_CHUNK_BULK) {
+						else if(type == PacketType.Play.Server.MAP_CHUNK_BULK) {
 							translateMapChunkBulk(event.getPacket(), player, world);
 						}
 					}
