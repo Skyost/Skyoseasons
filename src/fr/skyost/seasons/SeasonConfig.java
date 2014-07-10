@@ -59,7 +59,7 @@ public class SeasonConfig extends Skyoconfig {
 	public int spoutMoonSizePercent = 100;
 	
 	public SeasonConfig(final File file) {
-		super(file, Arrays.asList("######################################################### #", "\n              Skyoseasons Configuration                 #", "\n Check http://dev.bukkit.org/bukkit-plugins/skyoseasons #", "\n               for more informations.                   #", "\n####################################################### #"));
+		super(file, Arrays.asList("####################################################### #", "\n              Skyoseasons Configuration                 #", "\n Check http://dev.bukkit.org/bukkit-plugins/skyoseasons #", "\n               for more informations.                   #", "\n####################################################### #"));
 		replacements.put(Biome.MUSHROOM_ISLAND.name(), Biome.MUSHROOM_ISLAND.name());
 		replacements.put(Biome.MUSHROOM_SHORE.name(),  Biome.MUSHROOM_SHORE.name());
 	}

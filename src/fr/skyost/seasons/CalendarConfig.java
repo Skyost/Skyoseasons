@@ -105,7 +105,7 @@ public class CalendarConfig extends Skyoconfig {
 	public String messagesYear = "§4Happy new year ! We are in /year/ :D";
 	
 	public CalendarConfig(final File dataFolder) {
-		super(new File(dataFolder, "calendar.yml"), Arrays.asList("######################################################### #", "\n              Skyoseasons Configuration                 #", "\n Check http://dev.bukkit.org/bukkit-plugins/skyoseasons #", "\n               for more informations.                   #", "\n####################################################### #"));
+		super(new File(dataFolder, "calendar.yml"), Arrays.asList("####################################################### #", "\n              Skyoseasons Configuration                 #", "\n Check http://dev.bukkit.org/bukkit-plugins/skyoseasons #", "\n               for more informations.                   #", "\n####################################################### #"));
 	}
 	
 }

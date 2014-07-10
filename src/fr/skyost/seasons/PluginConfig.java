@@ -45,7 +45,7 @@ public class PluginConfig extends Skyoconfig {
 	public boolean enableSkyupdater = true;
 	
 	public PluginConfig(final File dataFolder) {
-		super(new File(dataFolder, "config.yml"), Arrays.asList("######################################################### #", "\n              Skyoseasons Configuration                 #", "\n Check http://dev.bukkit.org/bukkit-plugins/skyoseasons #", "\n               for more informations.                   #", "\n####################################################### #"));
+		super(new File(dataFolder, "config.yml"), Arrays.asList("####################################################### #", "\n              Skyoseasons Configuration                 #", "\n Check http://dev.bukkit.org/bukkit-plugins/skyoseasons #", "\n               for more informations.                   #", "\n####################################################### #"));
 		seasonsDir = new File(dataFolder + File.separator + "seasons").getPath();
 		logsFileDir = new File(dataFolder + File.separator + "logs").getPath();
 		backupsDir = new File(dataFolder + File.separator + "backups").getPath();

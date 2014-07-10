@@ -87,7 +87,7 @@ public class Skyoseasons extends JavaPlugin {
 					SeasonConfig season;
 					for(final File file : files) {
 						final String fileName = file.getName();
-						if(fileName.endsWith(".yml")) {
+						if(file.isFile() && fileName.endsWith(".yml")) {
 							season = new SeasonConfig(file);
 							season.load();
 							if(protocolLib != null) {
@@ -161,7 +161,7 @@ public class Skyoseasons extends JavaPlugin {
 					worlds.put(worldName, new SeasonWorld(world));
 				}
 				else {
-					logsManager.log("The world '" + worldName + "' does not exists !", Level.WARNING);
+					logsManager.log("The world '" + worldName + "' does not exist !", Level.WARNING);
 				}
 			}
 			PluginCommand command = this.getCommand("skyoseasons");
