@@ -101,11 +101,11 @@ public class SkyoseasonsCommand implements CommandExecutor {
 				}
 				final String monthName;
 				if(!CharMatcher.DIGIT.matchesAllOf(args[1])) {
-					monthName = (String)Utils.fromJson(Skyoseasons.calendar.Months.get(args[1])).get("Name");
+					monthName = (String)Utils.fromJson(Skyoseasons.calendar.months.get(args[1])).get("Name");
 					if(monthName == null) {
 						final StringBuilder builder = new StringBuilder();
-						for(int i = 1; !(i > Skyoseasons.calendar.Months.size()); i++) {
-							builder.append("\n[" + i + "] " + Utils.fromJson(Skyoseasons.calendar.Months.get(String.valueOf(i))).get("Name"));
+						for(int i = 1; !(i > Skyoseasons.calendar.months.size()); i++) {
+							builder.append("\n[" + i + "] " + Utils.fromJson(Skyoseasons.calendar.months.get(String.valueOf(i))).get("Name"));
 						}
 						sender.sendMessage(ChatColor.RED + "Months :\n" + builder.toString());
 						return true;
@@ -117,8 +117,8 @@ public class SkyoseasonsCommand implements CommandExecutor {
 				final Month month = Skyoseasons.months.get(monthName);
 				if(month == null) {
 					final StringBuilder builder = new StringBuilder();
-					for(int i = 1; !(i > Skyoseasons.calendar.Months.size()); i++) {
-						builder.append("\n[" + i + "] " + Utils.fromJson(Skyoseasons.calendar.Months.get(String.valueOf(i))).get("Name"));
+					for(int i = 1; !(i > Skyoseasons.calendar.months.size()); i++) {
+						builder.append("\n[" + i + "] " + Utils.fromJson(Skyoseasons.calendar.months.get(String.valueOf(i))).get("Name"));
 					}
 					sender.sendMessage(ChatColor.RED + "Months :\n" + builder.toString());
 					return true;
@@ -190,7 +190,7 @@ public class SkyoseasonsCommand implements CommandExecutor {
 					sender.sendMessage(ChatColor.RED + "/skyoseasons year <new-year>.");
 					return true;
 				}
-				Bukkit.getPluginManager().callEvent(new YearChangeEvent(world, world.year, Integer.parseInt(args[1]), Skyoseasons.calendar.Messages_Year.replaceAll("/year/", args[1]), ModificationCause.PLAYER));
+				Bukkit.getPluginManager().callEvent(new YearChangeEvent(world, world.year, Integer.parseInt(args[1]), Skyoseasons.calendar.messagesYear.replaceAll("/year/", args[1]), ModificationCause.PLAYER));
 			}
 			break;
 		default:

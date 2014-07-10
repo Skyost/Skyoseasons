@@ -34,32 +34,32 @@ public class Season {
 	public final SpoutEffects effects;
 	
 	public Season(final SeasonConfig config) {
-		name = config.Name;
-		next = config.Next;
-		defaultBiome = config.DefaultBiome;
-		for(final Entry<String, String> entry : config.Replacements.entrySet()) {
+		name = config.name;
+		next = config.next;
+		defaultBiome = config.defaultBiome;
+		for(final Entry<String, String> entry : config.replacements.entrySet()) {
 			replacements.put(Biome.valueOf(entry.getKey()), Biome.valueOf(entry.getValue()));
 		}
-		canRain = config.CanRain;
-		alwaysRain = config.AlwaysRain;
-		snowMelt = config.SnowMelt;
-		message = config.Message;
-		months = config.Months_Number;
-		monthsMessage = config.Months_Message;
-		daylength = config.Day_Length;
-		dayMessageEnabled = config.Day_Message_Enable;
-		dayMessage = dayMessageEnabled ? config.Day_Message_Message : null;
-		nightLength = config.Night_Length;
-		nightMessageEnabled = config.Night_Message_Enable;
-		nightMessage = nightMessageEnabled ? config.Night_Message_Message : null;
+		canRain = config.canRain;
+		alwaysRain = config.alwaysRain;
+		snowMelt = config.snowMelt;
+		message = config.message;
+		months = config.monthsNumber;
+		monthsMessage = config.monthsMessage;
+		daylength = config.dayLength;
+		dayMessageEnabled = config.dayMessageEnable;
+		dayMessage = dayMessageEnabled ? config.dayMessageMessage : null;
+		nightLength = config.nightLength;
+		nightMessageEnabled = config.nightMessageEnable;
+		nightMessage = nightMessageEnabled ? config.nightMessageMessage : null;
 		if(Skyoseasons.spout != null) {
 			effects = new SpoutEffects();
-			effects.cloudsVisible = config.Spout_CloudsVisible;
-			effects.moonSizePercent = config.Spout_MoonSizePercent;
-			effects.moonVisible = config.Spout_MoonVisible;
-			effects.starsFrequency = config.Spout_StarsFrequency;
-			effects.sunSizePercent = config.Spout_SunSizePercent;
-			effects.sunVisible = config.Spout_SunVisible;
+			effects.cloudsVisible = config.spoutCloudsVisible;
+			effects.moonSizePercent = config.spoutMoonSizePercent;
+			effects.moonVisible = config.spoutMoonVisible;
+			effects.starsFrequency = config.spoutStarsFrequency;
+			effects.sunSizePercent = config.spoutSunSizePercent;
+			effects.sunVisible = config.spoutSunVisible;
 		}
 		else {
 			effects = null;

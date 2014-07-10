@@ -107,14 +107,14 @@ public class SeasonWorld implements Listener {
 	
 	public final void updateCalendar(final int prevDay, final int newDay) {
 		ItemStack item = calendar.getItem(prevDay - 1);
-		item.setType(Skyoseasons.calendar.Calendar_Days_Item);
+		item.setType(Skyoseasons.calendar.calendarDaysItem);
 		ItemMeta meta = item.getItemMeta();
-		meta.setDisplayName(Skyoseasons.calendar.Calendar_Days_Name.replaceAll("/month/", month.name).replaceAll("/day-number/", String.valueOf(day - 1)).replaceAll("/ordinal/", Utils.getOrdinalSuffix(day - 1)).replaceAll("/year/", String.valueOf(year)));
+		meta.setDisplayName(Skyoseasons.calendar.calendarDaysName.replaceAll("/month/", month.name).replaceAll("/day-number/", String.valueOf(day - 1)).replaceAll("/ordinal/", Utils.getOrdinalSuffix(day - 1)).replaceAll("/year/", String.valueOf(year)));
 		item.setItemMeta(meta);
 		item = calendar.getItem(newDay - 1);
-		item.setType(Skyoseasons.calendar.Calendar_Today_Item);
+		item.setType(Skyoseasons.calendar.calendarTodayItem);
 		meta = item.getItemMeta();
-		meta.setDisplayName(Skyoseasons.calendar.Calendar_Today_Name.replaceAll("/month/", month.name).replaceAll("/day-number/", String.valueOf(day)).replaceAll("/ordinal/", Utils.getOrdinalSuffix(day)).replaceAll("/year/", String.valueOf(year)));
+		meta.setDisplayName(Skyoseasons.calendar.calendarTodayName.replaceAll("/month/", month.name).replaceAll("/day-number/", String.valueOf(day)).replaceAll("/ordinal/", Utils.getOrdinalSuffix(day)).replaceAll("/year/", String.valueOf(year)));
 		item.setItemMeta(meta);
 	}
 	
@@ -124,14 +124,14 @@ public class SeasonWorld implements Listener {
 			final ItemStack item;
 			final ItemMeta meta;
 			if(i == day) {
-				item = new ItemStack(Skyoseasons.calendar.Calendar_Today_Item);
+				item = new ItemStack(Skyoseasons.calendar.calendarTodayItem);
 				meta = item.getItemMeta();
-				meta.setDisplayName(Skyoseasons.calendar.Calendar_Today_Name.replaceAll("/month/", month.name).replaceAll("/day-number/", String.valueOf(day)).replaceAll("/ordinal/", Utils.getOrdinalSuffix(day)).replaceAll("/year/", String.valueOf(year)));
+				meta.setDisplayName(Skyoseasons.calendar.calendarTodayName.replaceAll("/month/", month.name).replaceAll("/day-number/", String.valueOf(day)).replaceAll("/ordinal/", Utils.getOrdinalSuffix(day)).replaceAll("/year/", String.valueOf(year)));
 			}
 			else {
-				item = new ItemStack(Skyoseasons.calendar.Calendar_Days_Item);
+				item = new ItemStack(Skyoseasons.calendar.calendarDaysItem);
 				meta = item.getItemMeta();
-				meta.setDisplayName(Skyoseasons.calendar.Calendar_Days_Name.replaceAll("/month/", month.name).replaceAll("/day-number/", String.valueOf(i)).replaceAll("/ordinal/", Utils.getOrdinalSuffix(i)).replaceAll("/year/", String.valueOf(year)));
+				meta.setDisplayName(Skyoseasons.calendar.calendarDaysName.replaceAll("/month/", month.name).replaceAll("/day-number/", String.valueOf(i)).replaceAll("/ordinal/", Utils.getOrdinalSuffix(i)).replaceAll("/year/", String.valueOf(year)));
 			}
 			item.setItemMeta(meta);
 			menu.addItem(item);
@@ -176,18 +176,18 @@ public class SeasonWorld implements Listener {
 					}
 					if(season.snowMelt) {
 						Block highestBlock = block.getWorld().getHighestBlockAt(block.getLocation().add(0, -1, 0));
-						if(block.getY() < Skyoseasons.config.Snow_EternalY) {
+						if(block.getY() < Skyoseasons.config.snowEternalY) {
 							if(highestBlock.getType() == Material.SNOW) {
 								final BukkitRunnable snowMelt = new SnowMelt(this, highestBlock, Material.AIR);
 								this.snowMelt.add(snowMelt);
-								scheduler.scheduleSyncDelayedTask(Skyoseasons.instance, snowMelt, Skyoseasons.config.Snow_MeltMultiplicator * random.nextInt(60) + 180);
+								scheduler.scheduleSyncDelayedTask(Skyoseasons.instance, snowMelt, Skyoseasons.config.snowMeltMultiplicator * random.nextInt(60) + 180);
 							}
 							else if(highestBlock.getType() == Material.AIR) {
 								highestBlock = highestBlock.getRelative(0, -1, 0);
 								if(highestBlock.getType() == Material.ICE) {
 									final BukkitRunnable snowMelt = new SnowMelt(this, highestBlock, Material.STATIONARY_WATER);
 									this.snowMelt.add(snowMelt);
-									scheduler.scheduleSyncDelayedTask(Skyoseasons.instance, snowMelt, Skyoseasons.config.Snow_MeltMultiplicator * random.nextInt(60) + 180);
+									scheduler.scheduleSyncDelayedTask(Skyoseasons.instance, snowMelt, Skyoseasons.config.snowMeltMultiplicator * random.nextInt(60) + 180);
 								}
 							}
 						}
@@ -206,7 +206,7 @@ public class SeasonWorld implements Listener {
 			}
 		}
 		Skyoseasons.logsManager.log(season.message, Level.INFO, world);
-		tasks.set(0, scheduler.scheduleSyncRepeatingTask(Skyoseasons.instance, new TimeControl(this, season.daylength, season.nightLength, Skyoseasons.config.RefreshTime), Skyoseasons.config.RefreshTime, Skyoseasons.config.RefreshTime));
+		tasks.set(0, scheduler.scheduleSyncRepeatingTask(Skyoseasons.instance, new TimeControl(this, season.daylength, season.nightLength, Skyoseasons.config.refreshTime), Skyoseasons.config.refreshTime, Skyoseasons.config.refreshTime));
 	}
 	
 }

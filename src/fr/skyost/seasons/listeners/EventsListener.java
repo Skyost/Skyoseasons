@@ -94,7 +94,7 @@ public class EventsListener implements Listener {
 					}
 				}
 				if(event.getPreviousMonth().number > newMonth.number) {
-					Bukkit.getPluginManager().callEvent(new YearChangeEvent(seasonWorld, seasonWorld.year, seasonWorld.year + 1, Skyoseasons.calendar.Messages_Year.replaceAll("/year/", String.valueOf(seasonWorld.year + 1)), ModificationCause.PLAYER));
+					Bukkit.getPluginManager().callEvent(new YearChangeEvent(seasonWorld, seasonWorld.year, seasonWorld.year + 1, Skyoseasons.calendar.messagesYear.replaceAll("/year/", String.valueOf(seasonWorld.year + 1)), ModificationCause.PLAYER));
 				}
 			}
 			seasonWorld.buildCalendar();

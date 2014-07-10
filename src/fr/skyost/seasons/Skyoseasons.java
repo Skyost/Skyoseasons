@@ -49,33 +49,32 @@ public class Skyoseasons extends JavaPlugin {
 			instance = this;
 			final File dataFolder = this.getDataFolder();
 			config = new PluginConfig(dataFolder);
-			config.init();
+			config.load();
 			calendar = new CalendarConfig(dataFolder);
-			calendar.init();
-			logsManager = new LogsManager(config.Logs_Console_Enable ? this.getLogger() : null, config.Logs_File_Enable ? new File(config.Logs_File_Directory) : null);
+			calendar.load();
+			logsManager = new LogsManager(config.logsConsoleEnable ? this.getLogger() : null, config.logsFileEnable ? new File(config.logsFileDir) : null);
 			manager.registerEvents(new EventsListener(), this);
-			new ProtocolLibHook();
-			if(config.Enable_Spout && manager.getPlugin("Spout") != null) {
+			if(config.enableSpout && manager.getPlugin("Spout") != null) {
 				spout = new SpoutHook();
 				logsManager.log("Spout hooked !");
 			}
-			if(config.Enable_ProtocolLib && manager.getPlugin("ProtocolLib") != null) {
+			if(config.enableProtocolLib && manager.getPlugin("ProtocolLib") != null) {
 				protocolLib = new ProtocolLibHook();
 				logsManager.log("ProtocolLib hooked !");
 			}
-			if(config.Enable_Metrics) {
+			if(config.enableMetrics) {
 				new MetricsLite(this).start();
 			}
-			if(config.Enable_Skyupdater) {
+			if(config.enableSkyupdater) {
 				new Skyupdater(this, 64442, this.getFile(), true, true);
 			}
-			for(int i = 1; !(i > calendar.Months.size()); i++) {
-				final HashMap<Object, Object> months = Utils.fromJson(calendar.Months.get(String.valueOf(i)));
+			for(int i = 1; !(i > calendar.months.size()); i++) {
+				final HashMap<Object, Object> months = Utils.fromJson(calendar.months.get(String.valueOf(i)));
 				final String name = (String)months.get("Name");
-				final String next = calendar.Months.get(String.valueOf(i + 1));
-				Skyoseasons.months.put(name, new Month(name, String.valueOf(next == null ? Utils.fromJson(calendar.Months.get("1")).get("Name") : Utils.fromJson(next).get("Name")), i, Ints.checkedCast((long)months.get("Days"))));
+				final String next = calendar.months.get(String.valueOf(i + 1));
+				Skyoseasons.months.put(name, new Month(name, String.valueOf(next == null ? Utils.fromJson(calendar.months.get("1")).get("Name") : Utils.fromJson(next).get("Name")), i, Ints.checkedCast((long)months.get("Days"))));
 			}
-			final File seasonsFolder = new File(config.SeasonsFolder);
+			final File seasonsFolder = new File(config.seasonsDir);
 			final SeasonConfig[] seasons;
 			if(!seasonsFolder.exists()) {
 				seasonsFolder.mkdir();
@@ -89,10 +88,10 @@ public class Skyoseasons extends JavaPlugin {
 					for(final File file : files) {
 						final String fileName = file.getName();
 						if(fileName.endsWith(".yml")) {
-							season = new SeasonConfig(seasonsFolder);
-							season.load(file);
+							season = new SeasonConfig(file);
+							season.load();
 							if(protocolLib != null) {
-								for(final Entry<String, String> entry : season.Replacements.entrySet()) {
+								for(final Entry<String, String> entry : season.replacements.entrySet()) {
 									final String key = entry.getKey();
 									final String value = entry.getValue();
 									if(protocolLib.biomes.get(Biome.valueOf(key)) == null) {
@@ -105,8 +104,8 @@ public class Skyoseasons extends JavaPlugin {
 										manager.disablePlugin(this);
 										return;
 									}
-									else if(protocolLib.biomes.get(season.DefaultBiome) == null) {
-										logsManager.log("The ProtocolLib hook actually does not supports the biome '" + season.DefaultBiome.name() + "'. Try another one or disable the ProtocolLib hook.", Level.SEVERE);
+									else if(protocolLib.biomes.get(season.defaultBiome) == null) {
+										logsManager.log("The ProtocolLib hook actually does not supports the biome '" + season.defaultBiome.name() + "'. Try another one or disable the ProtocolLib hook.", Level.SEVERE);
 										manager.disablePlugin(this);
 										return;
 									}
@@ -125,12 +124,14 @@ public class Skyoseasons extends JavaPlugin {
 				}
 			}
 			for(final SeasonConfig season : seasons) {
-				season.save();
-				Skyoseasons.seasons.put(season.Name, new Season(season));
+				if(!season.getFile().exists()) {
+					season.save();
+				}
+				Skyoseasons.seasons.put(season.name, new Season(season));
 			}
 			final File backupsDir;
-			if(config.Backups_Enable) {
-				backupsDir = new File(config.Backups_Directory);
+			if(config.backupsEnable) {
+				backupsDir = new File(config.backupsDir);
 				if(!backupsDir.exists()) {
 					backupsDir.mkdir();
 				}
@@ -138,7 +139,7 @@ public class Skyoseasons extends JavaPlugin {
 			else {
 				backupsDir = null;
 			}
-			for(final String worldName : config.Worlds) {
+			for(final String worldName : config.worlds) {
 				final World world = Bukkit.getWorld(worldName);
 				if(world != null) {
 					if(backupsDir != null) {
@@ -148,7 +149,7 @@ public class Skyoseasons extends JavaPlugin {
 							Utils.copy(new File(worldName), backup);
 						}
 					}
-					final List<String> data = config.SavedData.get(worldName);
+					final List<String> data = config.savedData.get(worldName);
 					if(data != null) {
 						final Season season = Skyoseasons.seasons.get(data.get(0));
 						final Month month = Skyoseasons.months.get(data.get(3));
@@ -180,7 +181,7 @@ public class Skyoseasons extends JavaPlugin {
 	public final void onDisable() {
 		try {
 			for(final SeasonWorld world : worlds.values()) {
-				config.SavedData.put(world.world.getName(), Arrays.asList(world.season.name, String.valueOf(world.seasonMonth), String.valueOf(world.day), world.month.name, String.valueOf(world.year)));
+				config.savedData.put(world.world.getName(), Arrays.asList(world.season.name, String.valueOf(world.seasonMonth), String.valueOf(world.day), world.month.name, String.valueOf(world.year)));
 			}
 			config.save();
 		}
@@ -192,72 +193,72 @@ public class Skyoseasons extends JavaPlugin {
 	public static final SeasonConfig[] getDefaultSeasons(final File seasonsFolder) {
 		final List<SeasonConfig> configs = new ArrayList<SeasonConfig>();
 		SeasonConfig season = new SeasonConfig(new File(seasonsFolder, "spring.yml"));
-		season.Name = "Spring";
-		season.Next = "Summer";
-		season.DefaultBiome = Biome.JUNGLE;
-		season.CanRain = true;
-		season.AlwaysRain = false;
-		season.SnowMelt = true;
-		season.Day_Length = 600;
-		season.Day_Message_Message = "§5A new purple Spring day !";
-		season.Night_Length = 600;
-		season.Night_Message_Message = "§5Night is coming. Prepare yourself !";
-		season.Message = "§dIt is Spring, flowers grow on trees...";
-		season.Months_Message = "§d/month/, when pink and purple are everywhere...";
-		season.Spout_CloudsVisible = true;
-		season.Spout_SunVisible = true;
-		season.Spout_SunSizePercent = 100;
+		season.name = "Spring";
+		season.next = "Summer";
+		season.defaultBiome = Biome.JUNGLE;
+		season.canRain = true;
+		season.alwaysRain = false;
+		season.snowMelt = true;
+		season.dayLength = 600;
+		season.dayMessageMessage = "§5A new purple Spring day !";
+		season.nightLength = 600;
+		season.nightMessageMessage = "§5Night is coming. Prepare yourself !";
+		season.message = "§dIt is Spring, flowers grow on trees...";
+		season.monthsMessage = "§d/month/, when pink and purple are everywhere...";
+		season.spoutCloudsVisible = true;
+		season.spoutSunVisible = true;
+		season.spoutSunSizePercent = 100;
 		configs.add(season);
 		season = new SeasonConfig(new File(seasonsFolder, "summer.yml"));
-		season.Name = "Summer";
-		season.Next = "Autumn";
-		season.DefaultBiome = Biome.PLAINS;
-		season.CanRain = false;
-		season.AlwaysRain = false;
-		season.SnowMelt = true;
-		season.Day_Length = 700;
-		season.Day_Message_Message = "§eA beautiful Summer day is coming !";
-		season.Night_Length = 500;
-		season.Night_Message_Message = "§eYet another beautiful but dangerous night.";
-		season.Message = "§eIt is Summer, enjoy the sunshine !";
-		season.Months_Message = "§eWe are in /month/, let's go to the beach !";
-		season.Spout_CloudsVisible = false;
-		season.Spout_SunVisible = true;
-		season.Spout_SunSizePercent = 120;
+		season.name = "Summer";
+		season.next = "Autumn";
+		season.defaultBiome = Biome.PLAINS;
+		season.canRain = false;
+		season.alwaysRain = false;
+		season.snowMelt = true;
+		season.dayLength = 700;
+		season.dayMessageMessage = "§eA beautiful Summer day is coming !";
+		season.nightLength = 500;
+		season.nightMessageMessage = "§eYet another beautiful but dangerous night.";
+		season.message = "§eIt is Summer, enjoy the sunshine !";
+		season.monthsMessage = "§eWe are in /month/, let's go to the beach !";
+		season.spoutCloudsVisible = false;
+		season.spoutSunVisible = true;
+		season.spoutSunSizePercent = 120;
 		configs.add(season);
 		season = new SeasonConfig(new File(seasonsFolder, "autumn.yml"));
-		season.Name = "Autumn";
-		season.Next = "Winter";
-		season.DefaultBiome = Biome.DESERT;
-		season.CanRain = true;
-		season.AlwaysRain = true;
-		season.SnowMelt = true;
-		season.Day_Length = 600;
-		season.Day_Message_Message = "§7It is a another sad day of Autumn.";
-		season.Night_Length = 600;
-		season.Night_Message_Message = "§7Ready for another night ?";
-		season.Message = "§8It is Autumn, end of the beach and the sea...";
-		season.Months_Message = "§8We are in the sad month of /month/.";
-		season.Spout_CloudsVisible = true;
-		season.Spout_SunVisible = false;
-		season.Spout_SunSizePercent = 100;
+		season.name = "Autumn";
+		season.next = "Winter";
+		season.defaultBiome = Biome.DESERT;
+		season.canRain = true;
+		season.alwaysRain = true;
+		season.snowMelt = true;
+		season.dayLength = 600;
+		season.dayMessageMessage = "§7It is a another sad day of Autumn.";
+		season.nightLength = 600;
+		season.nightMessageMessage = "§7Ready for another night ?";
+		season.message = "§8It is Autumn, end of the beach and the sea...";
+		season.monthsMessage = "§8We are in the sad month of /month/.";
+		season.spoutCloudsVisible = true;
+		season.spoutSunVisible = false;
+		season.spoutSunSizePercent = 100;
 		configs.add(season);
 		season = new SeasonConfig(new File(seasonsFolder, "winter.yml"));
-		season.Name = "Winter";
-		season.Next = "Spring";
-		season.DefaultBiome = Biome.ICE_PLAINS;
-		season.CanRain = true;
-		season.AlwaysRain = false;
-		season.SnowMelt = false;
-		season.Day_Length = 500;
-		season.Day_Message_Message = "§fBrrrr... Winter days are so rude !";
-		season.Night_Length = 700;
-		season.Night_Message_Message = "§fNights are so cold in Winter...";
-		season.Message = "§fIt is Winter, say welcome to the snow !";
-		season.Months_Message = "§fThe cold month of /month/ is here...";
-		season.Spout_CloudsVisible = true;
-		season.Spout_SunVisible = false;
-		season.Spout_SunSizePercent = 100;
+		season.name = "Winter";
+		season.next = "Spring";
+		season.defaultBiome = Biome.ICE_PLAINS;
+		season.canRain = true;
+		season.alwaysRain = false;
+		season.snowMelt = false;
+		season.dayLength = 500;
+		season.dayMessageMessage = "§fBrrrr... Winter days are so rude !";
+		season.nightLength = 700;
+		season.nightMessageMessage = "§fNights are so cold in Winter...";
+		season.message = "§fIt is Winter, say welcome to the snow !";
+		season.monthsMessage = "§fThe cold month of /month/ is here...";
+		season.spoutCloudsVisible = true;
+		season.spoutSunVisible = false;
+		season.spoutSunSizePercent = 100;
 		configs.add(season);
 		return configs.toArray(new SeasonConfig[configs.size()]);
 	}

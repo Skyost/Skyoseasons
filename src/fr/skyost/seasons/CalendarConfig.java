@@ -7,12 +7,13 @@ import java.util.List;
 
 import org.bukkit.Material;
 
-import fr.skyost.seasons.utils.Config;
+import fr.skyost.seasons.utils.Skyoconfig;
 import fr.skyost.seasons.utils.Utils;
 
-public class CalendarConfig extends Config {
+public class CalendarConfig extends Skyoconfig {
 	
-	public HashMap<String, String> Months = new HashMap<String, String>() {
+	@ConfigOptions(name = "months")
+	public HashMap<String, String> months = new HashMap<String, String>() {
 		private static final long serialVersionUID = 1L; {
 			put("1", Utils.toJson(new HashMap<Object, Object>() {
 				private static final long serialVersionUID = 1L; {
@@ -88,22 +89,23 @@ public class CalendarConfig extends Config {
 			}));
 		}
 	};
-	public List<String> OrdinalSuffixes = Arrays.asList("th", "st", "nd", "rd", "th", "th", "th", "th", "th", "th");
+	@ConfigOptions(name = "ordinal-suffixes")
+	public List<String> ordinalSuffixes = Arrays.asList("th", "st", "nd", "rd", "th", "th", "th", "th", "th", "th");
 	
-	public Material Calendar_Today_Item = Material.NAME_TAG;
-	public String Calendar_Today_Name = "§l§6TODAY : /month/ /day-number//ordinal/ /year/";
-	public Material Calendar_Days_Item = Material.PAPER;
-	public String Calendar_Days_Name = "/month/ /day-number//ordinal/ /year/";
+	@ConfigOptions(name = "calendar.today.item")
+	public Material calendarTodayItem = Material.NAME_TAG;
+	@ConfigOptions(name = "calendar.today.name")
+	public String calendarTodayName = "§l§6TODAY : /month/ /day-number//ordinal/ /year/";
+	@ConfigOptions(name = "calendar.days.item")
+	public Material calendarDaysItem = Material.PAPER;
+	@ConfigOptions(name = "calendar.days.name")
+	public String calendarDaysName = "/month/ /day-number//ordinal/ /year/";
 	
-	public String Messages_Year = "§4Happy new year ! We are in /year/ :D";
+	@ConfigOptions(name = "messages.year")
+	public String messagesYear = "§4Happy new year ! We are in /year/ :D";
 	
 	public CalendarConfig(final File dataFolder) {
-		CONFIG_FILE = new File(dataFolder, "calendar.yml");
-		CONFIG_HEADER = "######################################################### #";
-		CONFIG_HEADER += "\n              Skyoseasons Configuration                 #";
-		CONFIG_HEADER += "\n Check http://dev.bukkit.org/bukkit-plugins/skyoseasons #";
-		CONFIG_HEADER += "\n               for more informations.                   #";
-		CONFIG_HEADER += "\n####################################################### #";
+		super(new File(dataFolder, "calendar.yml"), Arrays.asList("######################################################### #", "\n              Skyoseasons Configuration                 #", "\n Check http://dev.bukkit.org/bukkit-plugins/skyoseasons #", "\n               for more informations.                   #", "\n####################################################### #"));
 	}
 	
 }

@@ -38,9 +38,9 @@ public class Utils {
 		case 11:
 		case 12:
 		case 13:
-			return Skyoseasons.calendar.OrdinalSuffixes.get(0);
+			return Skyoseasons.calendar.ordinalSuffixes.get(0);
 		default:
-			return Skyoseasons.calendar.OrdinalSuffixes.get(i % 10);
+			return Skyoseasons.calendar.ordinalSuffixes.get(i % 10);
 		}
 	}
 	

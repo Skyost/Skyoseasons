@@ -5,44 +5,50 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import fr.skyost.seasons.utils.Config;
+import fr.skyost.seasons.utils.Skyoconfig;
 
-public class PluginConfig extends Config {
+public class PluginConfig extends Skyoconfig {
 	
-	public String SeasonsFolder;
+	@ConfigOptions(name = "seasons-directory")
+	public String seasonsDir;
+	@ConfigOptions(name = "refresh-time")
+	public int refreshTime = 20;
+	@ConfigOptions(name = "worlds")
+	public List<String> worlds = Arrays.asList("WorldA", "WorldB", "WorldC", "You can add (or remove) any world you want here !");
+	@ConfigOptions(name = "saved-data")
+	public HashMap<String, List<String>> savedData = new HashMap<String, List<String>>();
 	
-	public boolean Backups_Enable = true;
-	public String Backups_Directory;
+	@ConfigOptions(name = "backups.enable")
+	public boolean backupsEnable = true;
+	@ConfigOptions(name = "backups.directory")
+	public String backupsDir;
 	
-	public int Snow_EternalY = 100;
-	public int Snow_MeltMultiplicator = 10;
+	@ConfigOptions(name = "snow.eternal-y")
+	public int snowEternalY = 100;
+	@ConfigOptions(name = "snow.melt-multiplicator")
+	public int snowMeltMultiplicator = 10;
 	
-	public List<String> Worlds = Arrays.asList("WorldA", "WorldB", "WorldC", "You can add (or remove) any world you want here !");
+	@ConfigOptions(name = "logs.console.enable")
+	public boolean logsConsoleEnable = true;
+	@ConfigOptions(name = "logs.file.enable")
+	public boolean logsFileEnable = false;
+	@ConfigOptions(name = "logs.file.directory")
+	public String logsFileDir;
 	
-	public boolean Logs_Console_Enable = true;
-	public boolean Logs_File_Enable = false;
-	public String Logs_File_Directory;
-	
-	public HashMap<String, List<String>> SavedData = new HashMap<String, List<String>>();
-	
-	public int RefreshTime = 20;
-	
-	public boolean Enable_Spout = false;
-	public boolean Enable_ProtocolLib = false;
-	public boolean Enable_Metrics = true;
-	public boolean Enable_Skyupdater = true;
+	@ConfigOptions(name = "enable.spout")
+	public boolean enableSpout = false;
+	@ConfigOptions(name = "enable.protocollib")
+	public boolean enableProtocolLib = false;
+	@ConfigOptions(name = "enable.metrics")
+	public boolean enableMetrics = true;
+	@ConfigOptions(name = "enable.skyupdater")
+	public boolean enableSkyupdater = true;
 	
 	public PluginConfig(final File dataFolder) {
-		CONFIG_FILE = new File(dataFolder, "config.yml");
-		CONFIG_HEADER = "######################################################### #";
-		CONFIG_HEADER += "\n              Skyoseasons Configuration                 #";
-		CONFIG_HEADER += "\n Check http://dev.bukkit.org/bukkit-plugins/skyoseasons #";
-		CONFIG_HEADER += "\n               for more informations.                   #";
-		CONFIG_HEADER += "\n####################################################### #";
-		
-		SeasonsFolder = new File(dataFolder + File.separator + "seasons").getPath();
-		Logs_File_Directory = new File(dataFolder + File.separator + "logs").getPath();
-		Backups_Directory = new File(dataFolder + File.separator + "backups").getPath();
+		super(new File(dataFolder, "config.yml"), Arrays.asList("######################################################### #", "\n              Skyoseasons Configuration                 #", "\n Check http://dev.bukkit.org/bukkit-plugins/skyoseasons #", "\n               for more informations.                   #", "\n####################################################### #"));
+		seasonsDir = new File(dataFolder + File.separator + "seasons").getPath();
+		logsFileDir = new File(dataFolder + File.separator + "logs").getPath();
+		backupsDir = new File(dataFolder + File.separator + "backups").getPath();
 	}
 	
 }
