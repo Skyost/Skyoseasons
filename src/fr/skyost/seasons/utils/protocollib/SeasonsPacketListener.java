@@ -103,7 +103,6 @@ public class SeasonsPacketListener extends PacketAdapter {
 				info.data[i] = ProtocolLibHook.biomes.get(replacement == null ? season.defaultBiome : replacement);
 			}
 		}
-		System.out.println(info.x + " " + info.z);
 	}
 
 }
