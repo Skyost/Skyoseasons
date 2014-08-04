@@ -94,18 +94,18 @@ public class Skyoseasons extends JavaPlugin {
 								for(final Entry<String, String> entry : season.replacements.entrySet()) {
 									final String key = entry.getKey();
 									final String value = entry.getValue();
-									if(protocolLib.biomes.get(Biome.valueOf(key)) == null) {
-										logsManager.log("The ProtocolLib hook actually does not supports the biome '" + key + "'. Try another one or disable the ProtocolLib hook.", Level.SEVERE);
+									if(ProtocolLibHook.biomes.get(Biome.valueOf(key)) == null) {
+										logsManager.log("Currently, the ProtocolLib hook does not supports the biome '" + key + "'. Try another one or disable the ProtocolLib hook.", Level.SEVERE);
 										manager.disablePlugin(this);
 										return;
 									}
-									else if(protocolLib.biomes.get(Biome.valueOf(value)) == null) {
-										logsManager.log("The ProtocolLib hook actually does not supports the biome '" + value + "'. Try another one or disable the ProtocolLib hook.", Level.SEVERE);
+									else if(ProtocolLibHook.biomes.get(Biome.valueOf(value)) == null) {
+										logsManager.log("Currently, the ProtocolLib hook does not supports the biome '" + value + "'. Try another one or disable the ProtocolLib hook.", Level.SEVERE);
 										manager.disablePlugin(this);
 										return;
 									}
-									else if(protocolLib.biomes.get(season.defaultBiome) == null) {
-										logsManager.log("The ProtocolLib hook actually does not supports the biome '" + season.defaultBiome.name() + "'. Try another one or disable the ProtocolLib hook.", Level.SEVERE);
+									else if(ProtocolLibHook.biomes.get(season.defaultBiome) == null) {
+										logsManager.log("Currently, the ProtocolLib hook does not supports the biome '" + season.defaultBiome.name() + "'. Try another one or disable the ProtocolLib hook.", Level.SEVERE);
 										manager.disablePlugin(this);
 										return;
 									}

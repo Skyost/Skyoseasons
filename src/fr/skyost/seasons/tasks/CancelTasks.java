@@ -22,7 +22,7 @@ public class CancelTasks implements Runnable {
 			}
 		}
 		seasonWorld.snowMelt.clear();
-		seasonWorld.tasks.set(1, -1);
+		seasonWorld.tasks[1] = -1;
 	}
 	
 }

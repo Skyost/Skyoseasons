@@ -122,18 +122,4 @@ public class Utils {
 		return Class.forName("net.minecraft.server." + Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3] + "." + name);
 	}
 	
-	/**
-	 * Get a CraftBukkit class (without any import).
-	 * 
-	 * @param name The class name.
-	 * @throws ClassNotFoundException If it cannot fiend the required class.
-	 * @return The required class.
-	 * 
-	 * @author BigTeddy98.
-	 */
-	
-	public static final Class<?> getCraftClass(final String name) throws ClassNotFoundException {
-		return Class.forName("org.bukkit.craftbukkit." + Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3] + "." + name);
-	}
-	
 }

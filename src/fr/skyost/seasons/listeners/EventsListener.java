@@ -3,10 +3,16 @@ package fr.skyost.seasons.listeners;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
+import org.bukkit.block.Biome;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.weather.WeatherChangeEvent;
+import org.bukkit.event.world.ChunkLoadEvent;
 
 import fr.skyost.seasons.Month;
 import fr.skyost.seasons.Season;
@@ -22,7 +28,7 @@ import fr.skyost.seasons.utils.Utils.ModificationCause;
 
 public class EventsListener implements Listener {
 	
-	@EventHandler(priority = EventPriority.LOW)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	private final void onDay(final DayEvent event) {
 		final SeasonWorld seasonWorld = event.getWorld();
 		if(seasonWorld.season.dayMessageEnabled) {
@@ -37,7 +43,7 @@ public class EventsListener implements Listener {
 		Bukkit.getPluginManager().callEvent(new DayChangeEvent(seasonWorld, seasonWorld.day, seasonWorld.day + 1 > seasonWorld.month.days ? 1 : seasonWorld.day + 1, ModificationCause.PLUGIN));
 	}
 	
-	@EventHandler(priority = EventPriority.LOW)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	private final void onNight(final NightEvent event) {
 		final SeasonWorld seasonWorld = event.getWorld();
 		if(seasonWorld.season.nightMessageEnabled) {
@@ -51,7 +57,7 @@ public class EventsListener implements Listener {
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.LOW)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	private final void onDayChange(final DayChangeEvent event) {
 		if(!event.isCancelled()) {
 			final SeasonWorld seasonWorld = event.getWorld();
@@ -69,7 +75,7 @@ public class EventsListener implements Listener {
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.LOW)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	private final void onMonthChange(final MonthChangeEvent event) {
 		if(!event.isCancelled()) {
 			final SeasonWorld seasonWorld = event.getWorld();
@@ -101,14 +107,14 @@ public class EventsListener implements Listener {
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.LOW)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	private final void onSeasonChange(final SeasonChangeEvent event) {
 		if(!event.isCancelled()) {
 			event.getWorld().setCurrentSeason(event.getNewSeason(), event.getMessage());
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.LOW)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	private final void onYearChange(final YearChangeEvent event) {
 		if(!event.isCancelled()) {
 			final SeasonWorld seasonWorld = event.getWorld();
@@ -118,6 +124,49 @@ public class EventsListener implements Listener {
 				player.sendMessage(message);
 			}
 			Skyoseasons.logsManager.log(message, Level.INFO, seasonWorld.world);
+		}
+	}
+	
+	@EventHandler
+	private final void onChunkLoad(final ChunkLoadEvent event) {
+		if(Skyoseasons.protocolLib != null) {
+			return;
+		}
+		final SeasonWorld world = Skyoseasons.worlds.get(event.getWorld().getName());
+		if(world != null) {
+			final Chunk chunk = event.getChunk();
+			for(int x = 0; x < 16; x++) {
+				for(int z = 0; z < 16; z++) {
+					final Block block = chunk.getBlock(x, 0, z);
+					final Biome biome = world.season.replacements.get(block.getBiome());
+					block.setBiome(biome == null ? world.season.defaultBiome : biome);
+				}
+			}
+		}
+	}
+	
+	@EventHandler
+	private final void onWeatherChange(final WeatherChangeEvent event) {
+		final SeasonWorld world = Skyoseasons.worlds.get(event.getWorld().getName());
+		if(world != null) {
+			if(!world.season.canRain) {
+				if(event.toWeatherState()) {
+					event.setCancelled(true);
+				}
+			}
+			else if(world.season.alwaysRain) {
+				if(!event.toWeatherState()) {
+					event.setCancelled(true);
+				}
+			}
+		}
+	}
+	
+	@EventHandler
+	public void onInventoryClick(final InventoryClickEvent event) {
+		final SeasonWorld world = Skyoseasons.worlds.get(event.getWhoClicked().getWorld().getName());
+		if(world != null && event.getInventory().equals(world.calendar)) {
+			event.setCancelled(true);
 		}
 	}
 	
