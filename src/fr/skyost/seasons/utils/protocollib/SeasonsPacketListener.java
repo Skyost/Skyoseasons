@@ -16,6 +16,10 @@ import fr.skyost.seasons.SeasonWorld;
 import fr.skyost.seasons.Skyoseasons;
 import fr.skyost.seasons.utils.protocollib.ProtocolLibHook.ChunkInfo;
 
+/**
+ * @author Comphenix (aka. aadnk).
+ */
+
 public class SeasonsPacketListener extends PacketAdapter {
 
 	private static final int BYTES_PER_NIBBLE_PART = 2048;

@@ -20,7 +20,7 @@
 name: Skyoseasons
 main: fr.skyost.seasons.Skyoseasons
 description: Add seasons to your Bukkit server !
-version: 3.1.0.2
+version: 3.1.0.3
 softdepend: [Spout, ProtocolLib]
 author: Skyost
 website: http://dev.bukkit.org/bukkit-plugins/skyoseasons/
