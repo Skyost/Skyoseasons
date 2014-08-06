@@ -135,6 +135,9 @@ public class EventsListener implements Listener {
 		final SeasonWorld world = Skyoseasons.worlds.get(event.getWorld().getName());
 		if(world != null) {
 			final Chunk chunk = event.getChunk();
+			if(event.isNewChunk()) {
+				chunk.load(true);
+			}
 			for(int x = 0; x < 16; x++) {
 				for(int z = 0; z < 16; z++) {
 					final Block block = chunk.getBlock(x, 0, z);
