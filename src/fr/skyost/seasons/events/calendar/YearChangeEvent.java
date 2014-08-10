@@ -1,78 +1,67 @@
 package fr.skyost.seasons.events.calendar;
 
-import org.bukkit.event.Cancellable;
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
-
 import fr.skyost.seasons.SeasonWorld;
-import fr.skyost.seasons.utils.Utils.ModificationCause;
+import fr.skyost.seasons.events.SkyoseasonsCalendarEvent;
 
-public class YearChangeEvent extends Event implements Cancellable {
-	
-	private SeasonWorld world;
-    private final int prevYear;
-    private int newYear;
-    private String message;
-    private final ModificationCause cause;
+public class YearChangeEvent extends SkyoseasonsCalendarEvent {
 
-    private boolean cancel;
-    
-    private final static HandlerList handlers = new HandlerList();
-    
-    public YearChangeEvent(final SeasonWorld world, final int prevYear, final int newYear, final String message, final ModificationCause cause) {
-    	this.world = world;
-        this.prevYear = prevYear;
-        this.newYear = newYear;
-        this.message = message;
-        this.cause = cause;
-        this.cancel = false;
-    }
-    
-    public final SeasonWorld getWorld() {
-    	return world;
-    }
+	private int newYear;
+	private String message;
 
-    public final int getPreviousYear() {
-        return prevYear;
-    }
-    
-    public final int getNewYear() {
-        return newYear;
-    }
-    
-    public final void setNewYear(final int newYear) {
-    	this.newYear = newYear;
-    }
-    
-    public final String getMessage() {
-    	return message;
-    }
-    
-    public final void setMessage(final String message) {
-    	this.message = message;
-    }
-    
-    public final ModificationCause getCause() {
-    	return cause;
-    }
-
-    @Override
-    public final HandlerList getHandlers() {
-        return handlers;
-    }
-    
-    public static final HandlerList getHandlerList() {       
-    	return handlers;   
-    }
-
-	@Override
-	public final boolean isCancelled() {
-		return cancel;
-	}
-
-	@Override
-	public final void setCancelled(final boolean cancel) {
-		this.cancel = cancel;
+	public YearChangeEvent(final SeasonWorld world, final int newYear, final String message, final ModificationCause cause) {
+		super(world, cause);
+		this.newYear = newYear;
+		this.message = message;
 	}
 	
+	/**
+	 * Gets the current year.
+	 * 
+	 * @return The current year.
+	 */
+
+	public final int getCurrentYear() {
+		return this.getWorld().year;
+	}
+	
+	/**
+	 * Gets the new year.
+	 * 
+	 * @return The new year.
+	 */
+
+	public final int getNewYear() {
+		return newYear;
+	}
+	
+	/**
+	 * Sets the new year.
+	 * 
+	 * @param newYear The new year.
+	 */
+
+	public final void setNewYear(final int newYear) {
+		this.newYear = newYear;
+	}
+	
+	/**
+	 * Gets the new month's message (will be broadcasted).
+	 * 
+	 * @return The new month's message.
+	 */
+
+	public final String getMessage() {
+		return message;
+	}
+	
+	/**
+	 * Sets the new month's message (will be broadcasted).
+	 * 
+	 * @param message The new month's message.
+	 */
+
+	public final void setMessage(final String message) {
+		this.message = message;
+	}
+
 }

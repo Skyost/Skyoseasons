@@ -2,12 +2,13 @@ package fr.skyost.seasons.tasks;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import fr.skyost.seasons.SeasonWorld;
 import fr.skyost.seasons.events.time.DayEvent;
 import fr.skyost.seasons.events.time.NightEvent;
 
-public class TimeControl implements Runnable {
+public class TimeControl extends BukkitRunnable {
 	
 	private final SeasonWorld seasonWorld;
 	private final World world;

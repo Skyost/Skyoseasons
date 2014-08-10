@@ -25,7 +25,9 @@ public class PluginConfig extends Skyoconfig {
 	
 	@ConfigOptions(name = "snow.eternal-y")
 	public int snowEternalY = 100;
-	@ConfigOptions(name = "snow.melt-multiplicator")
+	@ConfigOptions(name = "snow.melt.max-delay")
+	public int snowMeltMaxDelay = 60;
+	@ConfigOptions(name = "snow.melt.multiplicator")
 	public int snowMeltMultiplicator = 10;
 	
 	@ConfigOptions(name = "logs.console.enable")

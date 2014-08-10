@@ -10,7 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import com.google.common.base.Joiner;
 
 import fr.skyost.seasons.SeasonWorld;
-import fr.skyost.seasons.Skyoseasons;
+import fr.skyost.seasons.SkyoseasonsAPI;
 
 public class CalendarCommand implements CommandExecutor {
 	
@@ -25,7 +25,7 @@ public class CalendarCommand implements CommandExecutor {
 			return true;
 		}
 		if(args.length > 1) {
-			final SeasonWorld world = Skyoseasons.worlds.get(Joiner.on(' ').join(args));
+			final SeasonWorld world = SkyoseasonsAPI.getSeasonWorld(Joiner.on(' ').join(args));
 			if(world != null) {
 				if(player == null) {
 					final StringBuilder builder = new StringBuilder();
@@ -42,17 +42,17 @@ public class CalendarCommand implements CommandExecutor {
 				}
 			}
 			else {
-				sender.sendMessage(ChatColor.RED + "Enabled worlds :\n" + Joiner.on('\n').join(Skyoseasons.worlds.keySet()));
+				sender.sendMessage(ChatColor.RED + "Enabled worlds :\n" + Joiner.on('\n').join(SkyoseasonsAPI.getSeasonWorldsNames()));
 			}
 		}
 		else {
 			if(player != null) {
-				final SeasonWorld world = Skyoseasons.worlds.get(player.getWorld().getName());
+				final SeasonWorld world = SkyoseasonsAPI.getSeasonWorldExact(player.getWorld());
 				if(world != null) {
 					player.openInventory(world.calendar);
 				}
 				else {
-					sender.sendMessage(ChatColor.RED + "Enabled worlds :\n" + Joiner.on('\n').join(Skyoseasons.worlds.keySet()));
+					sender.sendMessage(ChatColor.RED + "Enabled worlds :\n" + Joiner.on('\n').join(SkyoseasonsAPI.getSeasonWorldsNames()));
 				}
 			}
 			else {

@@ -4,27 +4,28 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.Plugin;
 import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.event.spout.SpoutCraftEnableEvent;
 import org.getspout.spoutapi.player.SkyManager;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 import fr.skyost.seasons.SeasonWorld;
-import fr.skyost.seasons.Skyoseasons;
+import fr.skyost.seasons.SkyoseasonsAPI;
 
 public class SpoutHook implements Listener {
 	
 	private final SkyManager sky;
 	
-	public SpoutHook() {
-		Bukkit.getPluginManager().registerEvents(this, Skyoseasons.instance);
+	public SpoutHook(final Plugin plugin) {
+		Bukkit.getPluginManager().registerEvents(this, plugin);
 		sky = SpoutManager.getSkyManager();
 	}
 	
 	@EventHandler
 	private final void onSpoutCraftEnable(final SpoutCraftEnableEvent event) {
 		final SpoutPlayer player = event.getPlayer();
-		final SeasonWorld world = Skyoseasons.worlds.get(player.getWorld().getName());
+		final SeasonWorld world = SkyoseasonsAPI.getSeasonWorldExact(player.getWorld());
 		if(world != null) {
 			sendEffects(player, world.season.effects);
 		}

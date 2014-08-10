@@ -1,30 +1,36 @@
 package fr.skyost.seasons.listeners;
 
+import java.util.List;
+import java.util.Random;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
-import org.bukkit.block.Biome;
-import org.bukkit.block.Block;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import fr.skyost.seasons.Month;
 import fr.skyost.seasons.Season;
 import fr.skyost.seasons.SeasonWorld;
-import fr.skyost.seasons.Skyoseasons;
+import fr.skyost.seasons.SkyoseasonsAPI;
+import fr.skyost.seasons.events.SkyoseasonsCalendarEvent.ModificationCause;
 import fr.skyost.seasons.events.calendar.DayChangeEvent;
 import fr.skyost.seasons.events.calendar.MonthChangeEvent;
 import fr.skyost.seasons.events.calendar.SeasonChangeEvent;
 import fr.skyost.seasons.events.calendar.YearChangeEvent;
 import fr.skyost.seasons.events.time.DayEvent;
 import fr.skyost.seasons.events.time.NightEvent;
-import fr.skyost.seasons.utils.Utils.ModificationCause;
+import fr.skyost.seasons.tasks.SnowMelt;
+import fr.skyost.seasons.utils.LogsManager;
+import fr.skyost.seasons.utils.Utils;
 
 public class EventsListener implements Listener {
 	
@@ -37,10 +43,10 @@ public class EventsListener implements Listener {
 				for(final Player player : seasonWorld.world.getPlayers()) {
 					player.sendMessage(message);
 				}
-				Skyoseasons.logsManager.log(message, Level.INFO, seasonWorld.world);
+				SkyoseasonsAPI.getLogsManager().log(message, Level.INFO, seasonWorld.world);
 			}
 		}
-		Bukkit.getPluginManager().callEvent(new DayChangeEvent(seasonWorld, seasonWorld.day, seasonWorld.day + 1 > seasonWorld.month.days ? 1 : seasonWorld.day + 1, ModificationCause.PLUGIN));
+		Bukkit.getPluginManager().callEvent(new DayChangeEvent(seasonWorld, seasonWorld.day + 1 > seasonWorld.month.days ? 1 : seasonWorld.day + 1, ModificationCause.PLUGIN));
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
@@ -52,97 +58,109 @@ public class EventsListener implements Listener {
 				for(final Player player : seasonWorld.world.getPlayers()) {
 					player.sendMessage(message);
 				}
-				Skyoseasons.logsManager.log(message, Level.INFO, seasonWorld.world);
+				SkyoseasonsAPI.getLogsManager().log(message, Level.INFO, seasonWorld.world);
 			}
 		}
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	private final void onDayChange(final DayChangeEvent event) {
-		if(!event.isCancelled()) {
-			final SeasonWorld seasonWorld = event.getWorld();
-			final int newDay = event.getNewDay();
-			seasonWorld.day = newDay;
-			if(event.getCause() == ModificationCause.PLUGIN) {
-				if(event.getPreviousDay() > newDay) {
-					final Month next = Skyoseasons.months.get(seasonWorld.month.next);
-					Bukkit.getPluginManager().callEvent(new MonthChangeEvent(seasonWorld, seasonWorld.month, next, seasonWorld.season.monthsMessage.replaceAll("/month/", next.name), ModificationCause.PLUGIN));
-				}
-				else {
-					seasonWorld.updateCalendar(event.getPreviousDay(), newDay);
-				}
-			}
+		if(event.isCancelled()) {
+			return;	
+		}
+		final SeasonWorld seasonWorld = event.getWorld();
+		final int newDay = event.getNewDay();
+		final int curDay = event.getCurrentDay(); // We store it because it is updated below.
+		seasonWorld.day = newDay;
+		seasonWorld.updateCalendar(curDay, newDay);
+		if(event.getModificationCause() == ModificationCause.PLUGIN && curDay > newDay) {
+			final Month next = SkyoseasonsAPI.getMonth(seasonWorld.month.next);
+			Bukkit.getPluginManager().callEvent(new MonthChangeEvent(seasonWorld, next, seasonWorld.season.monthsMessage.replace("/month/", next.name), ModificationCause.PLUGIN));
 		}
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	private final void onMonthChange(final MonthChangeEvent event) {
-		if(!event.isCancelled()) {
-			final SeasonWorld seasonWorld = event.getWorld();
-			final Month newMonth = event.getNewMonth();
-			seasonWorld.month = newMonth;
-			final String message = event.getMessage();
-			if(message != null) {
-				for(final Player player : seasonWorld.world.getPlayers()) {
-					player.sendMessage(message);
-				}
-				Skyoseasons.logsManager.log(message, Level.INFO, seasonWorld.world);
-			}
-			if(event.getCause() == ModificationCause.PLUGIN) {
-				seasonWorld.seasonMonth++;
-				if(seasonWorld.seasonMonth >= seasonWorld.season.months) {
-					final Season next = Skyoseasons.seasons.get(seasonWorld.season.next);
-					if(next != null) {
-						Bukkit.getPluginManager().callEvent(new SeasonChangeEvent(seasonWorld, seasonWorld.season, next, next.message, ModificationCause.PLAYER));
-					}
-					else {
-						Skyoseasons.logsManager.log("Sorry but the next season of : '" + seasonWorld.season.name + "' was not found.", Level.SEVERE);
-					}
-				}
-				if(event.getPreviousMonth().number > newMonth.number) {
-					Bukkit.getPluginManager().callEvent(new YearChangeEvent(seasonWorld, seasonWorld.year, seasonWorld.year + 1, Skyoseasons.calendar.messagesYear.replaceAll("/year/", String.valueOf(seasonWorld.year + 1)), ModificationCause.PLAYER));
-				}
-			}
-			seasonWorld.buildCalendar();
+		if(event.isCancelled()) {
+			return;
 		}
+		final LogsManager logs = SkyoseasonsAPI.getLogsManager();
+		final SeasonWorld seasonWorld = event.getWorld();
+		final Month newMonth = event.getNewMonth();
+		final Month curMonth = event.getCurrentMonth(); // Same here.
+		seasonWorld.month = newMonth;
+		final String message = event.getMessage();
+		if(message != null) {
+			for(final Player player : seasonWorld.world.getPlayers()) {
+				player.sendMessage(message);
+			}
+			logs.log(message, Level.INFO, seasonWorld.world);
+		}
+		if(event.getModificationCause() == ModificationCause.PLUGIN) {
+			seasonWorld.seasonMonth++;
+			if(seasonWorld.seasonMonth >= seasonWorld.season.months) {
+			final Season next = SkyoseasonsAPI.getSeason(seasonWorld.season.next);
+				if(next != null) {
+					Bukkit.getPluginManager().callEvent(new SeasonChangeEvent(seasonWorld, next, next.message, ModificationCause.PLAYER));
+				}
+				else {
+					logs.log("Sorry but the next season of : '" + seasonWorld.season.name + "' was not found.", Level.SEVERE);
+				}
+			}
+			if(curMonth.number > newMonth.number) {
+				Bukkit.getPluginManager().callEvent(new YearChangeEvent(seasonWorld, seasonWorld.year + 1, SkyoseasonsAPI.getCalendarConfig().messagesYear.replace("/year/", String.valueOf(seasonWorld.year + 1)), ModificationCause.PLAYER));
+			}
+		}
+		seasonWorld.buildCalendar();
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	private final void onSeasonChange(final SeasonChangeEvent event) {
-		if(!event.isCancelled()) {
-			event.getWorld().setCurrentSeason(event.getNewSeason(), event.getMessage());
+		if(event.isCancelled()) {
+			return;
 		}
+		event.getWorld().setCurrentSeason(event.getNewSeason(), event.getMessage());
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	private final void onYearChange(final YearChangeEvent event) {
-		if(!event.isCancelled()) {
-			final SeasonWorld seasonWorld = event.getWorld();
-			seasonWorld.year = event.getNewYear();
-			final String message = event.getMessage();
-			for(final Player player : seasonWorld.world.getPlayers()) {
-				player.sendMessage(message);
-			}
-			Skyoseasons.logsManager.log(message, Level.INFO, seasonWorld.world);
+		if(event.isCancelled()) {
+			return;
 		}
+		final SeasonWorld seasonWorld = event.getWorld();
+		seasonWorld.year = event.getNewYear();
+		final String message = event.getMessage();
+		for(final Player player : seasonWorld.world.getPlayers()) {
+			player.sendMessage(message);
+		}
+		SkyoseasonsAPI.getLogsManager().log(message, Level.INFO, seasonWorld.world);
 	}
 	
 	@EventHandler
 	private final void onChunkLoad(final ChunkLoadEvent event) {
-		if(Skyoseasons.protocolLib != null) {
-			return;
-		}
-		final SeasonWorld world = Skyoseasons.worlds.get(event.getWorld().getName());
+		final SeasonWorld world = SkyoseasonsAPI.getSeasonWorldExact(event.getWorld());
 		if(world != null) {
 			final Chunk chunk = event.getChunk();
 			if(event.isNewChunk()) {
 				chunk.load(true);
 			}
-			for(int x = 0; x < 16; x++) {
-				for(int z = 0; z < 16; z++) {
-					final Block block = chunk.getBlock(x, 0, z);
-					final Biome biome = world.season.replacements.get(block.getBiome());
-					block.setBiome(biome == null ? world.season.defaultBiome : biome);
+			if(!world.season.snowMelt) {
+				world.handleBlocks(chunk);
+				return;
+			}
+			final List<Location> snowBlocks = world.handleBlocks(chunk);
+			snowBlocks.removeAll(world.globalSnowBlocks);
+			if(snowBlocks.size() != 0) {
+				final List<BukkitRunnable> tasks = world.tasks.get(1);
+				if(tasks == null || tasks.size() == 0) {
+					final SnowMelt task = new SnowMelt(world, snowBlocks);
+					task.runTaskTimer(SkyoseasonsAPI.getPlugin(), 20L, new Random().nextInt(SkyoseasonsAPI.getConfig().snowMeltMaxDelay) + 1);
+					world.tasks.put(1, task);
+					return;
+				}
+				final List<List<Location>> snowBlocksSplitted = Utils.splitList(snowBlocks, tasks.size());
+				for(int i = 0; i != snowBlocksSplitted.size(); i++) {
+					((SnowMelt)tasks.get(i)).addBlocks(snowBlocksSplitted.get(i));
 				}
 			}
 		}
@@ -150,7 +168,7 @@ public class EventsListener implements Listener {
 	
 	@EventHandler
 	private final void onWeatherChange(final WeatherChangeEvent event) {
-		final SeasonWorld world = Skyoseasons.worlds.get(event.getWorld().getName());
+		final SeasonWorld world = SkyoseasonsAPI.getSeasonWorldExact(event.getWorld());
 		if(world != null) {
 			if(!world.season.canRain) {
 				if(event.toWeatherState()) {
@@ -166,10 +184,19 @@ public class EventsListener implements Listener {
 	}
 	
 	@EventHandler
-	public void onInventoryClick(final InventoryClickEvent event) {
-		final SeasonWorld world = Skyoseasons.worlds.get(event.getWhoClicked().getWorld().getName());
+	private final void onInventoryClick(final InventoryClickEvent event) {
+		final SeasonWorld world = SkyoseasonsAPI.getSeasonWorld(event.getWhoClicked().getWorld());
 		if(world != null && event.getInventory().equals(world.calendar)) {
 			event.setCancelled(true);
+		}
+	}
+	
+	@EventHandler
+	private final void onPlayerJoin(final PlayerJoinEvent event) {
+		final Player player = event.getPlayer();
+		final SeasonWorld world = SkyoseasonsAPI.getSeasonWorld(player.getWorld());
+		if(world != null && world.season.resourcePackUrl != null) {
+			player.setResourcePack(world.season.resourcePackUrl);
 		}
 	}
 	

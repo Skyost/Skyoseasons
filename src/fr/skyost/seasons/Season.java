@@ -14,6 +14,7 @@ public class Season {
 	
 	public final Biome defaultBiome;
 	public final HashMap<Biome, Biome> replacements = new HashMap<Biome, Biome>();
+	public final String resourcePackUrl;
 	
 	public final boolean canRain;
 	public final boolean alwaysRain;
@@ -40,6 +41,7 @@ public class Season {
 		for(final Entry<String, String> entry : config.replacements.entrySet()) {
 			replacements.put(Biome.valueOf(entry.getKey()), Biome.valueOf(entry.getValue()));
 		}
+		resourcePackUrl = !config.resourcePackUrl.equalsIgnoreCase("NONE") && config.resourcePackUrl.startsWith("http") ? config.resourcePackUrl : null;
 		canRain = config.canRain;
 		alwaysRain = config.alwaysRain;
 		snowMelt = config.snowMelt;

@@ -17,6 +17,8 @@ public class SeasonConfig extends Skyoconfig {
 	@ConfigOptions(name = "default-biome")
 	public Biome defaultBiome;
 	public HashMap<String, String> replacements = new HashMap<String, String>();
+	@ConfigOptions(name = "resource-pack-url")
+	public String resourcePackUrl = "NONE";
 	
 	@ConfigOptions(name = "day.length")
 	public int dayLength;
