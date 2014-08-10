@@ -52,7 +52,7 @@ public class PacketPluginHook {
 		return biomes.get(biome);
 	}
 	
-	protected final boolean translateChunkInfo(final ChunkInfo info, final Season season) { // Modification ici.
+	protected final boolean translateChunkInfo(final ChunkInfo info, final Season season) {
 		for(int i = 0; i < CHUNK_SEGMENTS; i++) {
 			if((info.chunkMask & (1 << i)) > 0) {
 				info.chunkSectionNumber++;
