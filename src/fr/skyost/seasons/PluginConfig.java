@@ -40,7 +40,7 @@ public class PluginConfig extends Skyoconfig {
 	@ConfigOptions(name = "enable.spout")
 	public boolean enableSpout = false;
 	@ConfigOptions(name = "enable.protocollib")
-	public boolean enableProtocolLib = false;
+	public boolean enableProtocolLib = true;
 	@ConfigOptions(name = "enable.metrics")
 	public boolean enableMetrics = true;
 	@ConfigOptions(name = "enable.skyupdater")
