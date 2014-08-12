@@ -2,7 +2,6 @@ package fr.skyost.seasons.commands;
 
 import java.util.Arrays;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -19,10 +18,6 @@ import fr.skyost.seasons.Season;
 import fr.skyost.seasons.SeasonWorld;
 import fr.skyost.seasons.SkyoseasonsAPI;
 import fr.skyost.seasons.events.SkyoseasonsCalendarEvent.ModificationCause;
-import fr.skyost.seasons.events.calendar.DayChangeEvent;
-import fr.skyost.seasons.events.calendar.MonthChangeEvent;
-import fr.skyost.seasons.events.calendar.SeasonChangeEvent;
-import fr.skyost.seasons.events.calendar.YearChangeEvent;
 import fr.skyost.seasons.utils.Utils;
 
 public class SkyoseasonsCommand implements CommandExecutor {
@@ -51,7 +46,7 @@ public class SkyoseasonsCommand implements CommandExecutor {
 			return true;
 		}
 		if(player == null) {
-			sender.sendMessage(ChatColor.DARK_RED + "You must perform this command from the game, sorry !");
+			sender.sendMessage(ChatColor.RED + "You must perform this command from the game, sorry !");
 			sender.sendMessage(ChatColor.RED + "But you can use /calendar from the console.");
 			return true;
 		}
@@ -82,8 +77,7 @@ public class SkyoseasonsCommand implements CommandExecutor {
 					sender.sendMessage(ChatColor.RED + "1 -> " + world.month.days);
 					return true;
 				}
-				Bukkit.getPluginManager().callEvent(new DayChangeEvent(world, newDay, ModificationCause.PLAYER));
-				sender.sendMessage(ChatColor.GOLD + "Done !");
+				sender.sendMessage(SkyoseasonsAPI.callDayChange(world, newDay, ModificationCause.PLAYER).isCancelled() ? ChatColor.RED + "Cancelled by a plugin !" : ChatColor.GOLD + "Done !");
 			}
 			break;
 		case "month":
@@ -99,24 +93,14 @@ public class SkyoseasonsCommand implements CommandExecutor {
 					sender.sendMessage(ChatColor.RED + "You do not have permission to use that command.");
 					return true;
 				}
-				final String monthName;
-				if(!CharMatcher.DIGIT.matchesAllOf(args[1])) {
-					final Month month = SkyoseasonsAPI.getMonth(args[1]);
-					if(month == null) {
-						sender.sendMessage(ChatColor.RED + "Months :\n" + getMonths());
-						return true;
-					}
-					monthName = month.name;
-				}
-				else {
-					monthName = Joiner.on(' ').join(Arrays.copyOfRange(args, 1, args.length));
-				}
-				final Month month = SkyoseasonsAPI.getMonth(monthName);
+				final Month month = CharMatcher.DIGIT.matchesAllOf(args[1]) ? SkyoseasonsAPI.getMonth(Integer.parseInt(args[1])) : SkyoseasonsAPI.getMonth(Joiner.on(' ').join(Arrays.copyOfRange(args, 1, args.length)));
 				if(month == null) {
 					sender.sendMessage(ChatColor.RED + "Months :\n" + getMonths());
 					return true;
 				}
-				Bukkit.getPluginManager().callEvent(new MonthChangeEvent(world, month, world.season.monthsMessage.replace("/month/", month.name), ModificationCause.PLAYER));
+				if(SkyoseasonsAPI.callMonthChange(world, month, ModificationCause.PLAYER).isCancelled()) {
+					sender.sendMessage(ChatColor.RED + "Cancellled by a plugin.");
+				}
 			}
 			break;
 		case "season":
@@ -137,7 +121,9 @@ public class SkyoseasonsCommand implements CommandExecutor {
 					sender.sendMessage(ChatColor.RED + "Seasons :\n" + Joiner.on('\n').join(SkyoseasonsAPI.getSeasonsNames()));
 					return true;
 				}
-				Bukkit.getPluginManager().callEvent(new SeasonChangeEvent(world, season, season.message, ModificationCause.PLAYER));
+				if(SkyoseasonsAPI.callSeasonChange(world, season, ModificationCause.PLAYER).isCancelled()) {
+					sender.sendMessage(ChatColor.RED + "Cancellled by a plugin.");
+				}
 			}
 			break;
 		case "season-month":
@@ -183,7 +169,9 @@ public class SkyoseasonsCommand implements CommandExecutor {
 					sender.sendMessage(ChatColor.RED + "/skyoseasons year <new-year>.");
 					return true;
 				}
-				Bukkit.getPluginManager().callEvent(new YearChangeEvent(world, Integer.parseInt(args[1]), SkyoseasonsAPI.getCalendarConfig().messagesYear.replace("/year/", args[1]), ModificationCause.PLAYER));
+				if(SkyoseasonsAPI.callYearChange(world, Integer.parseInt(args[1]), ModificationCause.PLAYER).isCancelled()) {
+					sender.sendMessage(ChatColor.RED + "Cancellled by a plugin.");
+				}
 			}
 			break;
 		default:

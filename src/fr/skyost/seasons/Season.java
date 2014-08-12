@@ -34,6 +34,10 @@ public class Season {
 	
 	public final SpoutEffects effects;
 	
+	public final boolean snowPlacerEnabled;
+	public final boolean snowPlacerAllowStacks;
+	public final int snowPlacerDelay;
+	
 	public Season(final SeasonConfig config) {
 		name = config.name;
 		next = config.next;
@@ -54,18 +58,10 @@ public class Season {
 		nightLength = config.nightLength;
 		nightMessageEnabled = config.nightMessageEnable;
 		nightMessage = nightMessageEnabled ? config.nightMessageMessage : null;
-		if(Skyoseasons.spout != null) {
-			effects = new SpoutEffects();
-			effects.cloudsVisible = config.spoutCloudsVisible;
-			effects.moonSizePercent = config.spoutMoonSizePercent;
-			effects.moonVisible = config.spoutMoonVisible;
-			effects.starsFrequency = config.spoutStarsFrequency;
-			effects.sunSizePercent = config.spoutSunSizePercent;
-			effects.sunVisible = config.spoutSunVisible;
-		}
-		else {
-			effects = null;
-		}
+		effects = Skyoseasons.spout == null ? null : new SpoutEffects(config.spoutStarsVisible, config.spoutStarsFrequency, config.spoutCloudsVisible, config.spoutSunVisible, config.spoutSunSizePercent, config.spoutMoonVisible, config.spoutMoonSizePercent);
+		snowPlacerEnabled = config.protocolLibSnowPlacerEnabled;
+		snowPlacerAllowStacks = config.protocolLibSnowPlacerAllowStacks;
+		snowPlacerDelay = config.protocolLibSnowPlacerMaxDelay;
 	}
 	
 }

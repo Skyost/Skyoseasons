@@ -29,11 +29,11 @@ import fr.skyost.seasons.utils.Utils;
 public class SeasonWorld {
 	
 	public final World world;
-	public Season season;
-	public int seasonMonth;
 	
 	public int day;
 	public Month month;
+	public Season season;
+	public int seasonMonth;
 	public int year;
 	
 	public Inventory calendar;
@@ -41,24 +41,24 @@ public class SeasonWorld {
 	public final ListMultimap<Integer, BukkitRunnable> tasks = ArrayListMultimap.create();
 	public final List<Location> globalSnowBlocks = new ArrayList<Location>();
 	
-	public SeasonWorld(final World world) {
+	public SeasonWorld(final World world, final WorldConfig config) {
 		this.world = world;
-		this.day = 1;
-		this.month = Skyoseasons.months.entrySet().iterator().next().getValue();
-		this.year = 2000;
+		day = config.day;
+		month = Skyoseasons.months.getByIndex(config.month - 1);
+		season = Skyoseasons.seasons.get(config.season);
+		seasonMonth = config.seasonMonth;
+		year = config.year;
 		world.setTime(0L);
-		final List<String> seasons = new ArrayList<String>(Skyoseasons.seasons.keySet());
-		setCurrentSeason(Skyoseasons.seasons.get(seasons.get(new Random().nextInt(seasons.size()))), null);
 		calendar = buildCalendar(month);
 	}
 	
-	public SeasonWorld(final World world, final Season season, final int seasonMonth, final int day, final Month month, final int year) {
+	public SeasonWorld(final World world) {
 		this.world = world;
-		this.day = day;
-		this.month = month;
-		this.year = year;
+		this.day = 1;
+		this.month = Skyoseasons.months.getByIndex(0);
+		this.seasonMonth = 1;
+		this.year = 2000;
 		world.setTime(0L);
-		setCurrentSeason(season, null, seasonMonth);
 		calendar = buildCalendar(month);
 	}
 	
@@ -172,7 +172,7 @@ public class SeasonWorld {
 						block.setBiome(biome == null ? season.defaultBiome : biome);
 					}
 					if(season.snowMelt) {
-						Block highestBlock = block.getWorld().getHighestBlockAt(block.getLocation().add(0, -1, 0));
+						Block highestBlock = world.getHighestBlockAt(block.getLocation());
 						if(block.getY() < Skyoseasons.config.snowEternalY) {
 							final Material type = highestBlock.getType();
 							if(type == Material.SNOW) {

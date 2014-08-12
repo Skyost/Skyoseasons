@@ -8,7 +8,7 @@ import fr.skyost.seasons.SeasonWorld;
 import fr.skyost.seasons.events.time.DayEvent;
 import fr.skyost.seasons.events.time.NightEvent;
 
-public class TimeControl extends BukkitRunnable {
+public final class TimeControl extends BukkitRunnable {
 	
 	private final SeasonWorld seasonWorld;
 	private final World world;

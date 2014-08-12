@@ -26,37 +26,32 @@ public class CalendarCommand implements CommandExecutor {
 		}
 		if(args.length > 1) {
 			final SeasonWorld world = SkyoseasonsAPI.getSeasonWorld(Joiner.on(' ').join(args));
-			if(world != null) {
-				if(player == null) {
-					final StringBuilder builder = new StringBuilder();
-					builder.append(ChatColor.AQUA + world.calendar.getName() + " :" + ChatColor.RESET);
-					for(final ItemStack item : world.calendar.getContents()) {
-						if(item != null) {
-							builder.append("\n" + item.getItemMeta().getDisplayName() + ChatColor.RESET);
-						}
+			if(world == null) {
+				sender.sendMessage(ChatColor.RED + "Enabled worlds :\n" + Joiner.on('\n').join(SkyoseasonsAPI.getSeasonWorldsNames()));
+				return true;
+			}
+			if(player == null) {
+				sender.sendMessage(ChatColor.AQUA + world.calendar.getName() + " :");
+				for(final ItemStack item : world.calendar.getContents()) {
+					if(item != null) {
+						sender.sendMessage(item.getItemMeta().getDisplayName());
 					}
-					sender.sendMessage(builder.toString());
-				}
-				else {
-					player.openInventory(world.calendar);
 				}
 			}
 			else {
-				sender.sendMessage(ChatColor.RED + "Enabled worlds :\n" + Joiner.on('\n').join(SkyoseasonsAPI.getSeasonWorldsNames()));
+				player.openInventory(world.calendar);
 			}
 		}
 		else {
-			if(player != null) {
-				final SeasonWorld world = SkyoseasonsAPI.getSeasonWorldExact(player.getWorld());
-				if(world != null) {
-					player.openInventory(world.calendar);
-				}
-				else {
-					sender.sendMessage(ChatColor.RED + "Enabled worlds :\n" + Joiner.on('\n').join(SkyoseasonsAPI.getSeasonWorldsNames()));
-				}
+			if(player == null) {
+				return false;
+			}
+			final SeasonWorld world = SkyoseasonsAPI.getSeasonWorldExact(player.getWorld());
+			if(world != null) {
+				player.openInventory(world.calendar);
 			}
 			else {
-				return false;
+				sender.sendMessage(ChatColor.RED + "Enabled worlds :\n" + Joiner.on('\n').join(SkyoseasonsAPI.getSeasonWorldsNames()));
 			}
 		}
 		return true;

@@ -1,11 +1,23 @@
 package fr.skyost.seasons.utils.spout;
 
 public class SpoutEffects {
-	public boolean starsVisible;
-	public int starsFrequency;
-	public boolean cloudsVisible;
-	public boolean sunVisible;
-	public int sunSizePercent;
-	public boolean moonVisible;
-	public int moonSizePercent;
+	
+	public final boolean starsVisible;
+	public final int starsFrequency;
+	public final boolean cloudsVisible;
+	public final boolean sunVisible;
+	public final int sunSizePercent;
+	public final boolean moonVisible;
+	public final int moonSizePercent;
+	
+	public SpoutEffects(final boolean starsVisible, final int starsFrequency, final boolean cloudsVisible, final boolean sunVisible, final int sunSizePercent, final boolean moonVisible, final int moonSizePercent) {
+		this.starsVisible = starsVisible;
+		this.starsFrequency = starsFrequency;
+		this.cloudsVisible = cloudsVisible;
+		this.sunVisible = sunVisible;
+		this.sunSizePercent = sunSizePercent;
+		this.moonVisible = moonVisible;
+		this.moonSizePercent = moonSizePercent;
+	}
+	
 }

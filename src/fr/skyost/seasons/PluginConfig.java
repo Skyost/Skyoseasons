@@ -2,8 +2,9 @@ package fr.skyost.seasons;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
+
+import org.bukkit.Material;
 
 import fr.skyost.seasons.utils.Skyoconfig;
 
@@ -11,12 +12,14 @@ public class PluginConfig extends Skyoconfig {
 	
 	@ConfigOptions(name = "seasons-directory")
 	public String seasonsDir;
+	@ConfigOptions(name = "worlds-saves-directory")
+	public String worldsDir;
 	@ConfigOptions(name = "refresh-time")
 	public int refreshTime = 20;
 	@ConfigOptions(name = "worlds")
 	public List<String> worlds = Arrays.asList("WorldA", "WorldB", "WorldC", "You can add (or remove) any world you want here !");
-	@ConfigOptions(name = "saved-data")
-	public HashMap<String, List<String>> savedData = new HashMap<String, List<String>>();
+	@ConfigOptions(name = "snow-placer-forbidden-blocks")
+	public List<String> snowPlacerForbiddenTypes = Arrays.asList(Material.ICE.name());
 	
 	@ConfigOptions(name = "backups.enable")
 	public boolean backupsEnable = true;
@@ -47,8 +50,9 @@ public class PluginConfig extends Skyoconfig {
 	public boolean enableSkyupdater = true;
 	
 	public PluginConfig(final File dataFolder) {
-		super(new File(dataFolder, "config.yml"), Arrays.asList("####################################################### #", "\n              Skyoseasons Configuration                 #", "\n Check http://dev.bukkit.org/bukkit-plugins/skyoseasons #", "\n               for more informations.                   #", "\n####################################################### #"));
+		super(new File(dataFolder, "config.yml"), Arrays.asList("####################################################### #", "              Skyoseasons Configuration                 #", " Check http://dev.bukkit.org/bukkit-plugins/skyoseasons #", "               for more informations.                   #", "####################################################### #"));
 		seasonsDir = new File(dataFolder + File.separator + "seasons").getPath();
+		worldsDir = new File(dataFolder + File.separator + "worlds").getPath();
 		logsFileDir = new File(dataFolder + File.separator + "logs").getPath();
 		backupsDir = new File(dataFolder + File.separator + "backups").getPath();
 	}

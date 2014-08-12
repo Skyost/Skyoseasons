@@ -3,8 +3,10 @@ package fr.skyost.seasons;
 import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 
 import fr.skyost.seasons.utils.Skyoconfig;
@@ -13,7 +15,7 @@ import fr.skyost.seasons.utils.Utils;
 public class CalendarConfig extends Skyoconfig {
 	
 	@ConfigOptions(name = "months")
-	public HashMap<String, String> months = new HashMap<String, String>() {
+	public LinkedHashMap<String, String> months = new LinkedHashMap<String, String>() {
 		private static final long serialVersionUID = 1L; {
 			put("1", Utils.toJson(new HashMap<Object, Object>() {
 				private static final long serialVersionUID = 1L; {
@@ -102,10 +104,10 @@ public class CalendarConfig extends Skyoconfig {
 	public String calendarDaysName = "/month/ /day-number//ordinal/ /year/";
 	
 	@ConfigOptions(name = "messages.year")
-	public String messagesYear = "§4Happy new year ! We are in /year/ :D";
+	public String messagesYear = ChatColor.GOLD + "Happy new year !" + ChatColor.LIGHT_PURPLE + " We are in /year/ :D";
 	
 	public CalendarConfig(final File dataFolder) {
-		super(new File(dataFolder, "calendar.yml"), Arrays.asList("####################################################### #", "\n              Skyoseasons Configuration                 #", "\n Check http://dev.bukkit.org/bukkit-plugins/skyoseasons #", "\n               for more informations.                   #", "\n####################################################### #"));
+		super(new File(dataFolder, "calendar.yml"), Arrays.asList("####################################################### #", "              Skyoseasons Configuration                 #", " Check http://dev.bukkit.org/bukkit-plugins/skyoseasons #", "               for more informations.                   #", "####################################################### #"));
 	}
 	
 }

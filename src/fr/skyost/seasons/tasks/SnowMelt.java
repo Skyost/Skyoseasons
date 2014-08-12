@@ -21,7 +21,7 @@ public class SnowMelt extends BukkitRunnable {
 	}
 	
 	@Override
-	public void run() {
+	public final void run() {
 		final int locNumber = snowBlocks.size();
 		if(locNumber == 0) {
 			seasonWorld.tasks.remove(1, this.getTaskId());

@@ -4,8 +4,14 @@ import java.util.Collection;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 
+import fr.skyost.seasons.events.SkyoseasonsCalendarEvent.ModificationCause;
+import fr.skyost.seasons.events.calendar.DayChangeEvent;
+import fr.skyost.seasons.events.calendar.MonthChangeEvent;
+import fr.skyost.seasons.events.calendar.SeasonChangeEvent;
+import fr.skyost.seasons.events.calendar.YearChangeEvent;
 import fr.skyost.seasons.utils.LogsManager;
 import fr.skyost.seasons.utils.packets.ProtocolLibHook;
 import fr.skyost.seasons.utils.spout.SpoutHook;
@@ -208,13 +214,13 @@ public class SkyoseasonsAPI {
 	/**
 	 * Gets a month by its number.
 	 * 
-	 * @param number The month's number.
+	 * @param number The month's number (begins at 0).
 	 * 
 	 * @return The month.
 	 */
 	
 	public static final Month getMonth(final int number) {
-		return Skyoseasons.months.getByIndex(number);
+		return Skyoseasons.months.getByIndex(number - 1);
 	}
 	
 	/**
@@ -266,6 +272,115 @@ public class SkyoseasonsAPI {
 	public static final String[] getMonthsNames() {
 		final Set<String> monthsNames = Skyoseasons.months.keySet();
 		return monthsNames.toArray(new String[monthsNames.size()]);
+	}
+	
+	/**
+	 * Calls a day change event (which modify the current day of a world).
+	 * 
+	 * @param world The world.
+	 * @param newDay The new day.
+	 * @param cause The modification cause (if it is a player who calls this event or no).
+	 * 
+	 * @return The called event (may be altered by others plugins).
+	 */
+	
+	public static final DayChangeEvent callDayChange(final SeasonWorld world, final int newDay, final ModificationCause cause) {
+		final DayChangeEvent event = new DayChangeEvent(world, newDay, cause);
+		Bukkit.getPluginManager().callEvent(event);
+		return event;
+	}
+	
+	/**
+	 * Calls a month change event (which modify the current month of a world) and broadcasts the default message.
+	 * 
+	 * @param world The world.
+	 * @param newMonth The new month.
+	 * @param cause The modification cause (if it is a player who calls this event or no).
+	 * 
+	 * @return The called event (may be altered by others plugins).
+	 */
+	
+	public static final MonthChangeEvent callMonthChange(final SeasonWorld world, final Month newMonth, final ModificationCause cause) {
+		return callMonthChange(world, newMonth, cause, world.season.monthsMessage.replace("/month/", newMonth.name));
+	}
+	
+	/**
+	 * Calls a month change event (which modify the current month of a world).
+	 * 
+	 * @param world The world.
+	 * @param newMonth The new month.
+	 * @param cause The modification cause (if it is a player who calls this event or no).
+	 * @param message The message which will be broadcasted.
+	 * 
+	 * @return The called event (may be altered by others plugins).
+	 */
+	
+	public static final MonthChangeEvent callMonthChange(final SeasonWorld world, final Month newMonth, final ModificationCause cause, final String message) {
+		final MonthChangeEvent event = new MonthChangeEvent(world, newMonth, message, cause);
+		Bukkit.getPluginManager().callEvent(event);
+		return event;
+	}
+	
+	/**
+	 * Calls a season change event (which modify the current season of a world) and broadcasts the default message.
+	 * 
+	 * @param world The world.
+	 * @param season The new season.
+	 * @param cause The modification cause (if it is a player who calls this event or no).
+	 * 
+	 * @return The called event (may be altered by others plugins).
+	 */
+	
+	public static final SeasonChangeEvent callSeasonChange(final SeasonWorld world, final Season season, final ModificationCause cause) {
+		return callSeasonChange(world, season, cause, season.message);
+	}
+	
+	/**
+	 * Calls a month change event (which modify the current season of a world).
+	 * 
+	 * @param world The world.
+	 * @param season The new season.
+	 * @param cause The modification cause (if it is a player who calls this event or no).
+	 * @param message The message which will be broadcasted.
+	 * 
+	 * @return The called event (may be altered by others plugins).
+	 */
+	
+	public static final SeasonChangeEvent callSeasonChange(final SeasonWorld world, final Season season, final ModificationCause cause, final String message) {
+		final SeasonChangeEvent event = new SeasonChangeEvent(world, season, message, cause);
+		Bukkit.getPluginManager().callEvent(event);
+		return event;
+	}
+	
+	/**
+	 * Calls a year change event (which modify the current year of a world) and broadcasts the default message.
+	 * 
+	 * @param world The world.
+	 * @param year The new year.
+	 * @param cause The modification cause (if it is a player who calls this event or no).
+	 * 
+	 * @return The called event (may be altered by others plugins).
+	 */
+	
+	public static final YearChangeEvent callYearChange(final SeasonWorld world, final int year, final ModificationCause cause) {
+		return callYearChange(world, year, cause, getCalendarConfig().messagesYear.replace("/year/", String.valueOf(year)));
+	}
+	
+	/**
+	 * Calls a year change event (which modify the current year of a world).
+	 * 
+	 * @param world The world.
+	 * @param year The new year.
+	 * @param cause The modification cause (if it is a player who calls this event or no).
+	 * @param message The message which will be broadcasted.
+	 * 
+	 * @return The called event (may be altered by others plugins).
+	 */
+	
+	public static final YearChangeEvent callYearChange(final SeasonWorld world, final int year, final ModificationCause cause, final String message) {
+		final YearChangeEvent event = new YearChangeEvent(world, year, message, cause);
+		Bukkit.getPluginManager().callEvent(event);
+		return event;
 	}
 
 }

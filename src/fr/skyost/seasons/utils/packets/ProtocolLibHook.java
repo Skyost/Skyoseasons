@@ -30,6 +30,7 @@ public class ProtocolLibHook extends PacketPluginHook {
 	private final Set<Object> changed = Collections.newSetFromMap(new MapMaker().weakKeys().<Object, Boolean>makeMap());
 
 	public ProtocolLibHook(final Plugin plugin) throws PacketPluginHookInitializationException {
+		super(plugin);
 		final ProtocolManager manager = ProtocolLibrary.getProtocolManager();
 		manager.addPacketListener(new PacketAdapter(plugin, PacketType.Play.Server.MAP_CHUNK, PacketType.Play.Server.MAP_CHUNK_BULK) {
 
