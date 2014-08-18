@@ -1,11 +1,5 @@
 package fr.skyost.seasons.utils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -100,38 +94,6 @@ public class Utils {
 
 	public static final String centerText(final String text, final int maxWidth) {
 		return StringUtils.repeat(" ", (int)Math.round((maxWidth - 1.4 * ChatColor.stripColor(text).length()) / 2)) + text;
-	}
-
-	/**
-	 * Copy a file or a folder.
-	 * 
-	 * @param sourceLocation The path of the file (or the folder).
-	 * @param targetLocation The target.
-	 * 
-	 * @author Mkyong.
-	 */
-
-	public static final void copy(final File sourceLocation, final File targetLocation) throws IOException {
-		if(sourceLocation.isDirectory()) {
-			if(!targetLocation.exists()) {
-				targetLocation.mkdir();
-			}
-			final String[] children = sourceLocation.list();
-			for(int i = 0; i < children.length; i++) {
-				copy(new File(sourceLocation, children[i]), new File(targetLocation, children[i]));
-			}
-		}
-		else {
-			final InputStream in = new FileInputStream(sourceLocation);
-			final OutputStream out = new FileOutputStream(targetLocation);
-			final byte[] buf = new byte[1024];
-			int len;
-			while((len = in.read(buf)) > 0) {
-				out.write(buf, 0, len);
-			}
-			in.close();
-			out.close();
-		}
 	}
 
 	/**

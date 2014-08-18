@@ -112,53 +112,48 @@ public class SeasonWorld {
 	}
 	
 	public final void setCurrentSeason(final Season season, final String message, final int seasonMonth) {
-		try {
-			final List<BukkitRunnable> timeControl = tasks.get(0);
-			if(timeControl != null && timeControl.size() != 0) {
-				timeControl.get(0).cancel();
-				tasks.removeAll(0);
-			}
-			this.season = season;
-			final List<BukkitRunnable> snowMelt = tasks.get(1);
-			if(!season.snowMelt && snowMelt != null) {
-				for(final BukkitRunnable task : snowMelt) {
-					task.cancel();
-				}
-				tasks.removeAll(1);
-				globalSnowBlocks.clear();
-			}
-			this.seasonMonth = seasonMonth;
-			final List<Location> snowBlocks = handleBlocks(world.getLoadedChunks());
-			globalSnowBlocks.addAll(snowBlocks);
-			if(snowBlocks.size() != 0) {
-				final Random random = new Random();
-				final List<List<Location>> snowBlocksSplitted = Utils.splitList(snowBlocks, Skyoseasons.config.snowMeltMultiplicator);
-				for(final List<Location> locations : snowBlocksSplitted) {
-					final SnowMelt task = new SnowMelt(this, locations);
-					task.runTaskTimer(Skyoseasons.instance, 20L, random.nextInt(Skyoseasons.config.snowMeltMaxDelay) + 1);
-					tasks.put(1, task);
-				}
-			}
-			world.setStorm(season.alwaysRain);
-			for(final Player player : world.getPlayers()) {
-				if(message != null) {
-					player.sendMessage(season.message);
-				}
-				if(season.resourcePackUrl != null) {
-					player.setResourcePack(season.resourcePackUrl);
-				}
-				if(Skyoseasons.spout != null && Skyoseasons.spout.isSpoutPlayer(player)) {
-					Skyoseasons.spout.sendEffects(player, season.effects);
-				}
-			}
-			Skyoseasons.logsManager.log(season.message, Level.INFO, world);
-			final TimeControl task = new TimeControl(this, season.daylength, season.nightLength, Skyoseasons.config.refreshTime);
-			task.runTaskTimer(Skyoseasons.instance, Skyoseasons.config.refreshTime, Skyoseasons.config.refreshTime);
-			tasks.put(0, task);
+		final List<BukkitRunnable> timeControl = tasks.get(0);
+		if(timeControl != null && timeControl.size() != 0) {
+			timeControl.get(0).cancel();
+			tasks.removeAll(0);
 		}
-		catch(final Exception ex) {
-			ex.printStackTrace();
+		this.season = season;
+		final List<BukkitRunnable> snowMelt = tasks.get(1);
+		if(!season.snowMelt && snowMelt != null) {
+			for(final BukkitRunnable task : snowMelt) {
+				task.cancel();
+			}
+			tasks.removeAll(1);
+			globalSnowBlocks.clear();
 		}
+		this.seasonMonth = seasonMonth;
+		final List<Location> snowBlocks = handleBlocks(world.getLoadedChunks());
+		globalSnowBlocks.addAll(snowBlocks);
+		if(snowBlocks.size() != 0) {
+			final Random random = new Random();
+			final List<List<Location>> snowBlocksSplitted = Utils.splitList(snowBlocks, Skyoseasons.config.snowMeltMultiplicator);
+			for(final List<Location> locations : snowBlocksSplitted) {
+				final SnowMelt task = new SnowMelt(this, locations);
+				task.runTaskTimer(Skyoseasons.instance, 20L, random.nextInt(Skyoseasons.config.snowMeltMaxDelay) + 1);
+				tasks.put(1, task);
+			}
+		}
+		world.setStorm(season.alwaysRain);
+		for(final Player player : world.getPlayers()) {
+			if(message != null) {
+				player.sendMessage(season.message);
+			}
+			if(season.resourcePackUrl != null) {
+				player.setResourcePack(season.resourcePackUrl);
+			}
+			if(Skyoseasons.spout != null && Skyoseasons.spout.isSpoutPlayer(player)) {
+				Skyoseasons.spout.sendEffects(player, season.effects);
+			}
+		}
+		Skyoseasons.logsManager.log(season.message, Level.INFO, world);
+		final TimeControl task = new TimeControl(this, season.daylength, season.nightLength, Skyoseasons.config.refreshTime);
+		task.runTaskTimer(Skyoseasons.instance, Skyoseasons.config.refreshTime, Skyoseasons.config.refreshTime);
+		tasks.put(0, task);
 	}
 	
 	public final List<Location> handleBlocks(final Chunk... chunks) {

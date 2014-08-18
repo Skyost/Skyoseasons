@@ -1,8 +1,6 @@
 package fr.skyost.seasons.utils;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
@@ -11,12 +9,14 @@ import java.util.logging.Logger;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginLogger;
+
+import com.google.common.base.Charsets;
+import com.google.common.io.Files;
 
 public class LogsManager {
 	
 	private Logger logger;
-	private File logsFolder;
+	private File logsDirectory;
 	
 	private static final String DATE_HOUR = "HH:mm:ss";
 	private static final String DATE_DAY = "yyyy-MM-dd";
@@ -29,18 +29,14 @@ public class LogsManager {
 	public LogsManager() {}
 	
 	public LogsManager(final Plugin plugin) {
-		logger = new PluginLogger(plugin);
-		logsFolder = new File(plugin.getDataFolder() + File.separator + "logs");
-		if(!logsFolder.exists()) {
-			logsFolder.mkdir();
-		}
+		this(plugin.getLogger(), new File(plugin.getDataFolder() + File.separator + "logs"));
 	}
 	
-	public LogsManager(final Logger logger, final File logsFolder) {
+	public LogsManager(final Logger logger, final File logsDirectory) {
 		this.logger = logger;
-		this.logsFolder = logsFolder;
-		if(logsFolder != null && !logsFolder.exists()) {
-			logsFolder.mkdir();
+		this.logsDirectory = logsDirectory;
+		if(logsDirectory != null && !logsDirectory.exists()) {
+			logsDirectory.mkdir();
 		}
 	}
 	
@@ -48,14 +44,14 @@ public class LogsManager {
 		this.logger = logger;
 	}
 	
-	public final void setLogsFolder(final File logsFolder) {
-		this.logsFolder = logsFolder;
-		if(logsFolder != null && !logsFolder.exists()) {
-			logsFolder.mkdir();
+	public final void setLogsDirectory(final File logsDirectory) {
+		this.logsDirectory = logsDirectory;
+		if(logsDirectory != null && !logsDirectory.exists()) {
+			logsDirectory.mkdir();
 		}
 	}
 	
-	public static final String date(final DateType date) {
+	private final String date(final DateType date) {
 		return new SimpleDateFormat(date == DateType.HOUR ? DATE_HOUR : DATE_DAY).format(new Date());
 	}
 	
@@ -73,17 +69,13 @@ public class LogsManager {
 		if(logger != null) {
 			logger.log(level, prefix + message);
 		}
-		if(logsFolder != null) {
+		if(logsDirectory != null) {
 			try {
-				final File dayFile = new File(logsFolder, date(DateType.DAY) + ".log");
+				final File dayFile = new File(logsDirectory, date(DateType.DAY) + ".log");
 				if(!dayFile.exists()) {
 					dayFile.createNewFile();
 				}
-				final FileWriter fileWriter = new FileWriter(dayFile, true);
-				final PrintWriter printWriter = new PrintWriter(fileWriter, true);
-				printWriter.println("[" + date(DateType.HOUR) + "] [" + level + "] " + prefix + message);
-				printWriter.close();
-				fileWriter.close();
+				Files.append("[" + date(DateType.HOUR) + "] [" + level + "] " + prefix + message + System.lineSeparator(), dayFile, Charsets.UTF_8);
 			}
 			catch(Exception ex) {
 				ex.printStackTrace();

@@ -19,6 +19,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.google.common.io.Files;
 import com.google.common.primitives.Ints;
 
 import fr.skyost.seasons.commands.CalendarCommand;
@@ -212,8 +213,7 @@ public class Skyoseasons extends JavaPlugin {
 			if(backupsDir != null) {
 				final File backup = new File(backupsDir, worldName);
 				if(!backup.exists()) {
-					backup.mkdir();
-					Utils.copy(new File(worldName), backup);
+					Files.copy(new File(worldName), backup);
 				}
 			}
 			final File configFile = new File(worldsDir, worldName + ".yml");
