@@ -2,6 +2,7 @@ package fr.skyost.seasons;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,7 +20,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.google.common.io.Files;
 import com.google.common.primitives.Ints;
 
 import fr.skyost.seasons.commands.CalendarCommand;
@@ -77,6 +77,7 @@ public class Skyoseasons extends JavaPlugin {
 				new WorldConfig(new File(worldsDir, world.world.getName() + ".yml"), world).save();
 			}
 			config.save();
+			Utils.clearFields(this);
 		}
 		catch(Exception ex) {
 			ex.printStackTrace();
@@ -213,7 +214,7 @@ public class Skyoseasons extends JavaPlugin {
 			if(backupsDir != null) {
 				final File backup = new File(backupsDir, worldName);
 				if(!backup.exists()) {
-					Files.copy(new File(worldName), backup);
+					Utils.copy(new File(worldName), backup);
 				}
 			}
 			final File configFile = new File(worldsDir, worldName + ".yml");

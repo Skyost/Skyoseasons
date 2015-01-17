@@ -32,7 +32,7 @@ import com.google.common.primitives.Primitives;
 /**
  * <h1>Skyoconfig</h1>
  * <p><i>Handle configurations with ease !</i></p>
- * <p><b>Current version :</b> v0.6.1.
+ * <p><b>Current version :</b> v0.7.
  * 
  * @author <b>Skyost</b> (<a href="http://www.skyost.eu">www.skyost.eu</a>).
  * <br>Inspired from <a href="https://forums.bukkit.org/threads/lib-supereasyconfig-v1-2-based-off-of-codename_bs-awesome-easyconfig-v2-1.100569/">SuperEasyConfig</a>.</br>
@@ -54,7 +54,7 @@ public class Skyoconfig {
 	 */
 	
 	protected Skyoconfig(final File configFile) {
-		this.configFile = configFile;
+		this(configFile, null);
 	}
 	
 	/**
@@ -117,7 +117,31 @@ public class Skyoconfig {
 	
 	private final String getFieldName(final Field field) {
 		final ConfigOptions options = field.getAnnotation(ConfigOptions.class);
-		return (options == null ? field.getName().replace(DEFAULT_SEPARATOR, '.') : options.name());
+		if(options == null) {
+			return field.getName().replace(DEFAULT_SEPARATOR, '.');
+		}
+		final String name = options.name();
+		if(name.equals("")) {
+			return field.getName().replace(DEFAULT_SEPARATOR, '.');
+		}
+		return name;
+	}
+	
+	/**
+	 * Checks if a field should be ignored.
+	 * 
+	 * @param field The <b>Field</b>.
+	 * 
+	 * @return <b>true</b> Yes.
+	 * <br><b>false</b> Otherwise.
+	 */
+	
+	private final boolean ignoreField(final Field field) {
+		final ConfigOptions options = field.getAnnotation(ConfigOptions.class);
+		if(options == null) {
+			return false;
+		}
+		return options.ignore();
 	}
 	
 	/**
@@ -150,7 +174,7 @@ public class Skyoconfig {
 	 */
 	
 	private final void loadField(final Field field, final String name, final YamlConfiguration config) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ParseException, InstantiationException {
-		if(Modifier.isTransient(field.getModifiers())) {
+		if(Modifier.isTransient(field.getModifiers()) || ignoreField(field)) {
 			return;
 		}
 		final Object configValue = config.get(getFieldName(field));
@@ -173,7 +197,7 @@ public class Skyoconfig {
 	 */
 	
 	private final void saveField(final Field field, final String name, final YamlConfiguration config) throws IllegalAccessException {
-		if(Modifier.isTransient(field.getModifiers())) {
+		if(Modifier.isTransient(field.getModifiers()) || ignoreField(field)) {
 			return;
 		}
 		config.set(name, serializeObject(field.get(this), config));
@@ -269,6 +293,7 @@ public class Skyoconfig {
 		if(object instanceof Location) {
 			final Location location = (Location)object;
 			final JSONObject jsonObject = new JSONObject();
+			jsonObject.put("world", location.getWorld().getName());
 			jsonObject.put("x", location.getX());
 			jsonObject.put("y", location.getY());
 			jsonObject.put("z", location.getZ());
@@ -341,7 +366,16 @@ public class Skyoconfig {
 		 * @return The key's name.
 		 */
 		
-		public String name();
+		public String name() default "";
+		
+		/**
+		 * If Skyoconfig should ignore this field.
+		 * 
+		 * @return <b>true</b> Yes.
+		 * <br><b>false</b> Otherwise.
+		 */
+		
+		public boolean ignore() default false;
 		
 	}
 	
