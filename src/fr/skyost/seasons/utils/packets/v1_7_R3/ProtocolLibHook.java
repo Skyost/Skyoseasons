@@ -28,8 +28,6 @@ import fr.skyost.seasons.utils.packets.AbstractProtocolLibHook;
 
 public class ProtocolLibHook extends AbstractProtocolLibHook {
 	
-    private static final int NIBBLES_REQUIRED = 4;
-
 	private final Set<Object> changed = Collections.newSetFromMap(new MapMaker().weakKeys().<Object, Boolean>makeMap());
 
 	public ProtocolLibHook(final Plugin plugin) throws PacketPluginHookInitializationException {
@@ -50,7 +48,7 @@ public class ProtocolLibHook extends AbstractProtocolLibHook {
 		final StructureModifier<Integer> ints = packet.getIntegers();
 		final byte[] data = packet.getByteArrays().read(1);
 		if(data != null) {
-			final ChunkInfo info = new ChunkInfo(player, ints.read(0), ints.read(1), ints.read(2), ints.read(3), getOrDefault(packet.getBooleans().readSafely(0), true), data, 0);
+			final ChunkInfo info = new ChunkInfo(player, ints.read(2), ints.read(3), getOrDefault(packet.getBooleans().readSafely(0), true), data, 0);
 			if(this.translateChunkInfo(info, season)) {
 				changed.add(packet);
 			}
@@ -61,13 +59,11 @@ public class ProtocolLibHook extends AbstractProtocolLibHook {
 	protected final void translateMapChunkBulk(final PacketContainer packet, final Player player, final Season season) {
 		final StructureModifier<int[]> intArrays = packet.getIntegerArrays();
 		final StructureModifier<byte[]> byteArrays = packet.getSpecificModifier(byte[].class);
-		final int[] x = intArrays.read(0);
-		final int[] z = intArrays.read(1);
 		int dataStartIndex = 0;
 		final int[] chunkMask = intArrays.read(2);
 		final int[] extraMask = intArrays.read(3);
-		for(int chunkNum = 0; chunkNum < x.length; chunkNum++) {
-			final ChunkInfo info = new ChunkInfo(player, x[chunkNum], z[chunkNum], chunkMask[chunkNum], extraMask[chunkNum], true, byteArrays.read(1), 0);
+		for(int chunkNum = 0; chunkNum < chunkMask.length; chunkNum++) {
+			final ChunkInfo info = new ChunkInfo(player, chunkMask[chunkNum], extraMask[chunkNum], true, byteArrays.read(1), 0);
 			if(info.data == null || info.data.length == 0) {
 				info.data = packet.getSpecificModifier(byte[][].class).read(0)[chunkNum];
 			}
@@ -81,16 +77,16 @@ public class ProtocolLibHook extends AbstractProtocolLibHook {
 	
 	@Override
 	protected final boolean translateChunkInfo(final ChunkInfo info, final Season season) {
-		for(int i = 0; i < CHUNK_SEGMENTS; i++) {
-			if((info.chunkMask & (1 << i)) > 0) {
-				info.chunkSectionNumber++;
-			}
-			if((info.extraMask & (1 << i)) > 0) {
-				info.extraSectionNumber++;
-			}
-		}
-		info.size = BYTES_PER_NIBBLE_PART * ((NIBBLES_REQUIRED + (info.player.getWorld().getEnvironment() == Environment.NORMAL ? 1 : 0)) * info.chunkSectionNumber + info.extraSectionNumber) + (info.hasContinous ? BIOME_ARRAY_LENGTH : 0);
 		if(info.hasContinous) {
+			for(int i = 0; i < CHUNK_SEGMENTS; i++) {
+				if((info.chunkMask & (1 << i)) > 0) {
+					info.chunkSectionNumber++;
+				}
+				if((info.extraMask & (1 << i)) > 0) {
+					info.extraSectionNumber++;
+				}
+			}
+			info.size = BYTES_PER_NIBBLE_PART * ((NIBBLES_REQUIRED + (info.player.getWorld().getEnvironment() == Environment.NORMAL ? 1 : 0)) * info.chunkSectionNumber + info.extraSectionNumber) + (info.hasContinous ? BIOME_ARRAY_LENGTH : 0);
 			final int biomeStart = info.startIndex + info.size - BIOME_ARRAY_LENGTH;
 			for(int i = biomeStart; i < BIOME_ARRAY_LENGTH + biomeStart; i++) {
 				final Biome biome = this.getBiomeByID(info.data[i]);

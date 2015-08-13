@@ -97,7 +97,7 @@ public class CalendarConfig extends Skyoconfig {
 	@ConfigOptions(name = "calendar.today.item")
 	public Material calendarTodayItem = Material.NAME_TAG;
 	@ConfigOptions(name = "calendar.today.name")
-	public String calendarTodayName = "§l§6TODAY : /month/ /day-number//ordinal/ /year/";
+	public String calendarTodayName = ChatColor.BOLD + "" + ChatColor.GOLD + "TODAY : /month/ /day-number//ordinal/ /year/";
 	@ConfigOptions(name = "calendar.days.item")
 	public Material calendarDaysItem = Material.PAPER;
 	@ConfigOptions(name = "calendar.days.name")

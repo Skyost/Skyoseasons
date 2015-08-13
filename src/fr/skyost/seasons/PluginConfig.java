@@ -19,10 +19,6 @@ public class PluginConfig extends Skyoconfig {
 	public int refreshTime = 20;
 	@ConfigOptions(name = "worlds")
 	public List<String> worlds = Arrays.asList("WorldA", "WorldB", "WorldC", "You can add (or remove) any world you want here !");
-	@ConfigOptions(name = "snow-placer-forbidden-blocks")
-	public List<String> snowPlacerForbiddenTypes = Arrays.asList(Material.ICE.name());
-	@ConfigOptions(name = "snow-placer-forbidden-biomes")
-	public List<String> snowPlacerForbiddenBiomes = Arrays.asList(Biome.DESERT.name());
 	
 	@ConfigOptions(name = "backups.enable")
 	public boolean backupsEnable = true;
@@ -35,6 +31,10 @@ public class PluginConfig extends Skyoconfig {
 	public int snowMeltMaxDelay = 60;
 	@ConfigOptions(name = "snow.melt.multiplicator")
 	public int snowMeltMultiplicator = 10;
+	@ConfigOptions(name = "snow.placer.forbidden-blocks")
+	public List<String> snowPlacerForbiddenTypes = Arrays.asList(Material.ICE.name());
+	@ConfigOptions(name = "snow.placer.forbidden-biomes")
+	public List<String> snowPlacerForbiddenBiomes = Arrays.asList(Biome.DESERT.name());
 	
 	@ConfigOptions(name = "logs.console.enable")
 	public boolean logsConsoleEnable = true;

@@ -29,6 +29,7 @@ public abstract class AbstractProtocolLibHook {
 	public static final int BYTES_PER_NIBBLE_PART = 2048;
 	public static final int CHUNK_SEGMENTS = 16;
 	public static final int BIOME_ARRAY_LENGTH = 256;
+	public static final int NIBBLES_REQUIRED = 4;
 	
 	private final HashMap<Biome, Byte> biomes = new HashMap<Biome, Byte>();
 	
@@ -94,8 +95,6 @@ public abstract class AbstractProtocolLibHook {
 	protected static class ChunkInfo {
 
 		public Player player;
-		public int chunkX;
-		public int chunkZ;
 		public int chunkMask;
 		public int extraMask;
 		public boolean hasContinous;
@@ -105,10 +104,8 @@ public abstract class AbstractProtocolLibHook {
 		public int extraSectionNumber;
 		public int size;
 		
-		public ChunkInfo(final Player player, final int chunkX, final int chunkZ, final int chunkMask, final int extraMask, final boolean hasContinous, final byte[] data, final int startIndex) {
+		public ChunkInfo(final Player player, final int chunkMask, final int extraMask, final boolean hasContinous, final byte[] data, final int startIndex) {
 			this.player = player;
-			this.chunkX = chunkX;
-			this.chunkZ = chunkZ;
 			this.chunkMask = chunkMask;
 			this.extraMask = extraMask;
 			this.hasContinous = hasContinous;
