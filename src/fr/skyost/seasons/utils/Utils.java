@@ -147,9 +147,19 @@ public class Utils {
 	 */
 
 	public static final Class<?> getMCClass(final String name) throws ClassNotFoundException {
-		return Class.forName("net.minecraft.server." + Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3] + "." + name);
+		return Class.forName("net.minecraft.server." + getMCServerVersion() + "." + name);
 	}
-
+	
+	/**
+	 * Gets the MC server vesion.
+	 * 
+	 * @return The NMS version.
+	 */
+	
+	public static final String getMCServerVersion() {
+		return Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
+	}
+	
 	/**
 	 * Splits a list.
 	 * 

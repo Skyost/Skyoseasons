@@ -73,7 +73,7 @@ public class SeasonConfig extends Skyoconfig {
 		replacements.put(Biome.MUSHROOM_SHORE.name(),  Biome.MUSHROOM_SHORE.name());
 	}
 	
-	public SeasonConfig(final File file, final String name, final String next, final Biome defaultBiome, final boolean canRain, final boolean alwaysRain, final boolean snowMelt, final int dayLength, final String dayMessageMessage, final int nightLength, final String nightMessageMessage, final String message, final String monthsMessage, final boolean spoutCloudsVisible, final boolean spoutSunVisible, final int spoutSunSizePercent) {
+	public SeasonConfig(final File file, final String name, final String next, final Biome defaultBiome, final boolean canRain, final boolean alwaysRain, final boolean snowMelt, final int dayLength, final String dayMessageMessage, final int nightLength, final String nightMessageMessage, final String message, final String monthsMessage, final boolean spoutCloudsVisible, final boolean spoutSunVisible, final int spoutSunSizePercent, final boolean protocolLibSnowPlacerEnabled) {
 		super(file);
 		this.name = name;
 		this.next = next;
@@ -90,6 +90,7 @@ public class SeasonConfig extends Skyoconfig {
 		this.spoutCloudsVisible = spoutCloudsVisible;
 		this.spoutSunVisible = spoutSunVisible;
 		this.spoutSunSizePercent = spoutSunSizePercent;
+		this.protocolLibSnowPlacerEnabled = protocolLibSnowPlacerEnabled;
 	}
 	
 }

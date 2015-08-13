@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.Material;
+import org.bukkit.block.Biome;
 
 import fr.skyost.seasons.utils.Skyoconfig;
 
@@ -20,6 +21,8 @@ public class PluginConfig extends Skyoconfig {
 	public List<String> worlds = Arrays.asList("WorldA", "WorldB", "WorldC", "You can add (or remove) any world you want here !");
 	@ConfigOptions(name = "snow-placer-forbidden-blocks")
 	public List<String> snowPlacerForbiddenTypes = Arrays.asList(Material.ICE.name());
+	@ConfigOptions(name = "snow-placer-forbidden-biomes")
+	public List<String> snowPlacerForbiddenBiomes = Arrays.asList(Biome.DESERT.name());
 	
 	@ConfigOptions(name = "backups.enable")
 	public boolean backupsEnable = true;

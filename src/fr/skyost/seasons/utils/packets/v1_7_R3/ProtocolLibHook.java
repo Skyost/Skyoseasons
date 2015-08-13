@@ -1,9 +1,11 @@
-package fr.skyost.seasons.utils.packets;
+package fr.skyost.seasons.utils.packets.v1_7_R3;
 
 import java.util.Collections;
 import java.util.Set;
 import java.util.zip.Deflater;
 
+import org.bukkit.World.Environment;
+import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -14,44 +16,25 @@ import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
-import com.comphenix.protocol.reflect.FieldAccessException;
 import com.comphenix.protocol.reflect.StructureModifier;
 import com.google.common.collect.MapMaker;
 
-import fr.skyost.seasons.SeasonWorld;
-import fr.skyost.seasons.SkyoseasonsAPI;
+import fr.skyost.seasons.Season;
+import fr.skyost.seasons.utils.packets.AbstractProtocolLibHook;
 
 /**
  * @author Comphenix.
  */
 
-public class ProtocolLibHook extends PacketPluginHook {
+public class ProtocolLibHook extends AbstractProtocolLibHook {
+	
+    private static final int NIBBLES_REQUIRED = 4;
 
 	private final Set<Object> changed = Collections.newSetFromMap(new MapMaker().weakKeys().<Object, Boolean>makeMap());
 
 	public ProtocolLibHook(final Plugin plugin) throws PacketPluginHookInitializationException {
 		super(plugin);
 		final ProtocolManager manager = ProtocolLibrary.getProtocolManager();
-		manager.addPacketListener(new PacketAdapter(plugin, PacketType.Play.Server.MAP_CHUNK, PacketType.Play.Server.MAP_CHUNK_BULK) {
-
-			@Override
-			public final void onPacketSending(final PacketEvent event) {
-				final Player player = event.getPlayer();
-				final SeasonWorld world = SkyoseasonsAPI.getSeasonWorldExact(player.getWorld());
-				if(world == null) {
-					return;
-				}
-				final PacketType type = event.getPacketType();
-				if(type == PacketType.Play.Server.MAP_CHUNK) {
-					translateMapChunk(event.getPacket(), player, world);
-
-				}
-				else if(type == PacketType.Play.Server.MAP_CHUNK_BULK) {
-					translateMapChunkBulk(event.getPacket(), player, world);
-				}
-			}
-			
-		});
 		manager.addPacketListener(new PacketAdapter(plugin, ListenerPriority.MONITOR, PacketType.Play.Server.MAP_CHUNK) {
 
 			@Override
@@ -62,22 +45,20 @@ public class ProtocolLibHook extends PacketPluginHook {
 		});
 	}
 
-	private final void translateMapChunk(final PacketContainer packet, final Player player, final SeasonWorld world) throws FieldAccessException {
+	@Override
+	protected final void translateMapChunk(final PacketContainer packet, final Player player, final Season season) {
+		final StructureModifier<Integer> ints = packet.getIntegers();
 		final byte[] data = packet.getByteArrays().read(1);
 		if(data != null) {
-			final StructureModifier<Integer> ints = packet.getIntegers();
 			final ChunkInfo info = new ChunkInfo(player, ints.read(0), ints.read(1), ints.read(2), ints.read(3), getOrDefault(packet.getBooleans().readSafely(0), true), data, 0);
-			if(this.translateChunkInfo(info, world.season)) {
-				changed.add(packet.getHandle());
+			if(this.translateChunkInfo(info, season)) {
+				changed.add(packet);
 			}
 		}
 	}
 
-	private final <T> T getOrDefault(final T value, final T defaultIfNull) {
-		return value != null ? value : defaultIfNull;
-	}
-
-	private final void translateMapChunkBulk(final PacketContainer packet, final Player player, final SeasonWorld world) throws FieldAccessException {
+	@Override
+	protected final void translateMapChunkBulk(final PacketContainer packet, final Player player, final Season season) {
 		final StructureModifier<int[]> intArrays = packet.getIntegerArrays();
 		final StructureModifier<byte[]> byteArrays = packet.getSpecificModifier(byte[].class);
 		final int[] x = intArrays.read(0);
@@ -93,9 +74,36 @@ public class ProtocolLibHook extends PacketPluginHook {
 			else {
 				info.startIndex = dataStartIndex;
 			}
-			this.translateChunkInfo(info, world.season);
+			this.translateChunkInfo(info, season);
 			dataStartIndex += info.size;
 		}
+	}
+	
+	@Override
+	protected final boolean translateChunkInfo(final ChunkInfo info, final Season season) {
+		for(int i = 0; i < CHUNK_SEGMENTS; i++) {
+			if((info.chunkMask & (1 << i)) > 0) {
+				info.chunkSectionNumber++;
+			}
+			if((info.extraMask & (1 << i)) > 0) {
+				info.extraSectionNumber++;
+			}
+		}
+		info.size = BYTES_PER_NIBBLE_PART * ((NIBBLES_REQUIRED + (info.player.getWorld().getEnvironment() == Environment.NORMAL ? 1 : 0)) * info.chunkSectionNumber + info.extraSectionNumber) + (info.hasContinous ? BIOME_ARRAY_LENGTH : 0);
+		if(info.hasContinous) {
+			final int biomeStart = info.startIndex + info.size - BIOME_ARRAY_LENGTH;
+			for(int i = biomeStart; i < BIOME_ARRAY_LENGTH + biomeStart; i++) {
+				final Biome biome = this.getBiomeByID(info.data[i]);
+				if(biome == null) {
+					info.data[i] = this.getBiomeID(season.defaultBiome);
+					continue;
+				}
+				final Biome replacement = season.replacements.get(biome);
+				info.data[i] = this.getBiomeID(replacement == null ? season.defaultBiome : replacement);
+			}
+			return true;
+		}
+		return false;
 	}
 	
 	private final void finalizeMapChunk(final PacketContainer packet) {
@@ -117,5 +125,5 @@ public class ProtocolLibHook extends PacketPluginHook {
 			}
 		}
 	}
-
+	
 }

@@ -13,7 +13,7 @@ import fr.skyost.seasons.events.calendar.MonthChangeEvent;
 import fr.skyost.seasons.events.calendar.SeasonChangeEvent;
 import fr.skyost.seasons.events.calendar.YearChangeEvent;
 import fr.skyost.seasons.utils.LogsManager;
-import fr.skyost.seasons.utils.packets.ProtocolLibHook;
+import fr.skyost.seasons.utils.packets.AbstractProtocolLibHook;
 import fr.skyost.seasons.utils.spout.SpoutHook;
 
 /**
@@ -81,7 +81,7 @@ public class SkyoseasonsAPI {
 	 * @return The ProtocolLib hook or null if it is disabled.
 	 */
 	
-	public static final ProtocolLibHook getProtocolLibHook() {
+	public static final AbstractProtocolLibHook getProtocolLibHook() {
 		return Skyoseasons.protocolLib;
 	}
 	
