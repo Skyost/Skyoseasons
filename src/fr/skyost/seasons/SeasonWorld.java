@@ -25,6 +25,8 @@ import com.google.common.collect.ListMultimap;
 import fr.skyost.seasons.tasks.SnowMelt;
 import fr.skyost.seasons.tasks.TimeControl;
 import fr.skyost.seasons.utils.Utils;
+import fr.skyost.seasons.utils.packets.AbstractProtocolLibHook;
+import fr.skyost.seasons.utils.packets.PacketMapChunk;
 
 public class SeasonWorld {
 	
@@ -127,6 +129,10 @@ public class SeasonWorld {
 			globalSnowBlocks.clear();
 		}
 		this.seasonMonth = seasonMonth;
+		final AbstractProtocolLibHook protocolLibHook = SkyoseasonsAPI.getProtocolLibHook();
+		if(protocolLibHook != null) {
+			protocolLibHook.setDefaultBiome(season.defaultBiome);
+		}
 		final List<Location> snowBlocks = handleBlocks(world.getLoadedChunks());
 		globalSnowBlocks.addAll(snowBlocks);
 		if(snowBlocks.size() != 0) {
@@ -183,8 +189,22 @@ public class SeasonWorld {
 					}
 				}
 			}
-			world.refreshChunk(chunk.getX(), chunk.getZ());
 		}
+		new Thread() {
+			
+			@Override
+			public final void run() {
+				for(final Chunk chunk : chunks) {
+					if(Utils.MC_SERVER_VERSION.equals("v1_8_R3")) {
+						for(final Player player : Bukkit.getOnlinePlayers()) {
+							new PacketMapChunk(chunk).send(player);
+						}
+					}
+					world.refreshChunk(chunk.getX(), chunk.getZ());
+				}
+			}
+			
+		}.start();
 		return snowBlocks;
 	}
 	

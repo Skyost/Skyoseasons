@@ -20,7 +20,7 @@
 name: Skyoseasons
 main: fr.skyost.seasons.Skyoseasons
 description: Add seasons to your Bukkit server !
-version: 4.0
+version: 4.0.1
 softdepend: [Spout, ProtocolLib]
 author: Skyost
 website: http://dev.bukkit.org/bukkit-plugins/skyoseasons/
@@ -28,10 +28,12 @@ commands:
  skyoseasons:
   aliases: [season, seasons]
   description: Main command of Skyoseasons.
+  usage: /skyoseasons [day [new-day]|month [month]|season [season]|season-month [season-month]|year [year]]
  calendar:
   aliases: [cal]
-  description: Open the calendar.
+  description: Opens the calendar.
   permission: skyoseasons.calendar
+  usage: /calendar [world]
 permissions:
   skyoseasons.calendar:
    default: true

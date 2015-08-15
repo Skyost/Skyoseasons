@@ -49,7 +49,7 @@ public class ProtocolLibHook extends AbstractProtocolLibHook {
 			for(int i = biomeStart; i < info.data.length; i++) {
 				final Biome biome = this.getBiomeByID(info.data[i]);
 				if(biome == null) {
-					info.data[i] = this.getBiomeID(season.defaultBiome);
+					info.data[i] = defaultBiomeId;
 					continue;
 				}
 				final Biome replacement = season.replacements.get(biome);

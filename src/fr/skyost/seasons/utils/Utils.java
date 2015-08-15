@@ -24,6 +24,14 @@ import fr.skyost.seasons.CalendarConfig;
 import fr.skyost.seasons.SkyoseasonsAPI;
 
 public class Utils {
+	
+	/**
+	 * Gets the MC server version.
+	 * 
+	 * @return The NMS version.
+	 */
+	
+	public static final String MC_SERVER_VERSION = Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
 
 	/**
 	 * Gets the ordinal suffix of a number.
@@ -147,17 +155,7 @@ public class Utils {
 	 */
 
 	public static final Class<?> getMCClass(final String name) throws ClassNotFoundException {
-		return Class.forName("net.minecraft.server." + getMCServerVersion() + "." + name);
-	}
-	
-	/**
-	 * Gets the MC server vesion.
-	 * 
-	 * @return The NMS version.
-	 */
-	
-	public static final String getMCServerVersion() {
-		return Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
+		return Class.forName("net.minecraft.server." + MC_SERVER_VERSION + "." + name);
 	}
 	
 	/**

@@ -103,16 +103,15 @@ public class Skyoseasons extends JavaPlugin {
 		if(config.enableProtocolLib) {
 			final Plugin protocolLibPlugin = manager.getPlugin("ProtocolLib");
 			if(protocolLibPlugin != null && protocolLibPlugin.isEnabled()) {
-				final String version = Utils.getMCServerVersion();
 				String state;
 				try {
-					protocolLib = (AbstractProtocolLibHook)Class.forName("fr.skyost.seasons.utils.packets." + version + ".ProtocolLibHook").getConstructor(Plugin.class).newInstance(this);
+					protocolLib = (AbstractProtocolLibHook)Class.forName("fr.skyost.seasons.utils.packets." + Utils.MC_SERVER_VERSION + ".ProtocolLibHook").getConstructor(Plugin.class).newInstance(this);
 					state = "loaded";
 				}
 				catch(final ClassNotFoundException ex) {
 					state = "cannot be found";
 				}
-				logsManager.log("ProtocolLib hook for MC " + version + " " + state + " !");
+				logsManager.log("ProtocolLib hook for MC " + Utils.MC_SERVER_VERSION + " " + state + " !");
 			}
 		}
 		if(config.enableMetrics) {
@@ -255,10 +254,10 @@ public class Skyoseasons extends JavaPlugin {
 	
 	private final void setupCommands() {
 		final PluginCommand skyoseasons = this.getCommand("skyoseasons");
-		skyoseasons.setUsage(ChatColor.RED + "/skyoseasons [day [new-day]|month [month]|season [season]|season-month [season-month]|year [year]].");
+		skyoseasons.setUsage(ChatColor.RED + skyoseasons.getUsage());
 		skyoseasons.setExecutor(new SkyoseasonsCommand());
 		final PluginCommand calendar = this.getCommand("calendar");
-		calendar.setUsage(ChatColor.GOLD + "/calendar [world].");
+		calendar.setUsage(ChatColor.GOLD + calendar.getUsage());
 		calendar.setExecutor(new CalendarCommand());
 	}
 	

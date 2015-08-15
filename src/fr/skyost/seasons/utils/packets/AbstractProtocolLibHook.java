@@ -32,6 +32,7 @@ public abstract class AbstractProtocolLibHook {
 	public static final int NIBBLES_REQUIRED = 4;
 	
 	private final HashMap<Biome, Byte> biomes = new HashMap<Biome, Byte>();
+	protected byte defaultBiomeId = 0;
 	
 	public AbstractProtocolLibHook(final Plugin plugin) throws PacketPluginHookInitializationException {
 		Bukkit.getPluginManager().registerEvents(new PacketPluginHookEvents(), plugin);
@@ -86,6 +87,10 @@ public abstract class AbstractProtocolLibHook {
 	
 	public final Byte getBiomeID(final Biome biome) {
 		return biomes.get(biome);
+	}
+	
+	public final void setDefaultBiome(final Biome biome) {
+		defaultBiomeId = biomes.get(biome);
 	}
 	
 	protected final <T> T getOrDefault(final T value, final T defaultIfNull) {

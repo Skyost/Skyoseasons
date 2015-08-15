@@ -24,6 +24,8 @@ public class SnowPlacer extends BukkitRunnable {
 	private final SeasonWorld world;
 	private final BukkitScheduler scheduler;
 	
+	private boolean isCancelled = false;
+	
 	public SnowPlacer(final SeasonWorld world) {
 		this.world = world;
 		this.scheduler = Bukkit.getScheduler();
@@ -59,7 +61,15 @@ public class SnowPlacer extends BukkitRunnable {
 			}
 			block.setType(Material.SNOW);
 		}
-		scheduler.scheduleSyncDelayedTask(SkyoseasonsAPI.getPlugin(), this, random.nextInt(world.season.snowPlacerDelay) + 1L);
+		if(!isCancelled) {
+			scheduler.scheduleSyncDelayedTask(SkyoseasonsAPI.getPlugin(), this, random.nextInt(world.season.snowPlacerDelay) + 1L);
+		}
+	}
+	
+	@Override
+	public final void cancel() {
+		isCancelled = true;
+		super.cancel();
 	}
 
 }

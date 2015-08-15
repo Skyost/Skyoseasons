@@ -144,11 +144,10 @@ public class EventsListener implements Listener {
 			if(event.isNewChunk()) {
 				chunk.load(true);
 			}
+			final List<Location> snowBlocks = world.handleBlocks(chunk);
 			if(!world.season.snowMelt) {
-				world.handleBlocks(chunk);
 				return;
 			}
-			final List<Location> snowBlocks = world.handleBlocks(chunk);
 			snowBlocks.removeAll(world.globalSnowBlocks);
 			if(snowBlocks.size() != 0) {
 				final List<BukkitRunnable> tasks = world.tasks.get(1);

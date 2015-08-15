@@ -99,7 +99,7 @@ public class SkyoseasonsCommand implements CommandExecutor {
 					return true;
 				}
 				if(SkyoseasonsAPI.callMonthChange(world, month, ModificationCause.PLAYER).isCancelled()) {
-					sender.sendMessage(ChatColor.RED + "Cancellled by a plugin.");
+					sender.sendMessage(ChatColor.RED + "Cancelled by a plugin.");
 				}
 			}
 			break;
@@ -122,7 +122,7 @@ public class SkyoseasonsCommand implements CommandExecutor {
 					return true;
 				}
 				if(SkyoseasonsAPI.callSeasonChange(world, season, ModificationCause.PLAYER).isCancelled()) {
-					sender.sendMessage(ChatColor.RED + "Cancellled by a plugin.");
+					sender.sendMessage(ChatColor.RED + "Cancelled by a plugin.");
 				}
 			}
 			break;
@@ -170,7 +170,7 @@ public class SkyoseasonsCommand implements CommandExecutor {
 					return true;
 				}
 				if(SkyoseasonsAPI.callYearChange(world, Integer.parseInt(args[1]), ModificationCause.PLAYER).isCancelled()) {
-					sender.sendMessage(ChatColor.RED + "Cancellled by a plugin.");
+					sender.sendMessage(ChatColor.RED + "Cancelled by a plugin.");
 				}
 			}
 			break;
