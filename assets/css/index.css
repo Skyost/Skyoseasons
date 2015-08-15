@@ -1,0 +1,30 @@
+html, body {
+	height: 100%;
+	width: 100%;
+}
+
+body {
+	overflow: hidden;
+}
+
+#banner {
+	text-align: center;
+	height: 10em;
+	width: 35em;
+	padding: 10px;
+	position: absolute;
+	margin-top: -5em;
+	margin-left: -17.5em;
+	top: 50%;
+	left: 50%;
+}
+
+#banner img {
+	width: 100%;
+}
+
+#season {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+}
