@@ -26,7 +26,7 @@ import fr.skyost.seasons.tasks.SnowMelt;
 import fr.skyost.seasons.tasks.TimeControl;
 import fr.skyost.seasons.utils.Utils;
 import fr.skyost.seasons.utils.packets.AbstractProtocolLibHook;
-import fr.skyost.seasons.utils.packets.PacketMapChunk;
+import fr.skyost.seasons.utils.packets.v1_8_R3.PacketMapChunk;
 
 public class SeasonWorld {
 	
