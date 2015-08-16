@@ -31,10 +31,6 @@ body {
 	max-width: 90%;
 }
 
-#banner :hover {
-	opacity: 0.9;
-}
-
 #bukkitdev {
 	top: 1px;
 	left: 1px;
@@ -68,4 +64,8 @@ body {
 .link {
 	z-index: 1;
 	position: absolute;
+}
+
+.link :hover {
+	opacity: 0.88;
 }
