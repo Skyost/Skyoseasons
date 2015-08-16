@@ -7,24 +7,64 @@ body {
 	overflow: hidden;
 }
 
+#background {
+	z-index: 0;
+	pointer-events: none;
+}
+
+#background, #background img {
+	min-height: 100%;
+	min-width: 100%;
+}
+
 #banner {
-	text-align: center;
+	z-index: 1;
 	height: 10em;
-	width: 35em;
+	width: 100%;
 	padding: 10px;
 	position: absolute;
 	margin-top: -5em;
-	margin-left: -17.5em;
 	top: 50%;
-	left: 50%;
+	text-align: center;
 }
 
 #banner img {
-	width: 100%;
+	min-width: 40%;
+	max-width: 90%;
+}
+
+#banner :hover {
+	opacity: 0.9;
+}
+
+.link {
+	z-index: 1;
+	position: absolute;
+}
+
+#bukkitdev {
+	top: 1px;
+	left: 1px;
+}
+
+#bukkitdev img {
+	opacity: 0.9;
+	height: 20px;
+	width: 20px;
+}
+
+#github {
+	bottom: 1px;
+	left: 1px;
+}
+
+#github img {
+	opacity: 0.9;
+	height: 20px;
+	width: 20px;
 }
 
 #season {
-	position: absolute;
 	bottom: 0;
 	right: 0;
 }
