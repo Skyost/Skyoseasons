@@ -3,23 +3,15 @@ var season = seasons[Math.floor(Math.random() * seasons.length)];
 
 $(document).ready(function() {
 	snowStorm.stop();
-	snowStorm.autoStart = false;
-	snowStorm.snowStick = false;
-	snowStorm.snowCharacter = '▪';
-	snowStorm.useTwinkleEffect = true;
 	$('#background img').attr('src', 'assets/img/' + season + '/background.png');
 	$('#banner img').attr('src', 'assets/img/' + season + '/banner.png');
 	$('#season img').attr('src', 'assets/img/' + season + '/season.png');
 	$('.link img').tooltip();
 	if(season == 'winter') {
-		snowStorm.flakesMaxActive = 96;
-		snowStorm.snowColor = '#FFFFFF';
-		snowStorm.resume();
+		initSnowStorm(96, '#FFFFFF', 2, 1);
 	}
 	else if(season == 'spring') {
-		snowStorm.flakesMaxActive = 20;
-		snowStorm.snowColor = '#FF85F2';
-		snowStorm.resume();
+		initSnowStorm(17, '#FF85F2', 0.5, 0.5);
 	}
 	/*var body = $('body');
 	body.css('background', 'url(\'assets/img/' + season + '/background.png\') no-repeat center center fixed');
@@ -28,3 +20,15 @@ $(document).ready(function() {
 	body.css('-o-background-size', 'cover');
 	body.css('background-size', 'cover');*/
 });
+
+function initSnowStorm(flakesMaxActive, snowColor, vMaxX, vMaxY) {
+	snowStorm.autoStart = false;
+	snowStorm.snowStick = false;
+	snowStorm.snowCharacter = '■';
+	snowStorm.useTwinkleEffect = true;
+	snowStorm.flakesMaxActive = flakesMaxActive;
+	snowStorm.snowColor = snowColor;
+	snowStorm.vMaxX = vMaxX;
+	snowStorm.vMaxY = vMaxY;
+	snowStorm.resume();
+}
