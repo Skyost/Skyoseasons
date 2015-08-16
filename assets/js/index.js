@@ -10,6 +10,7 @@ $(document).ready(function() {
 	$('#background img').attr('src', 'assets/img/' + season + '/background.png');
 	$('#banner img').attr('src', 'assets/img/' + season + '/banner.png');
 	$('#season img').attr('src', 'assets/img/' + season + '/season.png');
+	$('.link img').tooltip();
 	if(season == 'winter') {
 		snowStorm.flakesMaxActive = 96;
 		snowStorm.snowColor = '#FFFFFF';
@@ -26,5 +27,4 @@ $(document).ready(function() {
 	body.css('-moz-background-size', 'cover');
 	body.css('-o-background-size', 'cover');
 	body.css('background-size', 'cover');*/
-	$('img').tooltip();
 });

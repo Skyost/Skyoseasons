@@ -18,11 +18,9 @@ body {
 }
 
 #banner {
-	z-index: 1;
 	height: 10em;
 	width: 100%;
 	padding: 10px;
-	position: absolute;
 	margin-top: -5em;
 	top: 50%;
 	text-align: center;
@@ -35,11 +33,6 @@ body {
 
 #banner :hover {
 	opacity: 0.9;
-}
-
-.link {
-	z-index: 1;
-	position: absolute;
 }
 
 #bukkitdev {
@@ -67,4 +60,9 @@ body {
 #season {
 	bottom: 0;
 	right: 0;
+}
+
+.link {
+	z-index: 1;
+	position: absolute;
 }
