@@ -18,6 +18,10 @@ body {
 	text-align: center;
 }
 
+#loader img {
+	max-width: 10%;
+}
+
 #loader div {
 	position: relative;
 	top: 50%;
