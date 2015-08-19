@@ -7,6 +7,23 @@ body {
 	overflow: hidden;
 }
 
+#loader {
+	z-index: 2;
+	height: 100%;
+	width: 100%;
+	background-color: white;
+	position: absolute;
+	margin: 0 auto;
+	cursor: wait;
+	text-align: center;
+}
+
+#loader div {
+	position: relative;
+	top: 50%;
+	transform: translateY(-50%);
+}
+
 #background {
 	z-index: 0;
 	pointer-events: none;

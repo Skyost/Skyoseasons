@@ -13,6 +13,7 @@ $(document).ready(function() {
 	else if(season == 'spring') {
 		initSnowStorm(17, '#FF85F2', 0.5, 0.5);
 	}
+	$('#loader').fadeOut(1000);
 	/*var body = $('body');
 	body.css('background', 'url(\'assets/img/' + season + '/background.png\') no-repeat center center fixed');
 	body.css('-webkit-background-size', 'cover');
