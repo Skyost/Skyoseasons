@@ -2,7 +2,6 @@ package fr.skyost.seasons;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -17,73 +16,73 @@ public class CalendarConfig extends Skyoconfig {
 	@ConfigOptions(name = "months")
 	public LinkedHashMap<String, String> months = new LinkedHashMap<String, String>() {
 		private static final long serialVersionUID = 1L; {
-			put("1", Utils.toJson(new HashMap<Object, Object>() {
+			put("1", Utils.toJson(new LinkedHashMap<Object, Object>() {
 				private static final long serialVersionUID = 1L; {
 					put("Name", "January");
 					put("Days", 31);
 				}
 			}));
-			put("2", Utils.toJson(new HashMap<Object, Object>() {
+			put("2", Utils.toJson(new LinkedHashMap<Object, Object>() {
 				private static final long serialVersionUID = 1L; {
 					put("Name", "February");
 					put("Days", 28);
 				}
 			}));
-			put("3", Utils.toJson(new HashMap<Object, Object>() {
+			put("3", Utils.toJson(new LinkedHashMap<Object, Object>() {
 				private static final long serialVersionUID = 1L; {
 					put("Name", "March");
 					put("Days", 31);
 				}
 			}));
-			put("4", Utils.toJson(new HashMap<Object, Object>() {
+			put("4", Utils.toJson(new LinkedHashMap<Object, Object>() {
 				private static final long serialVersionUID = 1L; {
 					put("Name", "April");
 					put("Days", 30);
 				}
 			}));
-			put("5", Utils.toJson(new HashMap<Object, Object>() {
+			put("5", Utils.toJson(new LinkedHashMap<Object, Object>() {
 				private static final long serialVersionUID = 1L; {
 					put("Name", "May");
 					put("Days", 31);
 				}
 			}));
-			put("6", Utils.toJson(new HashMap<Object, Object>() {
+			put("6", Utils.toJson(new LinkedHashMap<Object, Object>() {
 				private static final long serialVersionUID = 1L; {
 					put("Name", "June");
 					put("Days", 30);
 				}
 			}));
-			put("7", Utils.toJson(new HashMap<Object, Object>() {
+			put("7", Utils.toJson(new LinkedHashMap<Object, Object>() {
 				private static final long serialVersionUID = 1L; {
 					put("Name", "July");
 					put("Days", 31);
 				}
 			}));
-			put("8", Utils.toJson(new HashMap<Object, Object>() {
+			put("8", Utils.toJson(new LinkedHashMap<Object, Object>() {
 				private static final long serialVersionUID = 1L; {
 					put("Name", "August");
 					put("Days", 31);
 				}
 			}));
-			put("9", Utils.toJson(new HashMap<Object, Object>() {
+			put("9", Utils.toJson(new LinkedHashMap<Object, Object>() {
 				private static final long serialVersionUID = 1L; {
 					put("Name", "September");
 					put("Days", 30);
 				}
 			}));
-			put("10", Utils.toJson(new HashMap<Object, Object>() {
+			put("10", Utils.toJson(new LinkedHashMap<Object, Object>() {
 				private static final long serialVersionUID = 1L; {
 					put("Name", "October");
 					put("Days", 31);
 				}
 			}));
-			put("11", Utils.toJson(new HashMap<Object, Object>() {
+			put("11", Utils.toJson(new LinkedHashMap<Object, Object>() {
 				private static final long serialVersionUID = 1L; {
 					put("Name", "November");
 					put("Days", 30);
 				}
 			}));
-			put("12", Utils.toJson(new HashMap<Object, Object>() {
+			put("12", Utils.toJson(new LinkedHashMap<Object, Object>() {
 				private static final long serialVersionUID = 1L; {
 					put("Name", "December");
 					put("Days", 31);

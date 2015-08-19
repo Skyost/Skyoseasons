@@ -34,9 +34,7 @@ public class SnowPlacer extends BukkitRunnable {
 	@Override
 	public final void run() {
 		for(final Chunk chunk : world.world.getLoadedChunks()) {
-			final int x = random.nextInt(16);
-			final int z = random.nextInt(16);
-			final Block block = world.world.getHighestBlockAt(chunk.getBlock(x, 0, z).getLocation());
+			final Block block = world.world.getHighestBlockAt(chunk.getBlock(random.nextInt(16), 0, random.nextInt(16)).getLocation());
 			/*if(block.getLightLevel() >= 12) {
 				continue;
 			}*/

@@ -26,8 +26,6 @@ public class LogsManager {
 		DAY;
 	}
 	
-	public LogsManager() {}
-	
 	public LogsManager(final Plugin plugin) {
 		this(plugin.getLogger(), new File(plugin.getDataFolder() + File.separator + "logs"));
 	}
