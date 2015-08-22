@@ -34,7 +34,10 @@ $(document).ready(function() {
 
 function loadPage() {
 	if(--imageCount == 0) {
-		$('#loader').fadeOut(1000);
+		var loader = $('#loader');
+		loader.fadeOut(1000, function() {
+			loader.remove();
+		});
 	}
 }
 
