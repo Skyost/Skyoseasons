@@ -5,6 +5,7 @@ html, body {
 
 body {
 	overflow: hidden;
+	margin: 0;
 }
 
 #loader {

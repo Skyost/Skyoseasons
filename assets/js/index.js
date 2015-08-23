@@ -9,7 +9,9 @@ $(document).ready(function() {
 	$('#background img').attr('src', 'assets/img/' + season + '/background.png');
 	$('#banner img').attr('src', 'assets/img/' + season + '/banner.png');
 	$('#season img').attr('src', 'assets/img/' + season + '/season.png');
-	$('.link img').tooltip();
+	$('.link img').miniTip({
+		anchor: $(this).attr('data-placement')
+	});
 	if(season == 'winter') {
 		initSnowStorm(96, '#FFFFFF', 2, 1);
 	}
