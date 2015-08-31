@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
+import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -75,6 +77,7 @@ public abstract class AbstractProtocolLibHook {
 	protected abstract void translateMapChunk(final PacketContainer packet, final Player player, final Season season);
 	protected abstract void translateMapChunkBulk(final PacketContainer packet, final Player player, final Season season);
 	protected abstract boolean translateChunkInfo(final ChunkInfo info, final Season season);
+	public abstract void refreshChunk(final World world, final Chunk chunk);
 	
 	public final Biome getBiomeByID(final byte id) {
 		for(final Entry<Biome, Byte> entry : biomes.entrySet()) {

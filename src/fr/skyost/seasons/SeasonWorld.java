@@ -26,7 +26,6 @@ import fr.skyost.seasons.tasks.SnowMelt;
 import fr.skyost.seasons.tasks.TimeControl;
 import fr.skyost.seasons.utils.Utils;
 import fr.skyost.seasons.utils.packets.AbstractProtocolLibHook;
-import fr.skyost.seasons.utils.packets.v1_8_R3.PacketMapChunk;
 
 public class SeasonWorld {
 	
@@ -44,22 +43,20 @@ public class SeasonWorld {
 	public final List<Location> globalSnowBlocks = new ArrayList<Location>();
 	
 	public SeasonWorld(final World world, final WorldConfig config) {
-		this.world = world;
-		day = config.day;
-		month = Skyoseasons.months.getByIndex(config.month - 1);
-		season = Skyoseasons.seasons.get(config.season);
-		seasonMonth = config.seasonMonth;
-		year = config.year;
-		world.setTime(0L);
-		calendar = buildCalendar(month);
+		this(world, config.day, Skyoseasons.months.getByIndex(config.month - 1), Skyoseasons.seasons.get(config.season), config.seasonMonth, config.year);
 	}
 	
 	public SeasonWorld(final World world) {
+		this(world, 1, Skyoseasons.months.getByIndex(0), null, 1, 2000);
+	}
+	
+	private SeasonWorld(final World world, final int day, final Month month, final Season season, final int seasonMonth, final int year) {
 		this.world = world;
-		this.day = 1;
-		this.month = Skyoseasons.months.getByIndex(0);
-		this.seasonMonth = 1;
-		this.year = 2000;
+		this.day = day;
+		this.month = month;
+		this.season = season;
+		this.seasonMonth = seasonMonth;
+		this.year = year;
 		world.setTime(0L);
 		calendar = buildCalendar(month);
 	}
@@ -75,6 +72,17 @@ public class SeasonWorld {
 		meta = item.getItemMeta();
 		meta.setDisplayName(Skyoseasons.calendar.calendarTodayName.replace("/month/", month.name).replace("/day-number/", String.valueOf(day)).replace("/ordinal/", Utils.getOrdinalSuffix(day)).replace("/year/", String.valueOf(year)));
 		item.setItemMeta(meta);
+	}
+	
+	public final void updateCalendarForViewers() {
+		final List<HumanEntity> viewers = new ArrayList<HumanEntity>(calendar.getViewers());
+		for(final HumanEntity viewer : viewers) {
+			viewer.closeInventory();
+		}
+		calendar = buildCalendar(month);
+		for(final HumanEntity viewer : viewers) {
+			viewer.openInventory(calendar);
+		}
 	}
 	
 	public final Inventory buildCalendar(final Month month) {
@@ -96,17 +104,6 @@ public class SeasonWorld {
 			menu.addItem(item);
 		}
 		return menu;
-	}
-	
-	public final void buildCalendar() {
-		final List<HumanEntity> viewers = new ArrayList<HumanEntity>(calendar.getViewers());
-		for(final HumanEntity viewer : viewers) {
-			viewer.closeInventory();
-		}
-		calendar = buildCalendar(month);
-		for(final HumanEntity viewer : viewers) {
-			viewer.openInventory(calendar);
-		}
 	}
 	
 	public final void setCurrentSeason(final Season season, final String message) {
@@ -194,13 +191,16 @@ public class SeasonWorld {
 			
 			@Override
 			public final void run() {
-				for(final Chunk chunk : chunks) {
-					if(Utils.MC_SERVER_VERSION.equals("v1_8_R3")) {
-						for(final Player player : Bukkit.getOnlinePlayers()) {
-							new PacketMapChunk(chunk).send(player);
-						}
+				final AbstractProtocolLibHook hook = SkyoseasonsAPI.getProtocolLibHook();
+				if(hook == null) {
+					for(final Chunk chunk : chunks) {
+						world.refreshChunk(chunk.getX(), chunk.getZ());
 					}
-					world.refreshChunk(chunk.getX(), chunk.getZ());
+				}
+				else {
+					for(final Chunk chunk : chunks) {
+						hook.refreshChunk(world, chunk);
+					}
 				}
 			}
 			

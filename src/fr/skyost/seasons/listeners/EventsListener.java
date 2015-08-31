@@ -111,7 +111,7 @@ public class EventsListener implements Listener {
 				Bukkit.getPluginManager().callEvent(new YearChangeEvent(seasonWorld, seasonWorld.year + 1, SkyoseasonsAPI.getCalendarConfig().messagesYear.replace("/year/", String.valueOf(seasonWorld.year + 1)), ModificationCause.PLAYER));
 			}
 		}
-		seasonWorld.buildCalendar();
+		seasonWorld.updateCalendarForViewers();
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)

@@ -2,6 +2,9 @@ package fr.skyost.seasons.utils.packets.v1_8_R3;
 
 import net.minecraft.server.v1_8_R3.PacketPlayOutMapChunk.ChunkMap;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
+import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -58,6 +61,14 @@ public class ProtocolLibHook extends AbstractProtocolLibHook {
 			return true;
 		}
 		return false;
+	}
+	
+	@Override
+	public final void refreshChunk(final World world, final Chunk chunk) {
+		for(final Player player : Bukkit.getOnlinePlayers()) {
+			new PacketMapChunk(chunk).send(player);
+		}
+		world.refreshChunk(chunk.getX(), chunk.getZ());
 	}
 
 }

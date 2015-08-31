@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.zip.Deflater;
 
+import org.bukkit.Chunk;
+import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
@@ -100,6 +102,11 @@ public class ProtocolLibHook extends AbstractProtocolLibHook {
 			return true;
 		}
 		return false;
+	}
+	
+	@Override
+	public final void refreshChunk(final World world, final Chunk chunk) {
+		world.refreshChunk(chunk.getX(), chunk.getZ());
 	}
 	
 	private final void finalizeMapChunk(final PacketContainer packet) {

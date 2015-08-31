@@ -3,6 +3,7 @@ package fr.skyost.seasons;
 import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import org.bukkit.block.Biome;
 
@@ -68,13 +69,11 @@ public class SeasonConfig extends Skyoconfig {
 	public int protocolLibSnowPlacerMaxDelay = 100;
 	
 	public SeasonConfig(final File file) {
-		super(file, Arrays.asList("####################################################### #", "              Skyoseasons Configuration                 #", " Check http://dev.bukkit.org/bukkit-plugins/skyoseasons #", "               for more informations.                   #", "####################################################### #"));
-		replacements.put(Biome.MUSHROOM_ISLAND.name(), Biome.MUSHROOM_ISLAND.name());
-		replacements.put(Biome.MUSHROOM_SHORE.name(),  Biome.MUSHROOM_SHORE.name());
+		this(file, Arrays.asList("####################################################### #", "              Skyoseasons Configuration                 #", " Check http://dev.bukkit.org/bukkit-plugins/skyoseasons #", "               for more informations.                   #", "####################################################### #"));
 	}
 	
 	public SeasonConfig(final File file, final String name, final String next, final Biome defaultBiome, final boolean canRain, final boolean alwaysRain, final boolean snowMelt, final int dayLength, final String dayMessageMessage, final int nightLength, final String nightMessageMessage, final String message, final String monthsMessage, final boolean spoutCloudsVisible, final boolean spoutSunVisible, final int spoutSunSizePercent, final boolean protocolLibSnowPlacerEnabled) {
-		super(file);
+		this(file, Arrays.asList("####################################################### #", "              Skyoseasons Configuration                 #", " Check http://dev.bukkit.org/bukkit-plugins/skyoseasons #", "               for more informations.                   #", "####################################################### #"));
 		this.name = name;
 		this.next = next;
 		this.defaultBiome = defaultBiome;
@@ -91,6 +90,14 @@ public class SeasonConfig extends Skyoconfig {
 		this.spoutSunVisible = spoutSunVisible;
 		this.spoutSunSizePercent = spoutSunSizePercent;
 		this.protocolLibSnowPlacerEnabled = protocolLibSnowPlacerEnabled;
+	}
+	
+	private SeasonConfig(final File file, final List<String> header) {
+		super(file, header);
+		replacements.put(Biome.MUSHROOM_ISLAND.name(), Biome.MUSHROOM_ISLAND.name());
+		replacements.put(Biome.MUSHROOM_SHORE.name(),  Biome.MUSHROOM_SHORE.name());
+		replacements.put(Biome.DESERT.name(), Biome.DESERT.name());
+		replacements.put(Biome.MESA.name(), Biome.MESA.name());
 	}
 	
 }
