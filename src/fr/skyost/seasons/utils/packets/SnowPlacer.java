@@ -3,13 +3,11 @@ package fr.skyost.seasons.utils.packets;
 import java.util.HashSet;
 import java.util.Random;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitScheduler;
 
 import fr.skyost.seasons.SeasonWorld;
 import fr.skyost.seasons.SkyoseasonsAPI;
@@ -22,13 +20,11 @@ public class SnowPlacer extends BukkitRunnable {
 	private final Random random = new Random();
 	
 	private final SeasonWorld world;
-	private final BukkitScheduler scheduler;
 	
 	private boolean isCancelled = false;
 	
 	public SnowPlacer(final SeasonWorld world) {
 		this.world = world;
-		this.scheduler = Bukkit.getScheduler();
 	}
 
 	@Override
@@ -60,7 +56,7 @@ public class SnowPlacer extends BukkitRunnable {
 			block.setType(Material.SNOW);
 		}
 		if(!isCancelled) {
-			scheduler.scheduleSyncDelayedTask(SkyoseasonsAPI.getPlugin(), this, random.nextInt(world.season.snowPlacerDelay) + 1L);
+			this.runTaskLater(SkyoseasonsAPI.getPlugin(), random.nextInt(world.season.snowPlacerDelay) + 1L);
 		}
 	}
 	

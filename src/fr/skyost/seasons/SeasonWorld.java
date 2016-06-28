@@ -1,6 +1,8 @@
 package fr.skyost.seasons;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
@@ -19,9 +21,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.ListMultimap;
-
 import fr.skyost.seasons.tasks.SnowMelt;
 import fr.skyost.seasons.tasks.TimeControl;
 import fr.skyost.seasons.utils.Utils;
@@ -39,15 +38,14 @@ public class SeasonWorld {
 	
 	public Inventory calendar;
 	
-	public final ListMultimap<Integer, BukkitRunnable> tasks = ArrayListMultimap.create();
-	public final List<Location> globalSnowBlocks = new ArrayList<Location>();
+	public final HashMap<Integer, BukkitRunnable> tasks = new HashMap<Integer, BukkitRunnable>();
 	
 	public SeasonWorld(final World world, final WorldConfig config) {
 		this(world, config.day, Skyoseasons.months.getByIndex(config.month - 1), Skyoseasons.seasons.get(config.season), config.seasonMonth, config.year);
 	}
 	
 	public SeasonWorld(final World world) {
-		this(world, 1, Skyoseasons.months.getByIndex(0), null, 1, 2000);
+		this(world, Calendar.getInstance().get(Calendar.DAY_OF_MONTH), Skyoseasons.months.getByIndex(0), null, 1, Calendar.getInstance().get(Calendar.YEAR));
 	}
 	
 	private SeasonWorld(final World world, final int day, final Month month, final Season season, final int seasonMonth, final int year) {
@@ -111,19 +109,16 @@ public class SeasonWorld {
 	}
 	
 	public final void setCurrentSeason(final Season season, final String message, final int seasonMonth) {
-		final List<BukkitRunnable> timeControl = tasks.get(0);
-		if(timeControl != null && timeControl.size() != 0) {
-			timeControl.get(0).cancel();
-			tasks.removeAll(0);
+		final TimeControl timeControl = (TimeControl)tasks.get(0);
+		if(timeControl != null) {
+			timeControl.cancel();
+			tasks.remove(0);
 		}
 		this.season = season;
-		final List<BukkitRunnable> snowMelt = tasks.get(1);
+		SnowMelt snowMelt = (SnowMelt)tasks.get(1);
 		if(!season.snowMelt && snowMelt != null) {
-			for(final BukkitRunnable task : snowMelt) {
-				task.cancel();
-			}
-			tasks.removeAll(1);
-			globalSnowBlocks.clear();
+			snowMelt.cancel();
+			tasks.remove(1);
 		}
 		this.seasonMonth = seasonMonth;
 		final AbstractProtocolLibHook protocolLibHook = SkyoseasonsAPI.getProtocolLibHook();
@@ -131,15 +126,18 @@ public class SeasonWorld {
 			protocolLibHook.setDefaultBiome(season.defaultBiome);
 		}
 		final List<Location> snowBlocks = handleBlocks(world.getLoadedChunks());
-		globalSnowBlocks.addAll(snowBlocks);
+		if(!season.snowMelt) {
+			return;
+		}
 		if(snowBlocks.size() != 0) {
-			final Random random = new Random();
-			final List<List<Location>> snowBlocksSplitted = Utils.splitList(snowBlocks, Skyoseasons.config.snowMeltMultiplicator);
-			for(final List<Location> locations : snowBlocksSplitted) {
-				final SnowMelt task = new SnowMelt(this, locations);
-				task.runTaskTimer(Skyoseasons.instance, 20L, random.nextInt(Skyoseasons.config.snowMeltMaxDelay) + 1);
-				tasks.put(1, task);
+			snowMelt = (SnowMelt)tasks.get(1);
+			if(snowMelt == null) {
+				snowMelt = new SnowMelt(this, snowBlocks);
+				snowMelt.runTaskTimer(SkyoseasonsAPI.getPlugin(), 20L, new Random().nextInt(SkyoseasonsAPI.getConfig().snowMeltMaxDelay) + 1);
+				tasks.put(1, snowMelt);
+				return;
 			}
+			snowMelt.addBlocks(snowBlocks);
 		}
 		world.setStorm(season.alwaysRain);
 		for(final Player player : world.getPlayers()) {

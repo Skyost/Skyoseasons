@@ -95,7 +95,6 @@ public class SeasonConfig extends Skyoconfig {
 	private SeasonConfig(final File file, final List<String> header) {
 		super(file, header);
 		replacements.put(Biome.MUSHROOM_ISLAND.name(), Biome.MUSHROOM_ISLAND.name());
-		replacements.put(Biome.MUSHROOM_SHORE.name(),  Biome.MUSHROOM_SHORE.name());
 		replacements.put(Biome.DESERT.name(), Biome.DESERT.name());
 		replacements.put(Biome.MESA.name(), Biome.MESA.name());
 	}

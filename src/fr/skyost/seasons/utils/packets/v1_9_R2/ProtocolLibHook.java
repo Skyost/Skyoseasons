@@ -1,6 +1,4 @@
-package fr.skyost.seasons.utils.packets.v1_8_R3;
-
-import net.minecraft.server.v1_8_R3.PacketPlayOutMapChunk.ChunkMap;
+package fr.skyost.seasons.utils.packets.v1_9_R2;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -22,28 +20,14 @@ public class ProtocolLibHook extends AbstractProtocolLibHook {
 
 	@Override
 	protected final void translateMapChunk(final PacketContainer packet, final Player player, final Season season) {
-		final ChunkMap chunk = (ChunkMap)packet.getModifier().read(2);
-		if(chunk.a != null) {
-			translateChunkInfo(new ChunkInfo(null, chunk.b, 0, getOrDefault(packet.getBooleans().readSafely(0), true), chunk.a, 0), season);
+		final byte[] d = packet.getByteArrays().read(0);
+		if(d != null) {
+			translateChunkInfo(new ChunkInfo(null, packet.getIntegers().read(2), 0, getOrDefault(packet.getBooleans().readSafely(0), true), d, 0), season);
 		}
 	}
 
 	@Override
-	protected final void translateMapChunkBulk(final PacketContainer packet, final Player player, final Season season) {
-		int dataStartIndex = 0;
-		final ChunkMap[] chunks = (ChunkMap[])packet.getModifier().read(2);
-		for(int chunkNum = 0; chunkNum < chunks.length; chunkNum++) {
-			final ChunkInfo info = new ChunkInfo(player, chunks[chunkNum].b, 0, true, chunks[chunkNum].a, 0);
-			if(info.data == null || info.data.length == 0) {
-				info.data = chunks[chunkNum].a;
-			}
-			else {
-				info.startIndex = dataStartIndex;
-			}
-			translateChunkInfo(info, season);
-			dataStartIndex += info.size;
-		}
-	}
+	protected final void translateMapChunkBulk(final PacketContainer packet, final Player player, final Season season) {}
 
 	@Override
 	protected final boolean translateChunkInfo(final ChunkInfo info, final Season season) {
@@ -65,9 +49,6 @@ public class ProtocolLibHook extends AbstractProtocolLibHook {
 	
 	@Override
 	public final void refreshChunk(final World world, final Chunk chunk) {
-		for(final Player player : Bukkit.getOnlinePlayers()) {
-			new PacketMapChunk(chunk).send(player);
-		}
 		world.refreshChunk(chunk.getX(), chunk.getZ());
 	}
 

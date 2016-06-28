@@ -15,8 +15,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
-import org.bukkit.scheduler.BukkitRunnable;
-
 import fr.skyost.seasons.Month;
 import fr.skyost.seasons.Season;
 import fr.skyost.seasons.SeasonWorld;
@@ -30,7 +28,6 @@ import fr.skyost.seasons.events.time.DayEvent;
 import fr.skyost.seasons.events.time.NightEvent;
 import fr.skyost.seasons.tasks.SnowMelt;
 import fr.skyost.seasons.utils.LogsManager;
-import fr.skyost.seasons.utils.Utils;
 
 public class EventsListener implements Listener {
 	
@@ -148,19 +145,15 @@ public class EventsListener implements Listener {
 			if(!world.season.snowMelt) {
 				return;
 			}
-			snowBlocks.removeAll(world.globalSnowBlocks);
 			if(snowBlocks.size() != 0) {
-				final List<BukkitRunnable> tasks = world.tasks.get(1);
-				if(tasks == null || tasks.size() == 0) {
-					final SnowMelt task = new SnowMelt(world, snowBlocks);
-					task.runTaskTimer(SkyoseasonsAPI.getPlugin(), 20L, new Random().nextInt(SkyoseasonsAPI.getConfig().snowMeltMaxDelay) + 1);
-					world.tasks.put(1, task);
+				SnowMelt snowMelt = (SnowMelt)world.tasks.get(1);
+				if(snowMelt == null) {
+					snowMelt = new SnowMelt(world, snowBlocks);
+					snowMelt.runTaskTimer(SkyoseasonsAPI.getPlugin(), 20L, new Random().nextInt(SkyoseasonsAPI.getConfig().snowMeltMaxDelay) + 1);
+					world.tasks.put(1, snowMelt);
 					return;
 				}
-				final List<List<Location>> snowBlocksSplitted = Utils.splitList(snowBlocks, tasks.size());
-				for(int i = 0; i != snowBlocksSplitted.size(); i++) {
-					((SnowMelt)tasks.get(i)).addBlocks(snowBlocksSplitted.get(i));
-				}
+				snowMelt.addBlocks(snowBlocks);
 			}
 		}
 	}

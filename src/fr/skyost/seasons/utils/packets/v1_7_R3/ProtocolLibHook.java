@@ -32,10 +32,10 @@ public class ProtocolLibHook extends AbstractProtocolLibHook {
 	
 	private final Set<Object> changed = Collections.newSetFromMap(new MapMaker().weakKeys().<Object, Boolean>makeMap());
 
-	public ProtocolLibHook(final Plugin plugin) throws PacketPluginHookInitializationException {
-		super(plugin);
+	public ProtocolLibHook(final Plugin protocolLib, final Plugin skyoseasons) throws PacketPluginHookInitializationException {
+		super(protocolLib, skyoseasons);
 		final ProtocolManager manager = ProtocolLibrary.getProtocolManager();
-		manager.addPacketListener(new PacketAdapter(plugin, ListenerPriority.MONITOR, PacketType.Play.Server.MAP_CHUNK) {
+		manager.addPacketListener(new PacketAdapter(skyoseasons, ListenerPriority.MONITOR, PacketType.Play.Server.MAP_CHUNK) {
 
 			@Override
 			public final void onPacketSending(final PacketEvent event) {

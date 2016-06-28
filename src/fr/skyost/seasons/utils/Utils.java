@@ -7,10 +7,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -159,26 +158,6 @@ public class Utils {
 	}
 	
 	/**
-	 * Splits a list.
-	 * 
-	 * @param list The list.
-	 * @param length The length of each list.
-	 * 
-	 * @return A chopped list.
-	 */
-
-	public static final <T> List<List<T>> splitList(final List<T> list, final int length) {
-		final List<List<T>> lists = new ArrayList<List<T>>();
-		final int size = list.size();
-		final int listsSize = list.size() / length;
-		for(int i = 0, index = 0; i < length; i++) {
-			lists.add(new ArrayList<T>(list.subList(index, Math.min(index + listsSize, size))));
-			index += listsSize;
-		}
-		return lists;
-	}
-	
-	/**
 	 * Used to avoid memory leaks.
 	 * @param <T> The instance's type.
 	 * 
@@ -196,6 +175,25 @@ public class Utils {
 			field.setAccessible(true);
 			field.set(Modifier.isStatic(field.getModifiers()) ? null : instance, null);
 		}
+	}
+	
+	/**
+	 * Gets a method where you do not know the type of an argument.
+	 * 
+	 * @param clazz The method's class.
+	 * @param name The method's name.
+	 * @param argNumber Number of arguments.
+	 * 
+	 * @return The method.
+	 */
+	
+	public static final Method getMethodWithUnknownType(final Class<?> clazz, final String name, final int argNumber) {
+		for(final Method method : clazz.getMethods()) {
+			if(method.getName().equals(name) && method.getParameterTypes().length == argNumber) {
+				return method;
+			}
+		}
+		return null;
 	}
 
 }

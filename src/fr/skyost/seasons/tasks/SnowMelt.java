@@ -22,9 +22,8 @@ public class SnowMelt extends BukkitRunnable {
 	
 	@Override
 	public final void run() {
-		final int locNumber = snowBlocks.size();
-		if(locNumber == 0) {
-			seasonWorld.tasks.remove(1, this);
+		if(snowBlocks.size() == 0) {
+			seasonWorld.tasks.remove(1);
 			this.cancel();
 			return;
 		}
@@ -38,7 +37,6 @@ public class SnowMelt extends BukkitRunnable {
 			block.setType(Material.STATIONARY_WATER);
 		}
 		snowBlocks.remove(0);
-		seasonWorld.globalSnowBlocks.remove(location);
 	}
 	
 	public final void addBlocks(final List<Location> locations) {

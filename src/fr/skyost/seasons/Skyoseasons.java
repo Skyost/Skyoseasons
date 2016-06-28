@@ -105,7 +105,7 @@ public class Skyoseasons extends JavaPlugin {
 			if(protocolLibPlugin != null && protocolLibPlugin.isEnabled()) {
 				String state;
 				try {
-					protocolLib = (AbstractProtocolLibHook)Class.forName("fr.skyost.seasons.utils.packets." + Utils.MC_SERVER_VERSION + ".ProtocolLibHook").getConstructor(Plugin.class).newInstance(this);
+					protocolLib = (AbstractProtocolLibHook)Class.forName("fr.skyost.seasons.utils.packets." + Utils.MC_SERVER_VERSION + ".ProtocolLibHook").getConstructor(Plugin.class, Plugin.class).newInstance(protocolLibPlugin, this);
 					state = "loaded";
 				}
 				catch(final ClassNotFoundException ex) {
@@ -262,11 +262,18 @@ public class Skyoseasons extends JavaPlugin {
 	}
 	
 	private static final SeasonConfig[] getDefaultSeasons(final File seasonsDir) {
+		Biome winter;
+		try { // 1.9 update
+			winter = Biome.valueOf("ICE_PLAINS");
+		}
+		catch(final IllegalArgumentException ex) {
+			winter = Biome.valueOf("ICE_FLATS");
+		}
 		final List<SeasonConfig> configs = new ArrayList<SeasonConfig>();
 		configs.add(new SeasonConfig(new File(seasonsDir, "spring.yml"), "Spring", "Summer", Biome.JUNGLE, true, false, true, 600, ChatColor.DARK_PURPLE + "A new purple Spring day !", 600, ChatColor.DARK_PURPLE + "Night is coming. Prepare yourself !", ChatColor.LIGHT_PURPLE + "It is Spring, flowers grow on trees...", ChatColor.LIGHT_PURPLE + "/month/, when pink and purple are everywhere...", true, true, 100, false));
 		configs.add(new SeasonConfig(new File(seasonsDir, "summer.yml"), "Summer", "Autumn", Biome.PLAINS, false, false, true, 700, ChatColor.YELLOW + "A beautiful Summer day is coming !", 500, ChatColor.YELLOW + "Yet another beautiful but dangerous night.", ChatColor.YELLOW + "It is Summer, enjoy the sunshine !", ChatColor.YELLOW + "We are in /month/, let's go to the beach !", false, true, 120, false));
 		configs.add(new SeasonConfig(new File(seasonsDir, "autumn.yml"), "Autumn", "Winter", Biome.DESERT, true, true, true, 600, ChatColor.GRAY + "It is a another sad day of Autumn.", 600, ChatColor.GRAY + "Ready for another night ?", ChatColor.DARK_GRAY + "It is Autumn, end of the beach and the sea...", ChatColor.DARK_GRAY + "We are in the sad month of /month/.", true, false, 100, false));
-		configs.add(new SeasonConfig(new File(seasonsDir, "winter.yml"), "Winter", "Spring", Biome.ICE_PLAINS, true, false, false, 500, ChatColor.WHITE + "Brrrr... Winter days are so rude !", 700, ChatColor.WHITE + "Nights are so cold in Winter...", ChatColor.WHITE + "It is Winter, say welcome to the snow !", ChatColor.WHITE + "The cold month of /month/ is here...", true, false, 100, true));
+		configs.add(new SeasonConfig(new File(seasonsDir, "winter.yml"), "Winter", "Spring", winter, true, false, false, 500, ChatColor.WHITE + "Brrrr... Winter days are so rude !", 700, ChatColor.WHITE + "Nights are so cold in Winter...", ChatColor.WHITE + "It is Winter, say welcome to the snow !", ChatColor.WHITE + "The cold month of /month/ is here...", true, false, 100, true));
 		return configs.toArray(new SeasonConfig[configs.size()]);
 	}
 	
