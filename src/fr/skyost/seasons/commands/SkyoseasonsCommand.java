@@ -53,6 +53,7 @@ public class SkyoseasonsCommand implements CommandExecutor {
 		final SeasonWorld world = SkyoseasonsAPI.getSeasonWorldExact(player.getWorld());
 		if(world == null) {
 			sender.sendMessage(ChatColor.RED + "Enabled worlds :\n" + Joiner.on('\n').join(SkyoseasonsAPI.getSeasonWorldsNames()));
+			return true;
 		}
 		switch(args[0].toLowerCase()) {
 		case "day":

@@ -147,9 +147,6 @@ public class SeasonWorld {
 			if(season.resourcePackUrl != null) {
 				player.setResourcePack(season.resourcePackUrl);
 			}
-			if(Skyoseasons.spout != null && Skyoseasons.spout.isSpoutPlayer(player)) {
-				Skyoseasons.spout.sendEffects(player, season.effects);
-			}
 		}
 		Skyoseasons.logsManager.log(season.message, Level.INFO, world);
 		final TimeControl task = new TimeControl(this, season.daylength, season.nightLength, Skyoseasons.config.refreshTime);
@@ -158,6 +155,7 @@ public class SeasonWorld {
 	}
 	
 	public final List<Location> handleBlocks(final Chunk... chunks) {
+		boolean needToRefresh = false;
 		final List<Location> snowBlocks = new ArrayList<Location>();
 		for(final Chunk chunk : chunks) {
 			for(int x = 0; x < 16; x++) {
@@ -166,6 +164,7 @@ public class SeasonWorld {
 					if(Skyoseasons.protocolLib == null) {
 						final Biome biome = season.replacements.get(block.getBiome());
 						block.setBiome(biome == null ? season.defaultBiome : biome);
+						needToRefresh = true;
 					}
 					if(season.snowMelt) {
 						Block highestBlock = world.getHighestBlockAt(block.getLocation());
@@ -185,24 +184,26 @@ public class SeasonWorld {
 				}
 			}
 		}
-		new Thread() {
-			
-			@Override
-			public final void run() {
-				final AbstractProtocolLibHook hook = SkyoseasonsAPI.getProtocolLibHook();
-				if(hook == null) {
-					for(final Chunk chunk : chunks) {
-						world.refreshChunk(chunk.getX(), chunk.getZ());
+		if(needToRefresh) {
+			new Thread() {
+				
+				@Override
+				public final void run() {
+					final AbstractProtocolLibHook hook = SkyoseasonsAPI.getProtocolLibHook();
+					if(hook == null) {
+						for(final Chunk chunk : chunks) {
+							world.refreshChunk(chunk.getX(), chunk.getZ());
+						}
+					}
+					else {
+						for(final Chunk chunk : chunks) {
+							hook.refreshChunk(world, chunk);
+						}
 					}
 				}
-				else {
-					for(final Chunk chunk : chunks) {
-						hook.refreshChunk(world, chunk);
-					}
-				}
-			}
-			
-		}.start();
+				
+			}.start();
+		}
 		return snowBlocks;
 	}
 	

@@ -31,7 +31,7 @@ import fr.skyost.seasons.utils.LogsManager;
 
 public class EventsListener implements Listener {
 	
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.LOWEST)
 	private final void onDay(final DayEvent event) {
 		final SeasonWorld seasonWorld = event.getWorld();
 		if(seasonWorld.season.dayMessageEnabled) {
@@ -46,7 +46,7 @@ public class EventsListener implements Listener {
 		Bukkit.getPluginManager().callEvent(new DayChangeEvent(seasonWorld, seasonWorld.day + 1 > seasonWorld.month.days ? 1 : seasonWorld.day + 1, ModificationCause.PLUGIN));
 	}
 	
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.LOWEST)
 	private final void onNight(final NightEvent event) {
 		final SeasonWorld seasonWorld = event.getWorld();
 		if(seasonWorld.season.nightMessageEnabled) {
@@ -60,7 +60,7 @@ public class EventsListener implements Listener {
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.LOWEST)
 	private final void onDayChange(final DayChangeEvent event) {
 		if(event.isCancelled()) {
 			return;	
@@ -76,7 +76,7 @@ public class EventsListener implements Listener {
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.LOWEST)
 	private final void onMonthChange(final MonthChangeEvent event) {
 		if(event.isCancelled()) {
 			return;
@@ -111,7 +111,7 @@ public class EventsListener implements Listener {
 		seasonWorld.updateCalendarForViewers();
 	}
 	
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.LOWEST)
 	private final void onSeasonChange(final SeasonChangeEvent event) {
 		if(event.isCancelled()) {
 			return;
@@ -119,7 +119,7 @@ public class EventsListener implements Listener {
 		event.getWorld().setCurrentSeason(event.getNewSeason(), event.getMessage());
 	}
 	
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.LOWEST)
 	private final void onYearChange(final YearChangeEvent event) {
 		if(event.isCancelled()) {
 			return;
@@ -158,8 +158,11 @@ public class EventsListener implements Listener {
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.LOWEST)
 	private final void onWeatherChange(final WeatherChangeEvent event) {
+		if(event.isCancelled()) {
+			return;
+		}
 		final SeasonWorld world = SkyoseasonsAPI.getSeasonWorldExact(event.getWorld());
 		if(world != null) {
 			if(!world.season.canRain) {

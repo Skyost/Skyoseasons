@@ -1,9 +1,15 @@
 package fr.skyost.seasons.utils.packets;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
@@ -17,20 +23,36 @@ public class SnowPlacer extends BukkitRunnable {
 	public static final HashSet<Biome> forbiddenBiomes = new HashSet<Biome>();
 	public static final HashSet<Material> forbiddenTypes = new HashSet<Material>();
 	
-	private final Random random = new Random();
-	
 	private final SeasonWorld world;
+	private final HashMap<Chunk, Location[]> chunks = new HashMap<Chunk, Location[]>();
 	
+	private final Random random = new Random();
 	private boolean isCancelled = false;
 	
-	public SnowPlacer(final SeasonWorld world) {
+	public SnowPlacer(final SeasonWorld world, final Chunk... chunks) {
 		this.world = world;
+		addChunks(chunks);
 	}
 
 	@Override
 	public final void run() {
-		for(final Chunk chunk : world.world.getLoadedChunks()) {
-			final Block block = world.world.getHighestBlockAt(chunk.getBlock(random.nextInt(16), 0, random.nextInt(16)).getLocation());
+		final Location blank = new Location(world.world, 0, 0, 0);
+		for(final Chunk chunk : new HashSet<Chunk>(chunks.keySet())) {
+			final List<Location> locations = new ArrayList<Location>(Arrays.asList(chunks.get(chunk)));
+			final Location randomBlock = blank.clone();
+			do {
+				randomBlock.setX(random.nextInt(16));
+				randomBlock.setY(random.nextInt(16));
+			}
+			while(locations.contains(randomBlock));
+			locations.add(randomBlock);
+			chunks.put(chunk, locations.toArray(new Location[locations.size()]));
+			
+			if(locations.size() >= 256) {
+				chunks.remove(chunk);
+			}
+			
+			final Block block = world.world.getHighestBlockAt(randomBlock);
 			/*if(block.getLightLevel() >= 12) {
 				continue;
 			}*/
@@ -56,7 +78,13 @@ public class SnowPlacer extends BukkitRunnable {
 			block.setType(Material.SNOW);
 		}
 		if(!isCancelled) {
-			this.runTaskLater(SkyoseasonsAPI.getPlugin(), random.nextInt(world.season.snowPlacerDelay) + 1L);
+			Bukkit.getScheduler().runTaskLater(SkyoseasonsAPI.getPlugin(), this, random.nextInt(world.season.snowPlacerDelay) + 1L);
+		}
+	}
+	
+	public final void addChunks(final Chunk... chunks) {
+		for(final Chunk chunk : chunks) {
+			this.chunks.put(chunk, new Location[]{});
 		}
 	}
 	

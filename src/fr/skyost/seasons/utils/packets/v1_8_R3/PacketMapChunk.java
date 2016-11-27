@@ -8,14 +8,14 @@ import org.bukkit.entity.Player;
 
 public class PacketMapChunk {
 	
-	private final net.minecraft.server.v1_8_R3.Chunk chunk;
+	private final PacketPlayOutMapChunk packet;
 	
 	public PacketMapChunk(final org.bukkit.Chunk chunk) {
-		this.chunk = ((CraftChunk)chunk).getHandle();
+		this.packet = new PacketPlayOutMapChunk(((CraftChunk)chunk).getHandle(), true, 20);
 	}
 	
 	public final void send(final Player player) {
-		((CraftPlayer)player).getHandle().playerConnection.sendPacket(new PacketPlayOutMapChunk(chunk, true, 20));
+		((CraftPlayer)player).getHandle().playerConnection.sendPacket(packet);
 	}
 
 }

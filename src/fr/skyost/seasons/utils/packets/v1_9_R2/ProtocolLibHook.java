@@ -22,7 +22,7 @@ public class ProtocolLibHook extends AbstractProtocolLibHook {
 	protected final void translateMapChunk(final PacketContainer packet, final Player player, final Season season) {
 		final byte[] d = packet.getByteArrays().read(0);
 		if(d != null) {
-			translateChunkInfo(new ChunkInfo(null, packet.getIntegers().read(2), 0, getOrDefault(packet.getBooleans().readSafely(0), true), d, 0), season);
+			translateChunkInfo(new ChunkInfo(player, packet.getIntegers().read(2), 0, getOrDefault(packet.getBooleans().readSafely(0), true), d, 0), season);
 		}
 	}
 

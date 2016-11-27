@@ -5,8 +5,6 @@ import java.util.Map.Entry;
 
 import org.bukkit.block.Biome;
 
-import fr.skyost.seasons.utils.spout.SpoutEffects;
-
 public class Season {
 	
 	public final String name;
@@ -32,8 +30,6 @@ public class Season {
 	public final boolean nightMessageEnabled;
 	public final String nightMessage;
 	
-	public final SpoutEffects effects;
-	
 	public final boolean snowPlacerEnabled;
 	public final boolean snowPlacerAllowStacks;
 	public final int snowPlacerDelay;
@@ -58,7 +54,6 @@ public class Season {
 		nightLength = config.nightLength;
 		nightMessageEnabled = config.nightMessageEnable;
 		nightMessage = nightMessageEnabled ? config.nightMessageMessage : null;
-		effects = Skyoseasons.spout == null ? null : new SpoutEffects(config.spoutStarsVisible, config.spoutStarsFrequency, config.spoutCloudsVisible, config.spoutSunVisible, config.spoutSunSizePercent, config.spoutMoonVisible, config.spoutMoonSizePercent);
 		snowPlacerEnabled = config.protocolLibSnowPlacerEnabled;
 		snowPlacerAllowStacks = config.protocolLibSnowPlacerAllowStacks;
 		snowPlacerDelay = config.protocolLibSnowPlacerMaxDelay;

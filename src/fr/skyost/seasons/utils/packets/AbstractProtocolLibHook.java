@@ -13,11 +13,18 @@ import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.weather.WeatherChangeEvent;
+import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.plugin.Plugin;
 
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.events.PacketEvent;
+
 import fr.skyost.seasons.Season;
 import fr.skyost.seasons.SeasonWorld;
 import fr.skyost.seasons.SkyoseasonsAPI;
@@ -79,12 +86,26 @@ public abstract class AbstractProtocolLibHook {
 			ex.printStackTrace();
 			throw new PacketPluginHookInitializationException("Failed to load biomes.");
 		}
-		if(protocolLib.getDescription().getVersion().split("\\.")[0].equals("4")) {
-			Listener4.registerEvent(skyoseasons, this);
-		}
-		else {
-			Listener3.registerEvent(skyoseasons, this);
-		}
+		ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(skyoseasons, PacketType.Play.Server.MAP_CHUNK, PacketType.Play.Server.MAP_CHUNK_BULK) {
+
+			@Override
+			public final void onPacketSending(final PacketEvent event) {
+				final Player player = event.getPlayer();
+				final SeasonWorld world = SkyoseasonsAPI.getSeasonWorldExact(player.getWorld());
+				if(world == null) {
+					return;
+				}
+				final PacketContainer packet = event.getPacket();
+				final PacketType type = packet.getType();
+				if(type == PacketType.Play.Server.MAP_CHUNK) {
+					translateMapChunk(packet, player, world.season);
+				}
+				else if(type == PacketType.Play.Server.MAP_CHUNK_BULK) {
+					translateMapChunkBulk(packet, player, world.season);
+				}
+			}
+
+		});
 	}
 	
 	protected abstract void translateMapChunk(final PacketContainer packet, final Player player, final Season season);
@@ -148,23 +169,51 @@ public abstract class AbstractProtocolLibHook {
 	
 	public class PacketPluginHookEvents implements Listener {
 		
-		@EventHandler
+		@EventHandler(priority = EventPriority.LOWEST)
 		private final void onWeatherChange(final WeatherChangeEvent event) {
+			if(event.isCancelled()) {
+				return;
+			}
 			final SeasonWorld world = SkyoseasonsAPI.getSeasonWorld(event.getWorld());
 			if(world == null) {
 				return;
 			}
+			if(!world.season.snowPlacerEnabled) {
+				return;
+			}
 			if(event.toWeatherState()) {
-				if(world.season.snowPlacerEnabled) {
-					final SnowPlacer task = new SnowPlacer(world);
-					task.runTaskLater(SkyoseasonsAPI.getPlugin(), 20L);
-					world.tasks.put(2, task);
+				final SnowPlacer task = new SnowPlacer(world, world.world.getLoadedChunks());
+				task.runTaskLater(SkyoseasonsAPI.getPlugin(), 20L);
+				world.tasks.put(2, task);
+			}
+			else {
+				final SnowPlacer task = (SnowPlacer)world.tasks.get(2);
+				if(task != null) {
+					task.cancel();
+					world.tasks.remove(2);
 				}
 			}
-			final SnowPlacer task = (SnowPlacer)world.tasks.get(2);
-			if(task != null) {
-				task.cancel();
-				world.tasks.remove(2);
+		}
+		
+		@EventHandler(priority = EventPriority.LOWEST)
+		private final void onChunkLoad(final ChunkLoadEvent event) {
+			final SeasonWorld world = SkyoseasonsAPI.getSeasonWorld(event.getWorld());
+			if(world == null) {
+				return;
+			}
+			if(!world.season.snowPlacerEnabled) {
+				return;
+			}
+			if(world.world.hasStorm()) {
+				SnowPlacer task = (SnowPlacer)world.tasks.get(2);
+				if(task == null) {
+					task = new SnowPlacer(world, event.getChunk());
+					world.tasks.put(2, task);
+					task.runTaskLater(SkyoseasonsAPI.getPlugin(), 20L);
+				}
+				else {
+					task.addChunks(event.getChunk());
+				}
 			}
 		}
 		

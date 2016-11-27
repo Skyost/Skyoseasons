@@ -24,7 +24,7 @@ public class ProtocolLibHook extends AbstractProtocolLibHook {
 	protected final void translateMapChunk(final PacketContainer packet, final Player player, final Season season) {
 		final ChunkMap chunk = (ChunkMap)packet.getModifier().read(2);
 		if(chunk.a != null) {
-			translateChunkInfo(new ChunkInfo(null, chunk.b, 0, getOrDefault(packet.getBooleans().readSafely(0), true), chunk.a, 0), season);
+			translateChunkInfo(new ChunkInfo(player, chunk.b, 0, getOrDefault(packet.getBooleans().readSafely(0), true), chunk.a, 0), season);
 		}
 	}
 
@@ -65,8 +65,9 @@ public class ProtocolLibHook extends AbstractProtocolLibHook {
 	
 	@Override
 	public final void refreshChunk(final World world, final Chunk chunk) {
+		final PacketMapChunk packet = new PacketMapChunk(chunk);
 		for(final Player player : Bukkit.getOnlinePlayers()) {
-			new PacketMapChunk(chunk).send(player);
+			packet.send(player);
 		}
 		world.refreshChunk(chunk.getX(), chunk.getZ());
 	}

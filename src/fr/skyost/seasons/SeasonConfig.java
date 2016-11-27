@@ -46,33 +46,18 @@ public class SeasonConfig extends Skyoconfig {
 	@ConfigOptions(name = "months.message")
 	public String monthsMessage;
 	
-	@ConfigOptions(name = "spout.stars.visible")
-	public boolean spoutStarsVisible = true;
-	@ConfigOptions(name = "spout.stars.frequency")
-	public int spoutStarsFrequency = 1500;
-	@ConfigOptions(name = "spout.clouds.visible")
-	public boolean spoutCloudsVisible;
-	@ConfigOptions(name = "spout.sun.visible")
-	public boolean spoutSunVisible;
-	@ConfigOptions(name = "spout.sun.size-percent")
-	public int spoutSunSizePercent;
-	@ConfigOptions(name = "spout.moon.visible")
-	public boolean spoutMoonVisible = true;
-	@ConfigOptions(name = "spout.moon.size-percent")
-	public int spoutMoonSizePercent = 100;
-	
 	@ConfigOptions(name = "protocollib.snow-placer.enable")
 	public boolean protocolLibSnowPlacerEnabled = false;
 	@ConfigOptions(name = "protocollib.snow-placer.allow-stacks")
 	public boolean protocolLibSnowPlacerAllowStacks = true;
 	@ConfigOptions(name = "protocollib.snow-placer.max-delay")
-	public int protocolLibSnowPlacerMaxDelay = 100;
+	public int protocolLibSnowPlacerMaxDelay = 60;
 	
 	public SeasonConfig(final File file) {
 		this(file, Arrays.asList("####################################################### #", "              Skyoseasons Configuration                 #", " Check http://dev.bukkit.org/bukkit-plugins/skyoseasons #", "               for more informations.                   #", "####################################################### #"));
 	}
 	
-	public SeasonConfig(final File file, final String name, final String next, final Biome defaultBiome, final boolean canRain, final boolean alwaysRain, final boolean snowMelt, final int dayLength, final String dayMessageMessage, final int nightLength, final String nightMessageMessage, final String message, final String monthsMessage, final boolean spoutCloudsVisible, final boolean spoutSunVisible, final int spoutSunSizePercent, final boolean protocolLibSnowPlacerEnabled) {
+	public SeasonConfig(final File file, final String name, final String next, final Biome defaultBiome, final boolean canRain, final boolean alwaysRain, final boolean snowMelt, final int dayLength, final String dayMessageMessage, final int nightLength, final String nightMessageMessage, final String message, final String monthsMessage, final boolean protocolLibSnowPlacerEnabled) {
 		this(file, Arrays.asList("####################################################### #", "              Skyoseasons Configuration                 #", " Check http://dev.bukkit.org/bukkit-plugins/skyoseasons #", "               for more informations.                   #", "####################################################### #"));
 		this.name = name;
 		this.next = next;
@@ -86,9 +71,6 @@ public class SeasonConfig extends Skyoconfig {
 		this.nightMessageMessage = nightMessageMessage;
 		this.message = message;
 		this.monthsMessage = monthsMessage;
-		this.spoutCloudsVisible = spoutCloudsVisible;
-		this.spoutSunVisible = spoutSunVisible;
-		this.spoutSunSizePercent = spoutSunSizePercent;
 		this.protocolLibSnowPlacerEnabled = protocolLibSnowPlacerEnabled;
 	}
 	

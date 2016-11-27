@@ -43,8 +43,6 @@ public class PluginConfig extends Skyoconfig {
 	@ConfigOptions(name = "logs.file.directory")
 	public String logsFileDir;
 	
-	@ConfigOptions(name = "enable.spout")
-	public boolean enableSpout = false;
 	@ConfigOptions(name = "enable.protocollib")
 	public boolean enableProtocolLib = true;
 	@ConfigOptions(name = "enable.metrics")
