@@ -1,11 +1,15 @@
 package fr.skyost.seasons.utils.packets.v1_8_R3;
 
+import net.minecraft.server.v1_8_R3.PacketPlayOutMapChunk;
 import net.minecraft.server.v1_8_R3.PacketPlayOutMapChunk.ChunkMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
+import org.bukkit.craftbukkit.v1_8_R3.CraftChunk;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -65,11 +69,21 @@ public class ProtocolLibHook extends AbstractProtocolLibHook {
 	
 	@Override
 	public final void refreshChunk(final World world, final Chunk chunk) {
-		final PacketMapChunk packet = new PacketMapChunk(chunk);
-		for(final Player player : Bukkit.getOnlinePlayers()) {
-			packet.send(player);
+		final PacketPlayOutMapChunk packet = new PacketPlayOutMapChunk(((CraftChunk)chunk).getHandle(), true, 0xffff);
+		
+		final int absChunkX = Math.abs(chunk.getX());
+		final int absChunkZ = Math.abs(chunk.getX());
+		
+		final int viewDistance = Bukkit.getViewDistance();
+		for(final Player player : chunk.getWorld().getPlayers()) {
+			final Location location = player.getLocation();
+			final int absX = absChunkX - Math.abs(location.getBlockX());
+			final int absZ = absChunkZ - Math.abs(location.getBlockZ());
+			
+			if((absX >= 0 && absX <= viewDistance) || (absZ >= 0 && absZ <= viewDistance)) {
+				((CraftPlayer)player).getHandle().playerConnection.sendPacket(packet);
+			}
 		}
-		world.refreshChunk(chunk.getX(), chunk.getZ());
 	}
 
 }

@@ -1,10 +1,10 @@
-package fr.skyost.seasons.utils.packets.v1_9_R2;
+package fr.skyost.seasons.utils.packets.v1_10_R1;
 
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
-import org.bukkit.craftbukkit.v1_9_R2.CraftChunk;
-import org.bukkit.craftbukkit.v1_9_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_10_R1.CraftChunk;
+import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -12,9 +12,9 @@ import com.comphenix.protocol.events.PacketContainer;
 
 import fr.skyost.seasons.Season;
 import fr.skyost.seasons.utils.packets.AbstractProtocolLibHook;
-import net.minecraft.server.v1_9_R2.PacketPlayOutMapChunk;
-import net.minecraft.server.v1_9_R2.PacketPlayOutUnloadChunk;
-import net.minecraft.server.v1_9_R2.PlayerConnection;
+import net.minecraft.server.v1_10_R1.PacketPlayOutMapChunk;
+import net.minecraft.server.v1_10_R1.PacketPlayOutUnloadChunk;
+import net.minecraft.server.v1_10_R1.PlayerConnection;
 
 public class ProtocolLibHook extends AbstractProtocolLibHook {
 
@@ -55,7 +55,6 @@ public class ProtocolLibHook extends AbstractProtocolLibHook {
 	public final void refreshChunk(final World world, final Chunk chunk) {
 		final PacketPlayOutUnloadChunk packetUnload = new PacketPlayOutUnloadChunk(chunk.getX(), chunk.getZ());
 		final PacketPlayOutMapChunk packetLoad = new PacketPlayOutMapChunk(((CraftChunk)chunk).getHandle(), 0xffff);
-		
 		for(final Player player : chunk.getWorld().getPlayers()) {
 			final PlayerConnection connection = ((CraftPlayer)player).getHandle().playerConnection;
 			
