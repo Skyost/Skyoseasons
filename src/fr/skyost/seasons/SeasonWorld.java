@@ -25,21 +25,88 @@ import fr.skyost.seasons.utils.packets.AbstractProtocolLibHook;
 
 public class SeasonWorld {
 	
+	/**
+	 * The corresponding world.
+	 */
+	
 	public final World world;
 	
+	/**
+	 * The current day.
+	 */
+	
 	public int day;
+	
+	/**
+	 * The current month.
+	 */
+	
 	public Month month;
+	
+	/**
+	 * The current season.
+	 */
+	
 	public Season season;
+	
+	/**
+	 * The current month of the season.
+	 */
+	
 	public int seasonMonth;
+	
+	/**
+	 * The current year.
+	 */
+	
 	public int year;
+	
+	/**
+	 * The calendar inventory.
+	 */
 	
 	public Inventory calendar;
 	
-	public final HashMap<Integer, BukkitRunnable> tasks = new HashMap<Integer, BukkitRunnable>();
+	/**
+	 * The tasks (snow placer, snow melt, ...).
+	 */
+	
+	public final HashMap<Short, BukkitRunnable> tasks = new HashMap<Short, BukkitRunnable>();
+	
+	/**
+	 * The time control task.
+	 */
+	
+	public static final short TASK_TIME_CONTROL = 0;
+	
+	/**
+	 * The snow melt task.
+	 */
+	
+	public static final short TASK_SNOW_MELT = 1;
+	
+	/**
+	 * The snow placer task.
+	 */
+	
+	public static final short TASK_SNOW_PLACER = 2;
+	
+	/**
+	 * Creates a new SeasonWorld instance.
+	 * 
+	 * @param world The corresponding world.
+	 * @param config The configuration.
+	 */
 	
 	public SeasonWorld(final World world, final WorldConfig config) {
 		this(world, config.day, SkyoseasonsAPI.getMonth(config.month), SkyoseasonsAPI.getSeason(config.season), config.seasonMonth, config.year);
 	}
+	
+	/**
+	 * Creates a new SeasonWorld instance.
+	 * 
+	 * @param world The corresponding world.
+	 */
 	
 	public SeasonWorld(final World world) {
 		this(world, Calendar.getInstance().get(Calendar.DAY_OF_MONTH), SkyoseasonsAPI.getMonth(1), null, 1, Calendar.getInstance().get(Calendar.YEAR));
@@ -55,6 +122,13 @@ public class SeasonWorld {
 		world.setTime(0L);
 		calendar = buildCalendar(month);
 	}
+	
+	/**
+	 * Updates the calendar's items.
+	 * 
+	 * @param prevDay The "previous current" day.
+	 * @param newDay The "new current" day.
+	 */
 	
 	public final void updateCalendar(final int prevDay, final int newDay) {
 		final CalendarConfig calendar = SkyoseasonsAPI.getPlugin().calendar;
@@ -72,6 +146,10 @@ public class SeasonWorld {
 		item.setItemMeta(meta);
 	}
 	
+	/**
+	 * Updates the calendar for viewers.
+	 */
+	
 	public final void updateCalendarForViewers() {
 		final List<HumanEntity> viewers = new ArrayList<HumanEntity>(calendar.getViewers());
 		for(final HumanEntity viewer : viewers) {
@@ -82,6 +160,14 @@ public class SeasonWorld {
 			viewer.openInventory(calendar);
 		}
 	}
+	
+	/**
+	 * Builds the calendar for the specified month.
+	 * 
+	 * @param month The month.
+	 * 
+	 * @return The calendar.
+	 */
 	
 	public final Inventory buildCalendar(final Month month) {
 		final CalendarConfig calendar = SkyoseasonsAPI.getPlugin().calendar;
@@ -105,15 +191,30 @@ public class SeasonWorld {
 		return menu;
 	}
 	
+	/**
+	 * Sets the current season.
+	 * 
+	 * @param season The season.
+	 * @param message The message.
+	 */
+	
 	public final void setCurrentSeason(final Season season, final String message) {
 		setCurrentSeason(season, message, 1);
 	}
 	
+	/**
+	 * Sets the current season.
+	 * 
+	 * @param season The season.
+	 * @param message The message.
+	 * @param seasonMonth The current month of the season.
+	 */
+	
 	public final void setCurrentSeason(final Season season, final String message, final int seasonMonth) {
-		final TimeControl timeControl = (TimeControl)tasks.get(0);
+		final TimeControl timeControl = (TimeControl)tasks.get(TASK_TIME_CONTROL);
 		if(timeControl != null) {
 			timeControl.cancel();
-			tasks.remove(0);
+			tasks.remove(TASK_TIME_CONTROL);
 		}
 		this.season = season;
 		this.seasonMonth = seasonMonth;
@@ -126,12 +227,12 @@ public class SeasonWorld {
 			protocolLibHook.setDefaultBiome(season.defaultBiome);
 		}
 		refreshChunks(chunks);
-		SnowMelt snowMelt = (SnowMelt)tasks.get(1);
+		SnowMelt snowMelt = (SnowMelt)tasks.get(TASK_SNOW_MELT);
 		if(season.snowMelt) {
 			if(snowMelt == null) {
 				snowMelt = new SnowMelt(this, chunks);
 				snowMelt.runTaskLater(SkyoseasonsAPI.getPlugin(), 20L);
-				tasks.put(1, snowMelt);
+				tasks.put(TASK_SNOW_MELT, snowMelt);
 			}
 			else {
 				snowMelt.addChunks(chunks);
@@ -140,7 +241,7 @@ public class SeasonWorld {
 		else {
 			if(snowMelt != null) {
 				snowMelt.cancel();
-				tasks.remove(1);
+				tasks.remove(TASK_SNOW_MELT);
 			}
 		}
 		world.setStorm(season.alwaysRain);
@@ -158,20 +259,39 @@ public class SeasonWorld {
 		
 		final TimeControl task = new TimeControl(this, season.daylength, season.nightLength, config.refreshTime);
 		task.runTaskTimer(SkyoseasonsAPI.getPlugin(), config.refreshTime, config.refreshTime);
-		tasks.put(0, task);
+		tasks.put(TASK_TIME_CONTROL, task);
 	}
 	
+	/**
+	 * Changes the biome for the selected chunks.
+	 * 
+	 * @param chunks The chunks.
+	 */
+	
 	public final void changeBiome(final Chunk... chunks) {
-		for(final Chunk chunk : chunks) {
-			for(int x = 0; x < 16; x++) {
-				for(int z = 0; z < 16; z++) {
-					final Block block = chunk.getBlock(x, 0, z);
-					final Biome biome = season.replacements.get(block.getBiome());
-					block.setBiome(biome == null ? season.defaultBiome : biome);
+		new BukkitRunnable() {
+
+			@Override
+			public void run() {
+				for(final Chunk chunk : chunks) {
+					for(int x = 0; x < 16; x++) {
+						for(int z = 0; z < 16; z++) {
+							final Block block = chunk.getBlock(x, 0, z);
+							final Biome biome = season.replacements.get(block.getBiome());
+							block.setBiome(biome == null ? season.defaultBiome : biome);
+						}
+					}
 				}
 			}
-		}
+			
+		}.runTask(SkyoseasonsAPI.getPlugin());
 	}
+	
+	/**
+	 * Refreshes the specified chunks.
+	 * 
+	 * @param chunks The chunks.
+	 */
 	
 	public final void refreshChunks(final Chunk... chunks) {
 		new Thread() {

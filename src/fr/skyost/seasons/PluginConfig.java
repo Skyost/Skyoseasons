@@ -26,7 +26,7 @@ public class PluginConfig extends Skyoconfig {
 	public String backupsDir;
 	
 	@ConfigOptions(name = "snow.eternal-y")
-	public int snowEternalY = 100;
+	public int snowEternalY = 95;
 	@ConfigOptions(name = "snow.melt.max-delay")
 	public int snowMeltMaxDelay = 60;
 	@ConfigOptions(name = "snow.placer.forbidden-blocks")

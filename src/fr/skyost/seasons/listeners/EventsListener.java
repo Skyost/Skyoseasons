@@ -136,15 +136,18 @@ public class EventsListener implements Listener {
 	private final void onChunkLoad(final ChunkLoadEvent event) {
 		final SeasonWorld world = SkyoseasonsAPI.getSeasonWorldExact(event.getWorld());
 		if(world != null) {
+			final Chunk chunk = event.getChunk();
+			if(SkyoseasonsAPI.getProtocolLibHook() == null) {
+				world.changeBiome(chunk);
+			}
 			if(!world.season.snowMelt) {
 				return;
 			}
-			final Chunk chunk = event.getChunk();
-			SnowMelt snowMelt = (SnowMelt)world.tasks.get(1);
+			SnowMelt snowMelt = (SnowMelt)world.tasks.get(SeasonWorld.TASK_SNOW_MELT);
 			if(snowMelt == null) {
 				snowMelt = new SnowMelt(world, chunk);
 				snowMelt.runTaskTimer(SkyoseasonsAPI.getPlugin(), 20L, new Random().nextInt(SkyoseasonsAPI.getConfig().snowMeltMaxDelay) + 1);
-				world.tasks.put(1, snowMelt);
+				world.tasks.put(SeasonWorld.TASK_SNOW_MELT, snowMelt);
 				return;
 			}
 			snowMelt.addChunks(chunk);

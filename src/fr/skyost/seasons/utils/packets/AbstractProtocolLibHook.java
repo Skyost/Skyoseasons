@@ -28,6 +28,7 @@ import com.comphenix.protocol.events.PacketEvent;
 import fr.skyost.seasons.Season;
 import fr.skyost.seasons.SeasonWorld;
 import fr.skyost.seasons.SkyoseasonsAPI;
+import fr.skyost.seasons.events.calendar.SeasonChangeEvent;
 import fr.skyost.seasons.utils.Utils;
 
 public abstract class AbstractProtocolLibHook {
@@ -181,18 +182,18 @@ public abstract class AbstractProtocolLibHook {
 			if(!world.season.snowPlacerEnabled) {
 				return;
 			}
-			SnowPlacer task = (SnowPlacer)world.tasks.get(2);
+			SnowPlacer task = (SnowPlacer)world.tasks.get(SeasonWorld.TASK_SNOW_PLACER);
 			if(event.toWeatherState()) {
 				if(task == null) {
 					task = new SnowPlacer(world, world.world.getLoadedChunks());
 					task.runTaskLater(SkyoseasonsAPI.getPlugin(), 20L);
-					world.tasks.put(2, task);
+					world.tasks.put(SeasonWorld.TASK_SNOW_PLACER, task);
 				}
 			}
 			else {
 				if(task != null) {
 					task.cancel();
-					world.tasks.remove(2);
+					world.tasks.remove(SeasonWorld.TASK_SNOW_PLACER);
 				}
 			}
 		}
@@ -207,15 +208,28 @@ public abstract class AbstractProtocolLibHook {
 				return;
 			}
 			if(world.world.hasStorm()) {
-				SnowPlacer task = (SnowPlacer)world.tasks.get(2);
+				SnowPlacer task = (SnowPlacer)world.tasks.get(SeasonWorld.TASK_SNOW_PLACER);
 				if(task == null) {
 					task = new SnowPlacer(world, event.getChunk());
-					world.tasks.put(2, task);
+					world.tasks.put(SeasonWorld.TASK_SNOW_PLACER, task);
 					task.runTaskLater(SkyoseasonsAPI.getPlugin(), 20L);
 				}
 				else {
 					task.addChunks(event.getChunk());
 				}
+			}
+		}
+		
+		@EventHandler(priority = EventPriority.LOWEST)
+		private final void onSeasonChange(final SeasonChangeEvent event) {
+			if(event.getNewSeason().snowPlacerEnabled) {
+				return;
+			}
+			final SeasonWorld world = event.getWorld();
+			final SnowPlacer task = (SnowPlacer)world.tasks.get(SeasonWorld.TASK_SNOW_PLACER);
+			if(task != null) {
+				task.cancel();
+				world.tasks.remove(SeasonWorld.TASK_SNOW_PLACER);
 			}
 		}
 		

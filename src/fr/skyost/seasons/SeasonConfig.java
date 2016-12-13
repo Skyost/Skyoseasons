@@ -76,7 +76,19 @@ public class SeasonConfig extends Skyoconfig {
 	
 	private SeasonConfig(final File file, final List<String> header) {
 		super(file, header);
-		replacements.put(Biome.MUSHROOM_ISLAND.name(), Biome.MUSHROOM_ISLAND.name());
+		replacements.put(Biome.ICE_FLATS.name(), Biome.ICE_FLATS.name());
+		replacements.put(Biome.ICE_MOUNTAINS.name(), Biome.ICE_MOUNTAINS.name());
+		replacements.put(Biome.MUTATED_ICE_FLATS.name(), Biome.MUTATED_ICE_FLATS.name());
+		replacements.put(Biome.FROZEN_RIVER.name(), Biome.FROZEN_RIVER.name());
+		replacements.put(Biome.FROZEN_OCEAN.name(), Biome.FROZEN_OCEAN.name());
+		replacements.put(Biome.COLD_BEACH.name(), Biome.COLD_BEACH.name());
+		replacements.put(Biome.TAIGA.name(), Biome.TAIGA.name());
+		replacements.put(Biome.TAIGA_COLD.name(), Biome.TAIGA_COLD.name());
+		replacements.put(Biome.TAIGA_HILLS.name(), Biome.TAIGA_HILLS.name());
+		replacements.put(Biome.TAIGA_COLD_HILLS.name(), Biome.TAIGA_COLD_HILLS.name());
+		replacements.put(Biome.EXTREME_HILLS.name(), Biome.EXTREME_HILLS.name());
+		replacements.put(Biome.EXTREME_HILLS_WITH_TREES.name(), Biome.EXTREME_HILLS_WITH_TREES.name());
+		
 		replacements.put(Biome.DESERT.name(), Biome.DESERT.name());
 		replacements.put(Biome.MESA.name(), Biome.MESA.name());
 	}

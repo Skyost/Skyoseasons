@@ -111,6 +111,9 @@ public class Skyoseasons extends JavaPlugin {
 			}
 			logsManager.log("ProtocolLib hook for CB " + Utils.MC_SERVER_VERSION + " " + state + " !");
 		}
+		if(protocolLib == null) {
+			logsManager.log("ProtocolLib was not found (or the hook has been disabled). Please not that this plugin may not work properly without ProtocolLib.", Level.WARNING);
+		}
 	}
 	
 	private final void setupMonths() {
