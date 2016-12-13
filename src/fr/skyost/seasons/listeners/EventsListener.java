@@ -1,12 +1,10 @@
 package fr.skyost.seasons.listeners;
 
-import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -15,6 +13,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
+
 import fr.skyost.seasons.Month;
 import fr.skyost.seasons.Season;
 import fr.skyost.seasons.SeasonWorld;
@@ -137,24 +136,18 @@ public class EventsListener implements Listener {
 	private final void onChunkLoad(final ChunkLoadEvent event) {
 		final SeasonWorld world = SkyoseasonsAPI.getSeasonWorldExact(event.getWorld());
 		if(world != null) {
-			final Chunk chunk = event.getChunk();
-			if(event.isNewChunk()) {
-				chunk.load(true);
-			}
-			final List<Location> snowBlocks = world.handleBlocks(chunk);
 			if(!world.season.snowMelt) {
 				return;
 			}
-			if(snowBlocks.size() != 0) {
-				SnowMelt snowMelt = (SnowMelt)world.tasks.get(1);
-				if(snowMelt == null) {
-					snowMelt = new SnowMelt(world, snowBlocks);
-					snowMelt.runTaskTimer(SkyoseasonsAPI.getPlugin(), 20L, new Random().nextInt(SkyoseasonsAPI.getConfig().snowMeltMaxDelay) + 1);
-					world.tasks.put(1, snowMelt);
-					return;
-				}
-				snowMelt.addBlocks(snowBlocks);
+			final Chunk chunk = event.getChunk();
+			SnowMelt snowMelt = (SnowMelt)world.tasks.get(1);
+			if(snowMelt == null) {
+				snowMelt = new SnowMelt(world, chunk);
+				snowMelt.runTaskTimer(SkyoseasonsAPI.getPlugin(), 20L, new Random().nextInt(SkyoseasonsAPI.getConfig().snowMeltMaxDelay) + 1);
+				world.tasks.put(1, snowMelt);
+				return;
 			}
+			snowMelt.addChunks(chunk);
 		}
 	}
 	

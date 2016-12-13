@@ -24,10 +24,11 @@ import com.google.common.primitives.Ints;
 
 import fr.skyost.seasons.commands.CalendarCommand;
 import fr.skyost.seasons.commands.SkyoseasonsCommand;
+import fr.skyost.seasons.commands.subcommands.skyoseasons.*;
 import fr.skyost.seasons.events.SkyoseasonsCalendarEvent.ModificationCause;
 import fr.skyost.seasons.listeners.EventsListener;
 import fr.skyost.seasons.utils.LogsManager;
-import fr.skyost.seasons.utils.MetricsLite;
+import fr.skyost.seasons.utils.Metrics;
 import fr.skyost.seasons.utils.MonthLinkedHashMap;
 import fr.skyost.seasons.utils.Skyupdater;
 import fr.skyost.seasons.utils.Utils;
@@ -37,16 +38,15 @@ import fr.skyost.seasons.utils.packets.SnowPlacer;
 
 public class Skyoseasons extends JavaPlugin {
 	
-	protected static PluginConfig config;
-	protected static CalendarConfig calendar;
-	protected static LogsManager logsManager;
-	protected static Skyoseasons instance;
+	protected PluginConfig config;
+	protected CalendarConfig calendar;
+	protected LogsManager logsManager;
 	
-	protected static AbstractProtocolLibHook protocolLib;
+	protected AbstractProtocolLibHook protocolLib;
 	
-	protected static final HashMap<String, Season> seasons = new HashMap<String, Season>();
-	protected static final HashMap<String, SeasonWorld> worlds = new HashMap<String, SeasonWorld>();
-	protected static final MonthLinkedHashMap<String, Month> months = new MonthLinkedHashMap<String, Month>();
+	protected final HashMap<String, Season> seasons = new HashMap<String, Season>();
+	protected final HashMap<String, SeasonWorld> worlds = new HashMap<String, SeasonWorld>();
+	protected final MonthLinkedHashMap<String, Month> months = new MonthLinkedHashMap<String, Month>();
 	
 	@Override
 	public final void onEnable() {
@@ -83,7 +83,6 @@ public class Skyoseasons extends JavaPlugin {
 	}
 	
 	private final void setupPlugin(final PluginManager manager) throws InvalidConfigurationException, PacketPluginHookInitializationException, IOException, ClassNotFoundException, IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException, InstantiationException, InvocationTargetException, NoSuchMethodException {
-		instance = this;
 		final File dataFolder = this.getDataFolder();
 		config = new PluginConfig(dataFolder);
 		config.load();
@@ -91,25 +90,26 @@ public class Skyoseasons extends JavaPlugin {
 		calendar.load();
 		logsManager = new LogsManager(config.logsConsoleEnable ? this.getLogger() : null, config.logsFileEnable ? new File(config.logsFileDir) : null);
 		manager.registerEvents(new EventsListener(), this);
-		if(config.enableProtocolLib) {
-			final Plugin protocolLibPlugin = manager.getPlugin("ProtocolLib");
-			if(protocolLibPlugin != null && protocolLibPlugin.isEnabled()) {
-				String state;
-				try {
-					protocolLib = (AbstractProtocolLibHook)Class.forName("fr.skyost.seasons.utils.packets." + Utils.MC_SERVER_VERSION + ".ProtocolLibHook").getConstructor(Plugin.class, Plugin.class).newInstance(protocolLibPlugin, this);
-					state = "loaded";
-				}
-				catch(final ClassNotFoundException ex) {
-					state = "cannot be found";
-				}
-				logsManager.log("ProtocolLib hook for MC " + Utils.MC_SERVER_VERSION + " " + state + " !");
-			}
-		}
 		if(config.enableMetrics) {
-			new MetricsLite(this).start();
+			new Metrics(this);
 		}
 		if(config.enableSkyupdater) {
 			new Skyupdater(this, 64442, this.getFile(), true, true);
+		}
+		if(!config.enableProtocolLib) {
+			return;
+		}
+		final Plugin protocolLibPlugin = manager.getPlugin("ProtocolLib");
+		if(protocolLibPlugin != null && protocolLibPlugin.isEnabled()) {
+			String state;
+			try {
+				protocolLib = (AbstractProtocolLibHook)Class.forName("fr.skyost.seasons.utils.packets." + Utils.MC_SERVER_VERSION + ".ProtocolLibHook").getConstructor(Plugin.class, Plugin.class).newInstance(protocolLibPlugin, this);
+				state = "loaded";
+			}
+			catch(final ClassNotFoundException ex) {
+				state = "cannot be found";
+			}
+			logsManager.log("ProtocolLib hook for CB " + Utils.MC_SERVER_VERSION + " " + state + " !");
 		}
 	}
 	
@@ -118,7 +118,7 @@ public class Skyoseasons extends JavaPlugin {
 			final HashMap<Object, Object> months = Utils.fromJson(calendar.months.get(String.valueOf(i)));
 			final String name = (String)months.get("Name");
 			final String next = calendar.months.get(String.valueOf(i + 1));
-			Skyoseasons.months.put(name, new Month(name, String.valueOf(next == null ? Utils.fromJson(calendar.months.get("1")).get("Name") : Utils.fromJson(next).get("Name")), i, Ints.checkedCast((long)months.get("Days"))));
+			this.months.put(name, new Month(name, String.valueOf(next == null ? Utils.fromJson(calendar.months.get("1")).get("Name") : Utils.fromJson(next).get("Name")), i, Ints.checkedCast((long)months.get("Days"))));
 		}
 	}
 	
@@ -135,35 +135,34 @@ public class Skyoseasons extends JavaPlugin {
 				final List<SeasonConfig> configs = new ArrayList<SeasonConfig>();
 				for(final File file : files) {
 					final String fileName = file.getName();
-					if(file.isFile() && fileName.endsWith(".yml")) {
-						final SeasonConfig season = new SeasonConfig(file);
-						season.load();
-						if(protocolLib != null) {
-							for(final Entry<String, String> entry : season.replacements.entrySet()) {
-								final String key = entry.getKey();
-								final String value = entry.getValue();
-								if(protocolLib.getBiomeID(Biome.valueOf(key)) == null) {
-									logsManager.log("Currently, the ProtocolLib hook does not support the biome '" + key + "'. Try another one or disable the ProtocolLib hook.", Level.SEVERE);
-									manager.disablePlugin(this);
-									return;
-								}
-								else if(protocolLib.getBiomeID(Biome.valueOf(value)) == null) {
-									logsManager.log("Currently, the ProtocolLib hook does not support the biome '" + value + "'. Try another one or disable the ProtocolLib hook.", Level.SEVERE);
-									manager.disablePlugin(this);
-									return;
-								}
-								else if(protocolLib.getBiomeID(season.defaultBiome) == null) {
-									logsManager.log("Currently, the ProtocolLib hook does not support the biome '" + season.defaultBiome.name() + "'. Try another one or disable the ProtocolLib hook.", Level.SEVERE);
-									manager.disablePlugin(this);
-									return;
-								}
+					if(!file.isFile() || !fileName.endsWith(".yml")) {
+						logsManager.log("'" + fileName + "' is not a valid season file !", Level.WARNING);
+						continue;
+					}
+					final SeasonConfig season = new SeasonConfig(file);
+					season.load();
+					if(protocolLib != null) {
+						for(final Entry<String, String> entry : season.replacements.entrySet()) {
+							final String key = entry.getKey();
+							final String value = entry.getValue();
+							if(protocolLib.getBiomeID(Biome.valueOf(key)) == null) {
+								logsManager.log("Currently, the ProtocolLib hook does not support the biome '" + key + "'. Try another one or disable the ProtocolLib hook.", Level.SEVERE);
+								manager.disablePlugin(this);
+								continue;
+							}
+							else if(protocolLib.getBiomeID(Biome.valueOf(value)) == null) {
+								logsManager.log("Currently, the ProtocolLib hook does not support the biome '" + value + "'. Try another one or disable the ProtocolLib hook.", Level.SEVERE);
+								manager.disablePlugin(this);
+								continue;
+							}
+							else if(protocolLib.getBiomeID(season.defaultBiome) == null) {
+								logsManager.log("Currently, the ProtocolLib hook does not support the biome '" + season.defaultBiome.name() + "'. Try another one or disable the ProtocolLib hook.", Level.SEVERE);
+								manager.disablePlugin(this);
+								continue;
 							}
 						}
-						configs.add(season);
 					}
-					else {
-						logsManager.log("'" + fileName + "' is not a valid season file !", Level.WARNING);
-					}
+					configs.add(season);
 				}
 				seasons = configs.toArray(new SeasonConfig[configs.size()]);
 			}
@@ -179,7 +178,7 @@ public class Skyoseasons extends JavaPlugin {
 			if(!useSnowPlacer && season.protocolLibSnowPlacerEnabled) {
 				useSnowPlacer = true;
 			}
-			Skyoseasons.seasons.put(season.name, new Season(season));
+			this.seasons.put(season.name, new Season(season));
 		}
 		if(useSnowPlacer) {
 			for(final String forbiddenType : config.snowPlacerForbiddenTypes) {
@@ -225,11 +224,11 @@ public class Skyoseasons extends JavaPlugin {
 				config.load();
 				seasonWorld = new SeasonWorld(world, config);
 				if(seasonWorld.month == null) {
-					Skyoseasons.logsManager.log("The month " + config.month + " was not found. Please delete this world save.", Level.SEVERE, world);
+					logsManager.log("The month " + config.month + " was not found. Please delete this world save.", Level.SEVERE, world);
 					throw new NullPointerException();
 				}
 				if(seasonWorld.season == null) {
-					Skyoseasons.logsManager.log("The season " + config.season + " was not found. Please delete this world save.", Level.SEVERE, world);
+					logsManager.log("The season " + config.season + " was not found. Please delete this world save.", Level.SEVERE, world);
 					throw new NullPointerException();
 				}
 				worlds.put(worldName, seasonWorld);
@@ -244,9 +243,17 @@ public class Skyoseasons extends JavaPlugin {
 	}
 	
 	private final void setupCommands() {
+		final SkyoseasonsCommand executor = new SkyoseasonsCommand();
+		executor.registerSubCommand(new SkyoseasonsDay());
+		executor.registerSubCommand(new SkyoseasonsMonth());
+		executor.registerSubCommand(new SkyoseasonsSeason());
+		executor.registerSubCommand(new SkyoseasonsSeasonMonth());
+		executor.registerSubCommand(new SkyoseasonsYear());
+		
 		final PluginCommand skyoseasons = this.getCommand("skyoseasons");
 		skyoseasons.setUsage(ChatColor.RED + skyoseasons.getUsage());
-		skyoseasons.setExecutor(new SkyoseasonsCommand());
+		skyoseasons.setExecutor(executor);
+		
 		final PluginCommand calendar = this.getCommand("calendar");
 		calendar.setUsage(ChatColor.GOLD + calendar.getUsage());
 		calendar.setExecutor(new CalendarCommand());

@@ -19,10 +19,11 @@ import fr.skyost.seasons.utils.packets.AbstractProtocolLibHook;
  * The API of Skyoseasons.
  * 
  * @author Skyost.
- * 
  */
 
 public class SkyoseasonsAPI {
+	
+	private static final Skyoseasons PLUGIN = (Skyoseasons)Bukkit.getPluginManager().getPlugin("Skyoseasons");
 	
 	/**
 	 * Gets the plugin's config (= config.yml).
@@ -31,7 +32,7 @@ public class SkyoseasonsAPI {
 	 */
 	
 	public static final PluginConfig getConfig() {
-		return Skyoseasons.config;
+		return PLUGIN.config;
 	}
 	
 	/**
@@ -41,7 +42,7 @@ public class SkyoseasonsAPI {
 	 */
 	
 	public static final CalendarConfig getCalendarConfig() {
-		return Skyoseasons.calendar;
+		return PLUGIN.calendar;
 	}
 	
 	/**
@@ -51,7 +52,7 @@ public class SkyoseasonsAPI {
 	 */
 	
 	public static final LogsManager getLogsManager() {
-		return Skyoseasons.logsManager;
+		return PLUGIN.logsManager;
 	}
 	
 	/**
@@ -61,7 +62,7 @@ public class SkyoseasonsAPI {
 	 */
 	
 	public static final Skyoseasons getPlugin() {
-		return Skyoseasons.instance;
+		return PLUGIN;
 	}
 	
 	/**
@@ -84,7 +85,7 @@ public class SkyoseasonsAPI {
 	 */
 	
 	public static final AbstractProtocolLibHook getProtocolLibHook() {
-		return Skyoseasons.protocolLib;
+		return PLUGIN.protocolLib;
 	}
 	
 	/**
@@ -96,7 +97,7 @@ public class SkyoseasonsAPI {
 	 */
 	
 	public static final Season getSeason(final String seasonName) {
-		for(final Entry<String, Season> entry : Skyoseasons.seasons.entrySet()) {
+		for(final Entry<String, Season> entry : PLUGIN.seasons.entrySet()) {
 			if(entry.getKey().equalsIgnoreCase(seasonName)) {
 				return entry.getValue();
 			}
@@ -113,7 +114,7 @@ public class SkyoseasonsAPI {
 	 */
 	
 	public static final Season getSeasonExact(final String seasonName) {
-		return Skyoseasons.seasons.get(seasonName);
+		return PLUGIN.seasons.get(seasonName);
 	}
 	
 	/**
@@ -123,7 +124,7 @@ public class SkyoseasonsAPI {
 	 */
 	
 	public static final Season[] getSeasons() {
-		final Collection<Season> seasons = Skyoseasons.seasons.values();
+		final Collection<Season> seasons = PLUGIN.seasons.values();
 		return seasons.toArray(new Season[seasons.size()]);
 	}
 	
@@ -134,7 +135,7 @@ public class SkyoseasonsAPI {
 	 */
 	
 	public static final String[] getSeasonsNames() {
-		final Set<String> seasonsNames = Skyoseasons.seasons.keySet();
+		final Set<String> seasonsNames = PLUGIN.seasons.keySet();
 		return seasonsNames.toArray(new String[seasonsNames.size()]);
 	}
 	
@@ -159,7 +160,7 @@ public class SkyoseasonsAPI {
 	 */
 
 	public static final SeasonWorld getSeasonWorld(final String worldName) {
-		for(final Entry<String, SeasonWorld> entry : Skyoseasons.worlds.entrySet()) {
+		for(final Entry<String, SeasonWorld> entry : PLUGIN.worlds.entrySet()) {
 			if(entry.getKey().equalsIgnoreCase(worldName)) {
 				return entry.getValue();
 			}
@@ -188,7 +189,7 @@ public class SkyoseasonsAPI {
 	 */
 	
 	public static final SeasonWorld getSeasonWorldExact(final String worldName) {
-		return Skyoseasons.worlds.get(worldName);
+		return PLUGIN.worlds.get(worldName);
 	}
 	
 	/**
@@ -198,7 +199,7 @@ public class SkyoseasonsAPI {
 	 */
 	
 	public static final SeasonWorld[] getSeasonWorlds() {
-		final Collection<SeasonWorld> seasonWorlds = Skyoseasons.worlds.values();
+		final Collection<SeasonWorld> seasonWorlds = PLUGIN.worlds.values();
 		return seasonWorlds.toArray(new SeasonWorld[seasonWorlds.size()]);
 	}
 	
@@ -209,7 +210,7 @@ public class SkyoseasonsAPI {
 	 */
 	
 	public static final String[] getSeasonWorldsNames() {
-		final Set<String> seasonWorldsNames = Skyoseasons.worlds.keySet();
+		final Set<String> seasonWorldsNames = PLUGIN.worlds.keySet();
 		return seasonWorldsNames.toArray(new String[seasonWorldsNames.size()]);
 	}
 	
@@ -222,7 +223,7 @@ public class SkyoseasonsAPI {
 	 */
 	
 	public static final Month getMonth(final int number) {
-		return Skyoseasons.months.getByIndex(number - 1);
+		return PLUGIN.months.getByIndex(number - 1);
 	}
 	
 	/**
@@ -234,7 +235,7 @@ public class SkyoseasonsAPI {
 	 */
 	
 	public static final Month getMonth(final String monthName) {
-		for(final Entry<String, Month> entry : Skyoseasons.months.entrySet()) {
+		for(final Entry<String, Month> entry : PLUGIN.months.entrySet()) {
 			if(entry.getKey().equalsIgnoreCase(monthName)) {
 				return entry.getValue();
 			}
@@ -251,7 +252,7 @@ public class SkyoseasonsAPI {
 	 */
 	
 	public static final Month getMonthExact(final String monthName) {
-		return Skyoseasons.months.get(monthName);
+		return PLUGIN.months.get(monthName);
 	}
 	
 	/**
@@ -261,7 +262,7 @@ public class SkyoseasonsAPI {
 	 */
 	
 	public static final Month[] getMonths() {
-		final Collection<Month> months = Skyoseasons.months.values();
+		final Collection<Month> months = PLUGIN.months.values();
 		return months.toArray(new Month[months.size()]);
 	}
 	
@@ -272,7 +273,7 @@ public class SkyoseasonsAPI {
 	 */
 	
 	public static final String[] getMonthsNames() {
-		final Set<String> monthsNames = Skyoseasons.months.keySet();
+		final Set<String> monthsNames = PLUGIN.months.keySet();
 		return monthsNames.toArray(new String[monthsNames.size()]);
 	}
 	

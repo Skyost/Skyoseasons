@@ -181,13 +181,15 @@ public abstract class AbstractProtocolLibHook {
 			if(!world.season.snowPlacerEnabled) {
 				return;
 			}
+			SnowPlacer task = (SnowPlacer)world.tasks.get(2);
 			if(event.toWeatherState()) {
-				final SnowPlacer task = new SnowPlacer(world, world.world.getLoadedChunks());
-				task.runTaskLater(SkyoseasonsAPI.getPlugin(), 20L);
-				world.tasks.put(2, task);
+				if(task == null) {
+					task = new SnowPlacer(world, world.world.getLoadedChunks());
+					task.runTaskLater(SkyoseasonsAPI.getPlugin(), 20L);
+					world.tasks.put(2, task);
+				}
 			}
 			else {
-				final SnowPlacer task = (SnowPlacer)world.tasks.get(2);
 				if(task != null) {
 					task.cancel();
 					world.tasks.remove(2);

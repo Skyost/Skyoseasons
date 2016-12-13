@@ -42,7 +42,7 @@ public class SnowPlacer extends BukkitRunnable {
 			final Location randomBlock = blank.clone();
 			do {
 				randomBlock.setX(random.nextInt(16));
-				randomBlock.setY(random.nextInt(16));
+				randomBlock.setZ(random.nextInt(16));
 			}
 			while(locations.contains(randomBlock));
 			locations.add(randomBlock);
@@ -52,7 +52,7 @@ public class SnowPlacer extends BukkitRunnable {
 				chunks.remove(chunk);
 			}
 			
-			final Block block = world.world.getHighestBlockAt(randomBlock);
+			final Block block = world.world.getHighestBlockAt(chunk.getBlock(randomBlock.getBlockX(), 0, randomBlock.getBlockZ()).getLocation());
 			/*if(block.getLightLevel() >= 12) {
 				continue;
 			}*/
@@ -84,6 +84,9 @@ public class SnowPlacer extends BukkitRunnable {
 	
 	public final void addChunks(final Chunk... chunks) {
 		for(final Chunk chunk : chunks) {
+			if(this.chunks.containsKey(chunk)) {
+				continue;
+			}
 			this.chunks.put(chunk, new Location[]{});
 		}
 	}

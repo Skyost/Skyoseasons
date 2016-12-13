@@ -1,6 +1,8 @@
 package fr.skyost.seasons.commands;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -24,35 +26,36 @@ public class CalendarCommand implements CommandExecutor {
 			sender.sendMessage(ChatColor.RED + "You do not have permission to use that command.");
 			return true;
 		}
-		if(args.length > 1) {
-			final SeasonWorld world = SkyoseasonsAPI.getSeasonWorld(Joiner.on(' ').join(args));
-			if(world == null) {
-				sender.sendMessage(ChatColor.RED + "Enabled worlds :\n" + Joiner.on('\n').join(SkyoseasonsAPI.getSeasonWorldsNames()));
+		World world;
+		if(args.length < 1) {
+			if(player == null) {
+				sender.sendMessage(ChatColor.RED + "From console : /calendar <world>.");
 				return true;
 			}
-			if(player == null) {
-				sender.sendMessage(ChatColor.AQUA + world.calendar.getName() + " :");
-				for(final ItemStack item : world.calendar.getContents()) {
-					if(item != null) {
-						sender.sendMessage(item.getItemMeta().getDisplayName());
-					}
-				}
+			world = player.getWorld();
+		}
+		else {
+			world = Bukkit.getWorld(Joiner.on(' ').join(args));
+			if(world == null) {
+				sender.sendMessage(ChatColor.RED + "You have entered an invalid world name.");
+				return true;
 			}
-			else {
-				player.openInventory(world.calendar);
+		}
+		final SeasonWorld seasonWorld = SkyoseasonsAPI.getSeasonWorld(world);
+		if(seasonWorld == null) {
+			sender.sendMessage(ChatColor.RED + "Enabled worlds :\n" + Joiner.on('\n').join(SkyoseasonsAPI.getSeasonWorldsNames()));
+			return true;
+		}
+		if(player == null) {
+			sender.sendMessage(ChatColor.AQUA + seasonWorld.calendar.getName() + " :");
+			for(final ItemStack item : seasonWorld.calendar.getContents()) {
+				if(item != null) {
+					sender.sendMessage(item.getItemMeta().getDisplayName());
+				}
 			}
 		}
 		else {
-			if(player == null) {
-				return false;
-			}
-			final SeasonWorld world = SkyoseasonsAPI.getSeasonWorldExact(player.getWorld());
-			if(world != null) {
-				player.openInventory(world.calendar);
-			}
-			else {
-				sender.sendMessage(ChatColor.RED + "Enabled worlds :\n" + Joiner.on('\n').join(SkyoseasonsAPI.getSeasonWorldsNames()));
-			}
+			player.openInventory(seasonWorld.calendar);
 		}
 		return true;
 	}

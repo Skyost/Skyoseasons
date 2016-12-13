@@ -29,8 +29,6 @@ public class PluginConfig extends Skyoconfig {
 	public int snowEternalY = 100;
 	@ConfigOptions(name = "snow.melt.max-delay")
 	public int snowMeltMaxDelay = 60;
-	@ConfigOptions(name = "snow.melt.multiplicator")
-	public int snowMeltMultiplicator = 10;
 	@ConfigOptions(name = "snow.placer.forbidden-blocks")
 	public List<String> snowPlacerForbiddenTypes = Arrays.asList(Material.ICE.name());
 	@ConfigOptions(name = "snow.placer.forbidden-biomes")

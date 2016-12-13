@@ -23,33 +23,33 @@ description: Add seasons to your Bukkit server !
 version: 4.1
 softdepend: [Spout, ProtocolLib]
 author: Skyost
-website: http://dev.bukkit.org/bukkit-plugins/skyoseasons/
+website: https://dev.bukkit.org/bukkit-plugins/skyoseasons/
 commands:
  skyoseasons:
   aliases: [season, seasons]
   description: Main command of Skyoseasons.
-  usage: /skyoseasons [day [new-day]|month [month]|season [season]|season-month [season-month]|year [year]]
+  usage: /skyoseasons <day <new-day>|month <new-month>|season <new-season>|season-month <new-season-month>|year <new-year>>
  calendar:
   aliases: [cal]
   description: Opens the calendar.
   permission: skyoseasons.calendar
-  usage: /calendar [world]
+  usage: /calendar <world>
 permissions:
   skyoseasons.calendar:
    default: true
    description: Allows you to open the calendar or display the current day / month / season / year.
   skyoseasons.calendar.setday:
    default: op
-   description: Allows you to set the current day.
+   description: Allows you to set the current day. Requires skyoseasons.calendar.
   skyoseasons.calendar.setmonth:
    default: op
-   description: Allows you to set the current month.
+   description: Allows you to set the current month. Requires skyoseasons.calendar.
   skyoseasons.calendar.setseason:
    default: op
-   description: Allows you to set the current season.
+   description: Allows you to set the current season. Requires skyoseasons.calendar.
   skyoseasons.calendar.setseasonmonth:
    default: op
-   description: Allows you to set the month of the current season.
+   description: Allows you to set the month of the current season. Requires skyoseasons.calendar.
   skyoseasons.calendar.setyear:
    default: op
-   description: Allows you to set the current year.
+   description: Allows you to set the current year. Requires skyoseasons.calendar.

@@ -1,8 +1,5 @@
 package fr.skyost.seasons.utils.packets.v1_8_R3;
 
-import net.minecraft.server.v1_8_R3.PacketPlayOutMapChunk;
-import net.minecraft.server.v1_8_R3.PacketPlayOutMapChunk.ChunkMap;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -17,6 +14,8 @@ import com.comphenix.protocol.events.PacketContainer;
 
 import fr.skyost.seasons.Season;
 import fr.skyost.seasons.utils.packets.AbstractProtocolLibHook;
+import net.minecraft.server.v1_8_R3.PacketPlayOutMapChunk;
+import net.minecraft.server.v1_8_R3.PacketPlayOutMapChunk.ChunkMap;
 
 public class ProtocolLibHook extends AbstractProtocolLibHook {
 
