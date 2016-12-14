@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import org.bukkit.Material;
 import org.bukkit.block.Biome;
 
 import fr.skyost.seasons.utils.Skyoconfig;
@@ -38,8 +39,15 @@ public class SeasonConfig extends Skyoconfig {
 	public boolean canRain;
 	@ConfigOptions(name = "always-rain")
 	public boolean alwaysRain;
-	@ConfigOptions(name = "snow-melt")
-	public boolean snowMelt;
+	@ConfigOptions(name = "cancel-auto-snow-placing")
+	public boolean cancelAutoSnowPlacing = true;
+	
+	@ConfigOptions(name = "snow-melt.enable")
+	public boolean snowMeltEnable;
+	@ConfigOptions(name = "snow-melt.eternal-y")
+	public int snowMeltEternalY = 95;
+	@ConfigOptions(name = "snow-melt.max-delay")
+	public int snowMeltMaxDelay = 60;
 	
 	@ConfigOptions(name = "months.number")
 	public int monthsNumber = 3;
@@ -52,19 +60,24 @@ public class SeasonConfig extends Skyoconfig {
 	public boolean protocolLibSnowPlacerAllowStacks = true;
 	@ConfigOptions(name = "protocollib.snow-placer.max-delay")
 	public int protocolLibSnowPlacerMaxDelay = 60;
+	@ConfigOptions(name = "protocollib.snow-placer.forbidden-blocks")
+	public List<String> protocollibSnowPlacerForbiddenTypes = Arrays.asList(Material.ICE.name());
+	@ConfigOptions(name = "protocollib.snow-placer.forbidden-biomes")
+	public List<String> protocollibSnowPlacerForbiddenBiomes = Arrays.asList(Biome.DESERT.name());
 	
 	public SeasonConfig(final File file) {
 		this(file, Arrays.asList("####################################################### #", "              Skyoseasons Configuration                 #", " Check http://dev.bukkit.org/bukkit-plugins/skyoseasons #", "               for more informations.                   #", "####################################################### #"));
 	}
 	
-	public SeasonConfig(final File file, final String name, final String next, final Biome defaultBiome, final boolean canRain, final boolean alwaysRain, final boolean snowMelt, final int dayLength, final String dayMessageMessage, final int nightLength, final String nightMessageMessage, final String message, final String monthsMessage, final boolean protocolLibSnowPlacerEnabled) {
+	public SeasonConfig(final File file, final String name, final String next, final Biome defaultBiome, final boolean canRain, final boolean alwaysRain, final boolean snowMeltEnable, final int dayLength, final String dayMessageMessage, final int nightLength, final String nightMessageMessage, final String message, final String monthsMessage, final boolean protocolLibSnowPlacerEnabled) {
 		this(file, Arrays.asList("####################################################### #", "              Skyoseasons Configuration                 #", " Check http://dev.bukkit.org/bukkit-plugins/skyoseasons #", "               for more informations.                   #", "####################################################### #"));
 		this.name = name;
 		this.next = next;
 		this.defaultBiome = defaultBiome;
 		this.canRain = canRain;
 		this.alwaysRain = alwaysRain;
-		this.snowMelt = snowMelt;
+		this.snowMeltEnable = snowMeltEnable;
+		
 		this.dayLength = dayLength;
 		this.dayMessageMessage = dayMessageMessage;
 		this.nightLength = nightLength;
@@ -76,18 +89,6 @@ public class SeasonConfig extends Skyoconfig {
 	
 	private SeasonConfig(final File file, final List<String> header) {
 		super(file, header);
-		replacements.put(Biome.ICE_FLATS.name(), Biome.ICE_FLATS.name());
-		replacements.put(Biome.ICE_MOUNTAINS.name(), Biome.ICE_MOUNTAINS.name());
-		replacements.put(Biome.MUTATED_ICE_FLATS.name(), Biome.MUTATED_ICE_FLATS.name());
-		replacements.put(Biome.FROZEN_RIVER.name(), Biome.FROZEN_RIVER.name());
-		replacements.put(Biome.FROZEN_OCEAN.name(), Biome.FROZEN_OCEAN.name());
-		replacements.put(Biome.COLD_BEACH.name(), Biome.COLD_BEACH.name());
-		replacements.put(Biome.TAIGA.name(), Biome.TAIGA.name());
-		replacements.put(Biome.TAIGA_COLD.name(), Biome.TAIGA_COLD.name());
-		replacements.put(Biome.TAIGA_HILLS.name(), Biome.TAIGA_HILLS.name());
-		replacements.put(Biome.TAIGA_COLD_HILLS.name(), Biome.TAIGA_COLD_HILLS.name());
-		replacements.put(Biome.EXTREME_HILLS.name(), Biome.EXTREME_HILLS.name());
-		replacements.put(Biome.EXTREME_HILLS_WITH_TREES.name(), Biome.EXTREME_HILLS_WITH_TREES.name());
 		
 		replacements.put(Biome.DESERT.name(), Biome.DESERT.name());
 		replacements.put(Biome.MESA.name(), Biome.MESA.name());

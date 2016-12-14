@@ -228,7 +228,7 @@ public class SeasonWorld {
 		}
 		refreshChunks(chunks);
 		SnowMelt snowMelt = (SnowMelt)tasks.get(TASK_SNOW_MELT);
-		if(season.snowMelt) {
+		if(season.snowMeltEnabled) {
 			if(snowMelt == null) {
 				snowMelt = new SnowMelt(this, chunks);
 				snowMelt.runTaskLater(SkyoseasonsAPI.getPlugin(), 20L);
@@ -245,12 +245,14 @@ public class SeasonWorld {
 			}
 		}
 		world.setStorm(season.alwaysRain);
-		for(final Player player : world.getPlayers()) {
-			if(message != null) {
-				player.sendMessage(season.message);
-			}
-			if(season.resourcePackUrl != null) {
-				player.setResourcePack(season.resourcePackUrl);
+		if(message != null || season.resourcePackUrl != null) {
+			for(final Player player : world.getPlayers()) {
+				if(message != null) {
+					player.sendMessage(season.message);
+				}
+				if(season.resourcePackUrl != null) {
+					player.setResourcePack(season.resourcePackUrl);
+				}
 			}
 		}
 		SkyoseasonsAPI.getLogsManager().log(season.message, Level.INFO, world);

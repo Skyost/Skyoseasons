@@ -5,10 +5,13 @@ import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.Material;
+import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockFormEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
@@ -140,13 +143,13 @@ public class EventsListener implements Listener {
 			if(SkyoseasonsAPI.getProtocolLibHook() == null) {
 				world.changeBiome(chunk);
 			}
-			if(!world.season.snowMelt) {
+			if(!world.season.snowMeltEnabled) {
 				return;
 			}
 			SnowMelt snowMelt = (SnowMelt)world.tasks.get(SeasonWorld.TASK_SNOW_MELT);
 			if(snowMelt == null) {
 				snowMelt = new SnowMelt(world, chunk);
-				snowMelt.runTaskTimer(SkyoseasonsAPI.getPlugin(), 20L, new Random().nextInt(SkyoseasonsAPI.getConfig().snowMeltMaxDelay) + 1);
+				snowMelt.runTaskTimer(SkyoseasonsAPI.getPlugin(), 20L, new Random().nextInt(world.season.snowMeltDelay) + 1);
 				world.tasks.put(SeasonWorld.TASK_SNOW_MELT, snowMelt);
 				return;
 			}
@@ -174,8 +177,11 @@ public class EventsListener implements Listener {
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.LOWEST)
 	private final void onInventoryClick(final InventoryClickEvent event) {
+		if(event.isCancelled()) {
+			return;
+		}
 		final SeasonWorld world = SkyoseasonsAPI.getSeasonWorld(event.getWhoClicked().getWorld());
 		if(world != null && event.getInventory().equals(world.calendar)) {
 			event.setCancelled(true);
@@ -188,6 +194,22 @@ public class EventsListener implements Listener {
 		final SeasonWorld world = SkyoseasonsAPI.getSeasonWorld(player.getWorld());
 		if(world != null && world.season.resourcePackUrl != null) {
 			player.setResourcePack(world.season.resourcePackUrl);
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.LOWEST)
+	public final void onBlockForm(final BlockFormEvent event) {
+		if(event.isCancelled()) {
+			return;
+		}
+		final BlockState state = event.getNewState();
+		final SeasonWorld world = SkyoseasonsAPI.getSeasonWorld(state.getWorld());
+		if(world == null) {
+			return;
+		}
+		final Material type = state.getType();
+		if(world.season.cancelAutoSnowPlacing && (type == Material.SNOW || type == Material.SNOW_BLOCK || type == Material.ICE)) {
+			event.setCancelled(true);
 		}
 	}
 	

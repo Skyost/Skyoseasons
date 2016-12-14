@@ -49,7 +49,7 @@ public class SnowMelt extends BukkitRunnable {
 			}
 			
 			Block block = world.world.getHighestBlockAt(chunk.getBlock(randomBlock.getBlockX(), 0, randomBlock.getBlockZ()).getLocation());
-			if(block.getY() < SkyoseasonsAPI.getConfig().snowEternalY) {
+			if(block.getY() < world.season.snowMeltEternalY) {
 				final Material type = block.getType();
 				if(type == Material.SNOW) {
 					block.setType(Material.AIR);
@@ -63,7 +63,7 @@ public class SnowMelt extends BukkitRunnable {
 			}
 		}
 		if(!isCancelled) {
-			Bukkit.getScheduler().runTaskLater(SkyoseasonsAPI.getPlugin(), this, random.nextInt(SkyoseasonsAPI.getConfig().snowMeltMaxDelay) + 1L);
+			Bukkit.getScheduler().runTaskLater(SkyoseasonsAPI.getPlugin(), this, random.nextInt(world.season.snowMeltDelay) + 1L);
 		}
 	}
 	

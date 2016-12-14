@@ -4,9 +4,6 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-import org.bukkit.Material;
-import org.bukkit.block.Biome;
-
 import fr.skyost.seasons.utils.Skyoconfig;
 
 public class PluginConfig extends Skyoconfig {
@@ -24,15 +21,6 @@ public class PluginConfig extends Skyoconfig {
 	public boolean backupsEnable = true;
 	@ConfigOptions(name = "backups.directory")
 	public String backupsDir;
-	
-	@ConfigOptions(name = "snow.eternal-y")
-	public int snowEternalY = 95;
-	@ConfigOptions(name = "snow.melt.max-delay")
-	public int snowMeltMaxDelay = 60;
-	@ConfigOptions(name = "snow.placer.forbidden-blocks")
-	public List<String> snowPlacerForbiddenTypes = Arrays.asList(Material.ICE.name());
-	@ConfigOptions(name = "snow.placer.forbidden-biomes")
-	public List<String> snowPlacerForbiddenBiomes = Arrays.asList(Biome.DESERT.name());
 	
 	@ConfigOptions(name = "logs.console.enable")
 	public boolean logsConsoleEnable = true;

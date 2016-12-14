@@ -11,7 +11,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -19,9 +18,6 @@ import fr.skyost.seasons.SeasonWorld;
 import fr.skyost.seasons.SkyoseasonsAPI;
 
 public class SnowPlacer extends BukkitRunnable {
-	
-	public static final HashSet<Biome> forbiddenBiomes = new HashSet<Biome>();
-	public static final HashSet<Material> forbiddenTypes = new HashSet<Material>();
 	
 	private final SeasonWorld world;
 	private final HashMap<Chunk, Location[]> chunks = new HashMap<Chunk, Location[]>();
@@ -56,7 +52,7 @@ public class SnowPlacer extends BukkitRunnable {
 			/*if(block.getLightLevel() >= 12) {
 				continue;
 			}*/
-			if(forbiddenBiomes.contains(block.getBiome())) {
+			if(world.season.snowPlacerForbiddenBiomes.contains(block.getBiome())) {
 				continue;
 			}
 			final Material type = block.getType();
@@ -72,7 +68,7 @@ public class SnowPlacer extends BukkitRunnable {
 				relative.setType(Material.ICE);
 				continue;
 			}
-			if(forbiddenTypes.contains(relativeType) || !relativeType.isOccluding()) {
+			if(world.season.snowPlacerForbiddenTypes.contains(relativeType) || !relativeType.isOccluding()) {
 				continue;
 			}
 			block.setType(Material.SNOW);

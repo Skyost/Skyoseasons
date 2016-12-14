@@ -11,7 +11,6 @@ import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.command.PluginCommand;
@@ -34,7 +33,6 @@ import fr.skyost.seasons.utils.Skyupdater;
 import fr.skyost.seasons.utils.Utils;
 import fr.skyost.seasons.utils.packets.AbstractProtocolLibHook;
 import fr.skyost.seasons.utils.packets.AbstractProtocolLibHook.PacketPluginHookInitializationException;
-import fr.skyost.seasons.utils.packets.SnowPlacer;
 
 public class Skyoseasons extends JavaPlugin {
 	
@@ -173,23 +171,11 @@ public class Skyoseasons extends JavaPlugin {
 				seasons = getDefaultSeasons(seasonsDir);
 			}
 		}
-		boolean useSnowPlacer = false;
 		for(final SeasonConfig season : seasons) {
 			if(!season.getFile().exists()) {
 				season.save();
 			}
-			if(!useSnowPlacer && season.protocolLibSnowPlacerEnabled) {
-				useSnowPlacer = true;
-			}
 			this.seasons.put(season.name, new Season(season));
-		}
-		if(useSnowPlacer) {
-			for(final String forbiddenType : config.snowPlacerForbiddenTypes) {
-				SnowPlacer.forbiddenTypes.add(Material.valueOf(forbiddenType));
-			}
-			for(final String forbiddenBiome : config.snowPlacerForbiddenBiomes) {
-				SnowPlacer.forbiddenBiomes.add(Biome.valueOf(forbiddenBiome));
-			}
 		}
 	}
 	
