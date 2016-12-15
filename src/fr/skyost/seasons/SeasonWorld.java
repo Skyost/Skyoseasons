@@ -259,8 +259,8 @@ public class SeasonWorld {
 		
 		final PluginConfig config = SkyoseasonsAPI.getConfig();
 		
-		final TimeControl task = new TimeControl(this, season.daylength, season.nightLength, config.refreshTime);
-		task.runTaskTimer(SkyoseasonsAPI.getPlugin(), config.refreshTime, config.refreshTime);
+		final TimeControl task = new TimeControl(this, season.daylength, season.nightLength, config.timeControlRefreshTime);
+		task.runTaskTimer(SkyoseasonsAPI.getPlugin(), config.timeControlRefreshTime, config.timeControlRefreshTime);
 		tasks.put(TASK_TIME_CONTROL, task);
 	}
 	

@@ -9,7 +9,7 @@ import fr.skyost.seasons.utils.Skyoconfig;
 public class WorldConfig extends Skyoconfig {
 	
 	public int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
-	public int month = Calendar.getInstance().get(Calendar.MONTH);
+	public int month = Calendar.getInstance().get(Calendar.MONTH) + 1;
 	public String season = "Summer";
 	@ConfigOptions(name = "season-month")
 	public int seasonMonth = 1;

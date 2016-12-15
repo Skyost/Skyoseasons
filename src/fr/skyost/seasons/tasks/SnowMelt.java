@@ -44,9 +44,7 @@ public class SnowMelt extends BukkitRunnable {
 			locations.add(randomBlock);
 			chunks.put(chunk, locations.toArray(new Location[locations.size()]));
 			
-			if(locations.size() >= 256) {
-				chunks.remove(chunk);
-			}
+			removeChunkIfUseless(chunk);
 			
 			Block block = world.world.getHighestBlockAt(chunk.getBlock(randomBlock.getBlockX(), 0, randomBlock.getBlockZ()).getLocation());
 			if(block.getY() < world.season.snowMeltEternalY) {
@@ -67,12 +65,48 @@ public class SnowMelt extends BukkitRunnable {
 		}
 	}
 	
+	private final void removeChunkIfUseless(final Chunk chunk) {
+		boolean hasSnow = false;
+		for(int x = 0; x < 16; x++) {
+			for(int z = 0; z < 16; z++) {
+				final Block block = chunk.getBlock(x, 0, z);
+				final Material highest = block.getLocation().getWorld().getHighestBlockAt(block.getX(), block.getZ()).getType();
+				if(highest == Material.SNOW || highest == Material.SNOW_BLOCK || highest == Material.ICE) {
+					hasSnow = true;
+					break;
+				}
+			}
+			if(hasSnow) {
+				break;
+			}
+		}
+		if(!hasSnow) {
+			chunks.remove(chunk);
+		}
+	}
+
 	public final void addChunks(final Chunk... chunks) {
 		for(final Chunk chunk : chunks) {
 			if(this.chunks.containsKey(chunk)) {
 				continue;
 			}
-			this.chunks.put(chunk, new Location[]{});
+			boolean hasSnow = false;
+			for(int x = 0; x < 16; x++) {
+				for(int z = 0; z < 16; z++) {
+					final Block block = chunk.getBlock(x, 0, z);
+					final Material highest = block.getLocation().getWorld().getHighestBlockAt(block.getX(), block.getZ()).getType();
+					if(highest == Material.SNOW || highest == Material.SNOW_BLOCK || highest == Material.ICE) {
+						hasSnow = true;
+						break;
+					}
+				}
+				if(hasSnow) {
+					break;
+				}
+			}
+			if(hasSnow) {
+				this.chunks.put(chunk, new Location[]{});
+			}
 		}
 	}
 	

@@ -12,10 +12,11 @@ public class PluginConfig extends Skyoconfig {
 	public String seasonsDir;
 	@ConfigOptions(name = "worlds-saves-directory")
 	public String worldsDir;
-	@ConfigOptions(name = "refresh-time")
-	public int refreshTime = 20;
 	@ConfigOptions(name = "worlds")
 	public List<String> worlds = Arrays.asList("WorldA", "WorldB", "WorldC", "You can add (or remove) any world you want here !");
+	
+	@ConfigOptions(name = "time-control.refresh-time")
+	public int timeControlRefreshTime = 20;
 	
 	@ConfigOptions(name = "backups.enable")
 	public boolean backupsEnable = true;

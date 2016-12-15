@@ -44,9 +44,7 @@ public class SnowPlacer extends BukkitRunnable {
 			locations.add(randomBlock);
 			chunks.put(chunk, locations.toArray(new Location[locations.size()]));
 			
-			if(locations.size() >= 256) {
-				chunks.remove(chunk);
-			}
+			removeChunkIfUseless(chunk);
 			
 			final Block block = world.world.getHighestBlockAt(chunk.getBlock(randomBlock.getBlockX(), 0, randomBlock.getBlockZ()).getLocation());
 			/*if(block.getLightLevel() >= 12) {
@@ -56,7 +54,7 @@ public class SnowPlacer extends BukkitRunnable {
 				continue;
 			}
 			final Material type = block.getType();
-			if((type != Material.AIR && !type.isOccluding()) || type == Material.SNOW && !world.season.snowPlacerAllowStacks) {
+			if((type != Material.AIR && !type.isOccluding()) || (type == Material.SNOW && !world.season.snowPlacerAllowStacks)) {
 				continue;
 			}
 			final Block relative = block.getRelative(0, -1, 0);
@@ -75,6 +73,26 @@ public class SnowPlacer extends BukkitRunnable {
 		}
 		if(!isCancelled) {
 			Bukkit.getScheduler().runTaskLater(SkyoseasonsAPI.getPlugin(), this, random.nextInt(world.season.snowPlacerDelay) + 1L);
+		}
+	}
+	
+	private final void removeChunkIfUseless(final Chunk chunk) {
+		boolean snowEverywhere = true;
+		for(int x = 0; x < 16; x++) {
+			for(int z = 0; z < 16; z++) {
+				final Block block = chunk.getBlock(x, 0, z);
+				final Material highest = block.getLocation().getWorld().getHighestBlockAt(block.getX(), block.getZ()).getType();
+				if(highest != Material.SNOW && highest != Material.SNOW_BLOCK && highest != Material.ICE) {
+					snowEverywhere = false;
+					break;
+				}
+			}
+			if(!snowEverywhere) {
+				break;
+			}
+		}
+		if(snowEverywhere) {
+			chunks.remove(chunk);
 		}
 	}
 	
