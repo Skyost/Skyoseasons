@@ -153,8 +153,12 @@ public class Utils {
 	 * @author BigTeddy98.
 	 */
 
-	public static final Class<?> getMCClass(final String name) throws ClassNotFoundException {
-		return Class.forName("net.minecraft.server." + MC_SERVER_VERSION + "." + name);
+	public static final Class<?> getMCClass(final String name) {
+		try {
+			return Class.forName("net.minecraft.server." + MC_SERVER_VERSION + "." + name);
+		}
+		catch(final Exception ex) {}
+		return null;
 	}
 	
 	/**

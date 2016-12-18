@@ -247,11 +247,6 @@ public class SeasonWorld {
 		}
 		world.setStorm(season.alwaysRain);
 		if(message != null || season.resourcePackUrl != null || season.titleEnabled) {
-			Title title = null;
-			if(season.titleEnabled && season.titleMessage != null && season.titleSubtitle != null) {
-				title = new Title(season.titleMessage, season.titleSubtitle, season.titleFadeIn, season.titleStay, season.titleFadeOut);
-				title.setTimingsToTicks();
-			}
 			for(final Player player : world.getPlayers()) {
 				if(message != null) {
 					player.sendMessage(season.message);
@@ -259,8 +254,8 @@ public class SeasonWorld {
 				if(season.resourcePackUrl != null) {
 					player.setResourcePack(season.resourcePackUrl);
 				}
-				if(title != null) {
-					title.send(player);
+				if(season.titleEnabled) {
+					player.sendTitle(season.titleMessage, season.titleSubtitle/* TODO: temporaly removed : , season.titleFadeIn, season.titleStay, season.titleFadeOut*/);
 				}
 			}
 		}

@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Biome;
 
 import fr.skyost.seasons.utils.Skyoconfig;
+import fr.skyost.seasons.utils.Utils;
 import net.md_5.bungee.api.ChatColor;
 
 public class SeasonConfig extends Skyoconfig {
@@ -18,7 +19,7 @@ public class SeasonConfig extends Skyoconfig {
 	public String message;
 	
 	@ConfigOptions(name = "title.enable")
-	public boolean titleEnable = true;
+	public boolean titleEnable = !Utils.MC_SERVER_VERSION.startsWith("v1_7");
 	@ConfigOptions(name = "title.message")
 	public String titleMessage = ChatColor.GOLD + "New season !";
 	@ConfigOptions(name = "title.subtitle")
