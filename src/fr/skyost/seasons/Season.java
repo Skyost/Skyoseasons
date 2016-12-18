@@ -23,6 +23,42 @@ public class Season {
 	public final String next;
 	
 	/**
+	 * If title is enabled.
+	 */
+	
+	public final boolean titleEnabled;
+	
+	/**
+	 * The message (of the title).
+	 */
+	
+	public final String titleMessage;
+	
+	/**
+	 * The subtitle.
+	 */
+	
+	public final String titleSubtitle;
+	
+	/**
+	 * The fade in duration.
+	 */
+	
+	public final int titleFadeIn;
+	
+	/**
+	 * The stay duration.
+	 */
+	
+	public final int titleStay;
+	
+	/**
+	 * The fade out duration.
+	 */
+	
+	public int titleFadeOut;
+	
+	/**
 	 * The default biome.
 	 */
 	
@@ -171,11 +207,18 @@ public class Season {
 		next = config.next;
 		defaultBiome = config.defaultBiome;
 		
+		titleEnabled = config.titleEnable;
+		titleMessage = titleEnabled ? config.titleMessage : null;
+		titleSubtitle = titleEnabled ? config.titleSubtitle : null;
+		titleFadeIn = config.titleFadeIn;
+		titleStay = config.titleStay;
+		titleFadeOut = config.titleFadeOut;
+		
 		for(final Entry<String, String> entry : config.replacements.entrySet()) {
 			replacements.put(Biome.valueOf(entry.getKey()), Biome.valueOf(entry.getValue()));
 		}
 		
-		resourcePackUrl = !config.resourcePackUrl.equalsIgnoreCase("NONE") && config.resourcePackUrl.startsWith("http") ? config.resourcePackUrl : null;
+		resourcePackUrl = config.resourcePackUrl.equalsIgnoreCase("NONE") ? null : config.resourcePackUrl;
 		
 		canRain = config.canRain;
 		alwaysRain = config.alwaysRain;

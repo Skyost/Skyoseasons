@@ -9,12 +9,26 @@ import org.bukkit.Material;
 import org.bukkit.block.Biome;
 
 import fr.skyost.seasons.utils.Skyoconfig;
+import net.md_5.bungee.api.ChatColor;
 
 public class SeasonConfig extends Skyoconfig {
 	
 	public String name;
 	public String next;
 	public String message;
+	
+	@ConfigOptions(name = "title.enable")
+	public boolean titleEnable = true;
+	@ConfigOptions(name = "title.message")
+	public String titleMessage = ChatColor.GOLD + "New season !";
+	@ConfigOptions(name = "title.subtitle")
+	public String titleSubtitle = ChatColor.YELLOW + "A new season is coming...";
+	@ConfigOptions(name = "title.fade-in")
+	public int titleFadeIn = 10;
+	@ConfigOptions(name = "title.stay")
+	public int titleStay = 70;
+	@ConfigOptions(name = "title.fade-out")
+	public int titleFadeOut = 20;
 	
 	@ConfigOptions(name = "default-biome")
 	public Biome defaultBiome;
@@ -69,10 +83,12 @@ public class SeasonConfig extends Skyoconfig {
 		this(file, Arrays.asList("####################################################### #", "              Skyoseasons Configuration                 #", " Check http://dev.bukkit.org/bukkit-plugins/skyoseasons #", "               for more informations.                   #", "####################################################### #"));
 	}
 	
-	public SeasonConfig(final File file, final String name, final String next, final Biome defaultBiome, final boolean canRain, final boolean alwaysRain, final boolean snowMeltEnable, final int dayLength, final String dayMessageMessage, final int nightLength, final String nightMessageMessage, final String message, final String monthsMessage, final boolean protocolLibSnowPlacerEnabled) {
+	public SeasonConfig(final File file, final String name, final String next, final String titleMessage, final String titleSubtitle, final Biome defaultBiome, final boolean canRain, final boolean alwaysRain, final boolean snowMeltEnable, final int dayLength, final String dayMessageMessage, final int nightLength, final String nightMessageMessage, final String message, final String monthsMessage, final boolean protocolLibSnowPlacerEnabled) {
 		this(file, Arrays.asList("####################################################### #", "              Skyoseasons Configuration                 #", " Check http://dev.bukkit.org/bukkit-plugins/skyoseasons #", "               for more informations.                   #", "####################################################### #"));
 		this.name = name;
 		this.next = next;
+		this.titleMessage = titleMessage;
+		this.titleSubtitle = titleSubtitle;
 		this.defaultBiome = defaultBiome;
 		this.canRain = canRain;
 		this.alwaysRain = alwaysRain;

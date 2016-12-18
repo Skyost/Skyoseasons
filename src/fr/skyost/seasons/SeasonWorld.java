@@ -20,6 +20,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import fr.skyost.seasons.tasks.SnowMelt;
 import fr.skyost.seasons.tasks.TimeControl;
+import fr.skyost.seasons.utils.Title;
 import fr.skyost.seasons.utils.Utils;
 import fr.skyost.seasons.utils.packets.AbstractProtocolLibHook;
 
@@ -245,13 +246,21 @@ public class SeasonWorld {
 			}
 		}
 		world.setStorm(season.alwaysRain);
-		if(message != null || season.resourcePackUrl != null) {
+		if(message != null || season.resourcePackUrl != null || season.titleEnabled) {
+			Title title = null;
+			if(season.titleEnabled && season.titleMessage != null && season.titleSubtitle != null) {
+				title = new Title(season.titleMessage, season.titleSubtitle, season.titleFadeIn, season.titleStay, season.titleFadeOut);
+				title.setTimingsToTicks();
+			}
 			for(final Player player : world.getPlayers()) {
 				if(message != null) {
 					player.sendMessage(season.message);
 				}
 				if(season.resourcePackUrl != null) {
 					player.setResourcePack(season.resourcePackUrl);
+				}
+				if(title != null) {
+					title.send(player);
 				}
 			}
 		}
