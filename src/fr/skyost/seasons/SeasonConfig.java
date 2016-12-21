@@ -5,12 +5,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
 
 import fr.skyost.seasons.utils.Skyoconfig;
 import fr.skyost.seasons.utils.Utils;
-import net.md_5.bungee.api.ChatColor;
 
 public class SeasonConfig extends Skyoconfig {
 	
